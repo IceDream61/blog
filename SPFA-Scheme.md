@@ -113,7 +113,14 @@
 ;	(display "v: ") (display v) (newline)
 ;	(display "allv: ") (display allv) (newline)
 	(cond
-	 [(and (not (eqv? (get2 map u v) #f)) (or (eqv? (get d v) #f) (< (+ (get d u) (get2 map u v)) (get d v))))
+	 [(and
+	   (not (eqv? (get2 map u v) #f))
+	   (or
+	    (eqv? (get d v) #f)
+	    (< (+
+		(get d u)
+		(get2 map u v))
+	       (get d v))))
 	  (begin
 	    (set d v (+ (get d u) (get2 map u v)))
 	    (push Q v))])

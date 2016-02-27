@@ -558,7 +558,14 @@ pre[class*="language-"] {
 ;   (display &quot;v: &quot;) (display v) (newline)
 ;   (display &quot;allv: &quot;) (display allv) (newline)
     (cond
-     [(and (not (eqv? (get2 map u v) #f)) (or (eqv? (get d v) #f) (&lt; (+ (get d u) (get2 map u v)) (get d v))))
+     [(and
+       (not (eqv? (get2 map u v) #f))
+       (or
+        (eqv? (get d v) #f)
+        (&lt; (+
+        (get d u)
+        (get2 map u v))
+           (get d v))))
       (begin
         (set d v (+ (get d u) (get2 map u v)))
         (push Q v))])
