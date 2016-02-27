@@ -1,6 +1,5 @@
-# 算法：SPFA
-
-# 实现语言：Scheme
+# Algorithm：SPFA
+# Language：Scheme
 
 ``` scheme
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
