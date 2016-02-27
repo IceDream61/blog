@@ -12,7 +12,6 @@
 
 ---
 
-| 算法\语言   | Scheme   |  待续  |
-| --:   | :-----:  | :----:  |
-| SPFA  | [代码](SPFA-Scheme.html) | . |
-| 待续   |   .   |   .   |
+| Algorithm \ Language    | Scheme                   |
+| :---------------------: | :----------------------: |
+| SPFA                    | [code](SPFA-Scheme.html) |
