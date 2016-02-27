@@ -1,7 +1,3 @@
-# Algorithm：SPFA
-# Language：Scheme
-
-``` scheme
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  题目：单源最短路，输入数据给定
@@ -167,4 +163,3 @@
   (display "result: ") (display (get d 5)) (newline))
 
 (exit)              ; 为了方便直接运行，这里加个退出
-```
