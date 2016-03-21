@@ -447,7 +447,37 @@ pre[class*="language-"] {
 
 <p>个人水平所限，只能谈及几年前的OI省选水平的算法。再高深的，便不清楚了。</p>
 
-<p><strong>声明：算法分类方式与列举顺序借鉴于hzwer同学的<a href="http://hzwer.com/1234.html">《OI省选算法汇总》</a>。</strong></p>
+<hr>
+
+<p><strong>主要参考文献：</strong></p>
+
+<ol>
+<li><strong>hzwer，<a href="http://hzwer.com/1234.html">《OI省选算法汇总》</a>。</strong></li>
+<li><strong>_Rayx，<a href="http://blog.chinaunix.net/uid-26818262-id-3240133.html">《多种字符串匹配算法杂谈》</a>。</strong></li>
+<li><strong>airfer，<a href="http://blog.csdn.net/airfer/article/details/8951802/">《字符串匹配算法比较》</a>。</strong></li>
+<li><strong>罗穗骞，<a href="%E7%AE%97%E6%B3%95%E5%90%88%E9%9B%86%E4%B9%8B%E3%80%8A%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84%E2%80%94%E2%80%94%E5%A4%84%E7%90%86%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%9C%89%E5%8A%9B%E5%B7%A5%E5%85%B7%E3%80%8B.pdf">《后缀数组——处理字符串的有力工具》</a>。</strong></li>
+<li><strong>xiazdong，<a href="http://blog.csdn.net/xiazdong/article/details/8193680#reply">《Dijkstra、Bellman_Ford、SPFA、Floyd算法复杂度比较》</a>。</strong></li>
+<li><strong>Create Chen，<a href="http://www.cnblogs.com/technology/archive/2011/05/26/2058842.html">《理解A*寻路算法具体过程》</a>。</strong></li>
+<li><strong>lufy，<a href="http://blog.csdn.net/lufy_legend/article/details/5733733">《A*寻路算法与它的速度》</a>。</strong></li>
+<li><strong>Amit，蔡鸿译，<a href="http://blog.csdn.net/b2b160/article/details/4057781">《Amit&#39;s A star Page中译文》</a>。</strong></li>
+</ol>
+
+<hr>
+
+<p>待补充：</p>
+
+<ol>
+<li>每个算法，写出其根本思想，如：
+
+<ul>
+<li>枚举（尝试、搜索、遍历）</li>
+<li>贪心（往往配合排序、使用构造思路）</li>
+<li>动态规划（记忆化搜索、带剪枝的搜索……）</li>
+<li>启发式算法（估值函数）</li>
+</ul></li>
+</ol>
+
+<hr>
 
 <p>OI算法，大抵可分为以下几类：</p>
 
@@ -458,12 +488,15 @@ pre[class*="language-"] {
 <li>数学相关</li>
 <li>动态规划</li>
 <li>计算几何</li>
-<li>搜索相关</li>
 <li>不保证正确性的算法</li>
 <li>其他重要工具与方法</li>
 </ol>
 
 <p>下面依次谈一谈。</p>
+
+<blockquote>
+<p>这个算法是怎么来的，是为了解决什么问题而来，以前的算法为什么没有解决，而现在的算法却能解决；现在这个算法还有些什么缺点；能做一些什么问题，不能做些什么问题。—— Ronghua Li</p>
+</blockquote>
 
 <h2 id="toc_1">数据结构</h2>
 
@@ -476,7 +509,7 @@ pre[class*="language-"] {
 <li>后面的我也不知道了……</li>
 </ol>
 
-<p>首先必须扫盲一下，按我这种分法，OI的完整数据结构历程怎么也得十步以上。随便一个省队队员，基本都已经超越了我说的这三个阶段。然而，实际工程中，普通工程师们对数据结构的理解却很浅，平衡树都不一定写过，可并堆甚至都没听说过。可这并不说明实际工程不需要对数据结构的理解，只能说明普遍水平低。也正因此，我才能在这里写点东西，糊弄一下不搞OI的人。</p>
+<p>首先必须扫盲一下，按我这种分法，OI的完整数据结构历程怎么也得十步以上。随便一个省队队员，基本都已经超越了我说的这三个阶段。然而，实际工程中，普通工程师们对数据结构的理解却很浅，平衡树都不一定写过，可并堆甚至都没听说过。可这并不说明实际工程不需要对数据结构的理解，只能说明不急需，因此普遍水平低。也正因此，我才能在这里写点东西，糊弄一下不搞OI的人。</p>
 
 <p>我大概到了第三阶段的初期，实现基本无误，开始关注如何组合了。虽然实际工程中依旧会偶尔遇到自己并不了解的数据结构。但这往往并不会阻碍我，毕竟工程中的数据结构并不像OI那么高深，借助自己对数据结构的理解，往往可以很快理解并实现一个从未见过的数据结构。</p>
 
@@ -528,7 +561,7 @@ pre[class*="language-"] {
 <li>树套树：一棵树的每个结点都是另一种树，以此来结合两种树的优点，同时保证时空复杂度。我比较弱，这个很少写，都忘得差不多了，就不妄言了。</li>
 </ul>
 
-<h3 id="toc_6">其他数据结构</h3>
+<h3 id="toc_6">其他</h3>
 
 <p>数据结构还有很多很多种，以后或许还会再多写一点～这里先随便列点吧^_^</p>
 
@@ -545,62 +578,242 @@ pre[class*="language-"] {
 
 <h2 id="toc_7">字符串相关</h2>
 
-<h3 id="toc_8">KMP</h3>
+<h3 id="toc_8">单模式串匹配</h3>
 
-<h3 id="toc_9">AC自动机</h3>
+<ul>
+<li><p>KMP：在主串S（长度N）中匹配一个模式串P（长度M），预处理时间 \(O(M)\) ，匹配时间 \(O(N+M)\) 。</p></li>
+<li><p>KMP及相关算法时间复杂度比较：</p>
 
-<h3 id="toc_10">后缀数组</h3>
+<div><pre><code class="language-none">其中，M为模式串长度，N为主串长度。
+实测时，string长度10000，每个函数都被调用了1000次。</code></pre></div></li>
+</ul>
 
-<h3 id="toc_11">后缀树</h3>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>预处理时间</th>
+<th>匹配时间</th>
+<th>实测时间</th>
+</tr>
+</thead>
 
-<h3 id="toc_12">后缀自动机</h3>
+<tbody>
+<tr>
+<td>BF</td>
+<td>\(O(0)\)</td>
+<td>\(O(NM)\)</td>
+<td>0.078</td>
+</tr>
+<tr>
+<td>KMP</td>
+<td>\(O(M)\)</td>
+<td>\(O(N)\)</td>
+<td>0.094</td>
+</tr>
+<tr>
+<td>BM</td>
+<td>\(O(N+M^2)\)</td>
+<td>\(O(N)\)</td>
+<td>0.047</td>
+</tr>
+<tr>
+<td>Sunday</td>
+<td>\(O(M)\)</td>
+<td>\(O(NM)\)</td>
+<td>0.172</td>
+</tr>
+<tr>
+<td>Robin-Karp</td>
+<td>\(O(0)\)</td>
+<td>\(O(NM)\)</td>
+<td>0.328</td>
+</tr>
+<tr>
+<td>Bitap</td>
+<td>\(O(M)\)</td>
+<td>\(O(NM) \rightarrow O(N)\)</td>
+<td>0.281</td>
+</tr>
+</tbody>
+</table>
 
-<h3 id="toc_13">字典树 Trie</h3>
+<h3 id="toc_9">字典树（Trie）</h3>
 
-<h3 id="toc_14">Manacher</h3>
+<blockquote>
+<p>Trie是一种n叉树，n为字母表大小，每个节点表示从根节点到此节点所经过的所有字符组成的字符串。</p>
+</blockquote>
 
-<h2 id="toc_15">图论相关</h2>
+<h3 id="toc_10">多模式串匹配</h3>
+
+<ul>
+<li>AC自动机：在主串S（长度N）中匹配多个模式串P（长度M），预处理时间 \(O(N+\sum M_i)\) ，匹配时间 \(O(N+\sum M_i)\) 。</li>
+</ul>
+
+<p>AC自动机就是KMP思想。但用KMP做多模式串匹配的时间复杂度是 \(O(\sum{N+M_i})\) 。显然，提高的复杂度是 \(O(N(K-1))\) ，其中K表示模式串的个数。而当模式串数量大、模式串较短、主串较长时，算法几乎是从 \(O(N^2)\) 降到了 \(O(N)\) 。</p>
+
+<blockquote>
+<p>还有一种多模式的匹配算法叫做AC自动机。它能一次匹配多个模式串。它与KMP的思路很像，不匹配时找一个最长的再继续进行！它需要先把字符串建成一颗Trie树，树结点有一个叫做failed的指针，是表示如果不匹配时应该再从哪个结点进行匹配。因为这种做法是一种DFA上的匹配，而发明这种算法的人叫A.C.，所以就叫AC自动机了。复杂度很好，比每个模式串用一次KMP算法要好很多。</p>
+</blockquote>
+
+<h3 id="toc_11">后缀树、后缀数组</h3>
+
+<ul>
+<li>这俩是非常有用的字符串处理工具，尤其是后缀数组，很多复杂字符串问题都可以用它来快速完美解决。</li>
+<li>构造：倍增算法 \(O(logN)\) ，DC3算法 \(O(N)\) ，但前者常数小一些，且实现较容易。</li>
+<li>内容：
+<img src="%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84%E4%B8%8E%E5%90%8D%E6%AC%A1%E6%95%B0%E7%BB%84.png" alt="后缀数组与名次数组">
+
+<ul>
+<li>后缀数组，SA[1~N]，表示“排第几的是谁？”。也就是将S的N个后缀升序排序，把排好序的后缀的开头位置顺次放入SA中。显然，其满足：\[Suffix(SA[i])&lt;Suffix(SA[i+1])\]</li>
+<li>名次数组，Rank[1~N]，表示“你排第几？”。也就是 Suffix(i) 在所有后缀中升序排序的名次。</li>
+</ul></li>
+<li>用途：
+
+<ul>
+<li>最长公共前缀</li>
+<li>单个字符串的相关问题
+
+<ul>
+<li>重复子串
+
+<ul>
+<li>可重叠最长重复子串</li>
+<li>不可重叠最长重复子串 (pku1743)</li>
+<li>可重叠的最长重复子串 (pku3261)</li>
+</ul></li>
+<li>子串的个数
+
+<ul>
+<li>不相同的子串的个数 (spoj694, spoj705)</li>
+</ul></li>
+<li>回文子串
+
+<ul>
+<li>最长回文子串 (ural1297)</li>
+</ul></li>
+<li>连续重复子串
+
+<ul>
+<li>连续重复子串 (pku2406)</li>
+<li>重复次数最多的连续重复子串 (spoj687, pku3693)</li>
+</ul></li>
+</ul></li>
+<li>两个字符串的相关问题
+
+<ul>
+<li>公共子串
+
+<ul>
+<li>最长公共子串 (pku2774, ural1517)</li>
+</ul></li>
+<li>子串的个数
+
+<ul>
+<li>长度不小于k的公共子串的个数 (pku3415)</li>
+</ul></li>
+</ul></li>
+<li>多个字符串的相关问题
+
+<ul>
+<li>不小于k个字符串中的最长子串 (pku3294)</li>
+<li>每个字符串至少出现两次且不重叠的最长子串 (spoj220)</li>
+<li>出现或反转后出现在每个字符串中的最长子串(pku3294)</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<blockquote>
+<p>还有一种叫做后缀数组和后缀树的，后缀树是可以转发为后缀数组的，这两种构造起来很不简单，但是复杂度却是惊人的好。如求最长重复连续子串，出现次数最多的子串等都能用它完美的解决。有兴趣的可以搜搜，后缀数组的资料应该是比较多的，而后缀树由于太复杂，资料不是很多，还是有的。</p>
+</blockquote>
+
+<p>关于后缀数组构造的倍增算法，有一个特别好玩的小故事，大家可以去看看～</p>
+
+<p><a href="http://wenku.baidu.com/link?url=iHFynk6AJPrzRVt8K_s4979uft83AiknejhHOQSQJkShiFEf5G0PFXrrPV4rLYUkVhy5b7iRVA8GcCt3NkF7t57MVJ3TxY-l3TTTzBm16_7">《后缀树,后缀数组,离散化》</a>，去看73到81页，可爱的小白兔们^_^</p>
+
+<h3 id="toc_12">模糊匹配</h3>
+
+<blockquote>
+<p>上面介绍的都是精确匹配的算法，其实对于字符串，还有一种模糊匹配，有兴趣的读者可以阅读一本叫做《柔性字符串匹配》的书，肯定会让你获益匪浅。</p>
+</blockquote>
+
+<h3 id="toc_13">其他</h3>
+
+<ul>
+<li>后缀自动机</li>
+<li>Manacher</li>
+</ul>
+
+<h2 id="toc_14">图论相关</h2>
+
+<h3 id="toc_15">搜索相关</h3>
+
+<ul>
+<li>BFS、DFS</li>
+<li>A*算法</li>
+<li>迭代加深搜索、双向广搜</li>
+</ul>
 
 <h3 id="toc_16">最小生成树</h3>
 
 <ul>
-<li>Prim</li>
-<li>Kruskal</li>
+<li>Prim：每次加入最小代价点来构造。时间 \(O(NlogN)\) 。</li>
+<li>Kruskal：每次加入最小代价边来构造。时间 \(O(MlogM)\) 。</li>
 </ul>
 
 <h3 id="toc_17">最短路、次短路、K短路</h3>
 
 <ul>
-<li>SPFA</li>
-<li>Dijkstra</li>
-<li>Floyd</li>
-<li>A*</li>
-</ul>
-
-<h3 id="toc_18">图的连通</h3>
+<li>Floyd：<strong>动态规划</strong>，求每对节点之间的最短路径。时间 \(O(V^3)\) 。</li>
+<li>Dijkstra：<strong>贪心</strong>，适用于权值为非负的图的单源最短路径。时间 \(O((V+E)logV)\) 。</li>
+<li>Bellman-Ford：适用于权值有负值的图的单源最短路径，并且能够检测负圈。时间 \(O(VE)\) 。</li>
+<li>SPFA：适用于权值有负值，且没有负圈的图的单源最短路径。能检测负圈，但不能输出负圈。时间 \(O(VE)\) ，但一般效率很快，可以认为是 \(O(kE)\) ，k为小常数。</li>
+<li>A<em>寻路：</em><em>启发式算法</em>*，给定两点求最短路、K短路，时间取决于估价函数的选取。
 
 <ul>
-<li>联通分量</li>
-<li>割点、割边</li>
+<li>估价函数完美时，直接找到正确答案；</li>
+<li>估值恒小于实际最短路径时，一定可以找到正确答案，但时间会变长，最差降至BFS。</li>
+<li>估值有时大于实际最短路径时，搜索速度会加快，但可能找不到正确答案。</li>
+</ul></li>
+</ul>
+
+<h3 id="toc_18">图的连通（联通分量、割点、割边）</h3>
+
+<ul>
+<li>Tarjan算法：详见<a href="http://blog.csdn.net/nothi/article/details/7739741">《三种tarjan算法(上)》</a>。</li>
 </ul>
 
 <h3 id="toc_19">网络流</h3>
+
+<ul>
+<li>详见<a href="http://www.cnblogs.com/longdouhzt/archive/2012/05/20/2510743.html">《浅谈网络流的基本算法 [转]》</a>。
 
 <ul>
 <li>最大流</li>
 <li>最小割</li>
 <li>费用流</li>
 <li>分数规划</li>
+<li>……</li>
+</ul></li>
 </ul>
 
 <h3 id="toc_20">树相关</h3>
 
 <ul>
-<li>树上倍增、公共祖先</li>
-<li>树链剖分</li>
+<li>树上倍增、公共祖先
+
+<ul>
+<li>详见<a href="http://www.cnblogs.com/ylfdrib/archive/2010/11/03/1867901.html">《最近公共祖先LCA Tarjan算法》</a>。</li>
+</ul></li>
+<li>树链剖分
+
+<ul>
+<li>详见<a href="http://www.cnblogs.com/kuangbin/archive/2013/08/12/3253734.html">《树链剖分学习》</a>。</li>
+</ul></li>
 <li>树的分治算法
 
 <ul>
+<li>详见<a href="%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95%E5%9C%A8%E6%A0%91%E7%9A%84%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.pdf">《分治算法在树的路径问题中的应用》</a>。</li>
 <li>点分治</li>
 <li>边分治</li>
 <li>树分治</li>
@@ -608,20 +821,44 @@ pre[class*="language-"] {
 <li>动态树
 
 <ul>
+<li>详见<a href="http://blog.csdn.net/d891320478/article/details/9181385">《动态树~LCT总结》</a>。</li>
+<li>再参考<a href="http://blog.csdn.net/jasonzhu8/article/details/5784117">《【动态树初探】link-cut tree》</a>。</li>
 <li>LCT</li>
 <li>树分块</li>
 </ul></li>
-<li>虚树</li>
-<li>Prufer编码</li>
+<li>虚树
+
+<ul>
+<li>详见<a href="http://www.w2bc.com/Article/21720">《bzoj3572_虚树的构建+lca》</a>。</li>
+<li>再参考<a href="http://www.kuangbin.net/archives/bzoj3572">《BZOJ 3572: [Hnoi2014]世界树 （虚树，DP）》</a>。</li>
+</ul></li>
+<li>Prufer编码
+
+<ul>
+<li>详见<a href="http://blog.csdn.net/bingshangjiguang/article/details/6016676">《树的Prufer 编码和最小生成树计数》</a>。</li>
+<li>再参考<a href="http://baike.baidu.com/link?url=LHiyywFefWg8kMQETGENTykYWwdGEI2NEXrIR5U6M62aWGfbD4yDsSNVXDjPczUDoHq8LFWSlBmyn6idOFmMeK">百度百科——prufer数列</a>。</li>
+<li>再看看<a href="http://www.doc88.com/p-69011739078.html">《Prufer 编解码的最优算法》</a>。</li>
+<li>差不多了，最后一个吧<a href="http://www.matrix67.com/blog/archives/682">《经典证明：Prüfer编码与Cayley公式》</a>。</li>
+</ul></li>
 </ul>
 
 <h3 id="toc_21">拓扑排序</h3>
 
+<ul>
+<li>维护点的入度，不断选择入度为零的点，时间 \(O(V+E)\) 。</li>
+</ul>
+
 <h3 id="toc_22">欧拉图</h3>
+
+<ul>
+<li>Fleury算法：求欧拉通路/回路，时间 \(O(E^2)\) 。</li>
+</ul>
 
 <h3 id="toc_23">二分图</h3>
 
 <ul>
+<li>详见<a href="http://www.360doc.com/content/11/0718/14/3701281_134273282.shtml">《二分图匹配算法总结》</a>。</li>
+<li>再参考<a href="http://www.cnblogs.com/kuangbin/archive/2012/08/26/2657446.html">《二分图最大匹配总结》</a>。</li>
 <li>KM算法</li>
 <li>匈牙利算法</li>
 </ul>
@@ -710,37 +947,29 @@ pre[class*="language-"] {
 
 <h3 id="toc_55">扫描线</h3>
 
-<h2 id="toc_56">搜索相关</h2>
+<h2 id="toc_56">不保证正确性的算法</h2>
 
-<h3 id="toc_57">BFS、DFS</h3>
+<h3 id="toc_57">莫队算法，树上莫队</h3>
 
-<h3 id="toc_58">A*算法</h3>
+<h3 id="toc_58">模拟退火</h3>
 
-<h3 id="toc_59">迭代加深搜索、双向广搜</h3>
+<h3 id="toc_59">爬山算法</h3>
 
-<h2 id="toc_60">不保证正确性的算法</h2>
+<h3 id="toc_60">随机增量法</h3>
 
-<h3 id="toc_61">莫队算法，树上莫队</h3>
+<h2 id="toc_61">其它重要工具与方法</h2>
 
-<h3 id="toc_62">模拟退火</h3>
+<h3 id="toc_62">模拟与贪心</h3>
 
-<h3 id="toc_63">爬山算法</h3>
+<h3 id="toc_63">二分，三分法（求偏导）</h3>
 
-<h3 id="toc_64">随机增量法</h3>
+<h3 id="toc_64">分治，CDQ分治</h3>
 
-<h2 id="toc_65">其它重要工具与方法</h2>
+<h3 id="toc_65">高精度</h3>
 
-<h3 id="toc_66">模拟与贪心</h3>
+<h3 id="toc_66">离线</h3>
 
-<h3 id="toc_67">二分，三分法（求偏导）</h3>
-
-<h3 id="toc_68">分治，CDQ分治</h3>
-
-<h3 id="toc_69">高精度</h3>
-
-<h3 id="toc_70">离线</h3>
-
-<h3 id="toc_71">ST表</h3>
+<h3 id="toc_67">ST表</h3>
 
 <script type="text/javascript">
 var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(?!\*)(\w+)\b/i,t=_self.Prism={util:{encode:function(e){return e instanceof n?new n(e.type,t.util.encode(e.content),e.alias):"Array"===t.util.type(e)?e.map(t.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},clone:function(e){var n=t.util.type(e);switch(n){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=t.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return t.util.clone(e)})}return e}},languages:{extend:function(e,n){var a=t.util.clone(t.languages[e]);for(var r in n)a[r]=n[r];return a},insertBefore:function(e,n,a,r){r=r||t.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==n)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return t.languages.DFS(t.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,n,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(n.call(e,l,e[l],a||l),"Object"!==t.util.type(e[l])||r[e[l]]?"Array"!==t.util.type(e[l])||r[e[l]]||(r[e[l]]=!0,t.languages.DFS(e[l],n,l,r)):(r[e[l]]=!0,t.languages.DFS(e[l],n,null,r)))}},plugins:{},highlightAll:function(e,n){for(var a,r=document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'),l=0;a=r[l++];)t.highlightElement(a,e===!0,n)},highlightElement:function(n,a,r){for(var l,i,o=n;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=t.languages[l]),n.className=n.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=n.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=n.textContent,u={element:n,language:l,grammar:i,code:s};if(!s||!i)return t.hooks.run("complete",u),void 0;if(t.hooks.run("before-highlight",u),a&&_self.Worker){var g=new Worker(t.filename);g.onmessage=function(e){u.highlightedCode=e.data,t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},g.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=t.highlight(u.code,u.grammar,u.language),t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(n),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},highlight:function(e,a,r){var l=t.tokenize(e,a);return n.stringify(t.util.encode(l),r)},tokenize:function(e,n){var a=t.Token,r=[e],l=n.rest;if(l){for(var i in l)n[i]=l[i];delete n.rest}e:for(var i in n)if(n.hasOwnProperty(i)&&n[i]){var o=n[i];o="Array"===t.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],g=u.inside,c=!!u.lookbehind,f=0,h=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var d=r[p];if(r.length>e.length)break e;if(!(d instanceof a)){u.lastIndex=0;var m=u.exec(d);if(m){c&&(f=m[1].length);var y=m.index-1+f,m=m[0].slice(f),v=m.length,k=y+v,b=d.slice(0,y+1),w=d.slice(k+1),P=[p,1];b&&P.push(b);var A=new a(i,g?t.tokenize(m,g):m,h);P.push(A),w&&P.push(w),Array.prototype.splice.apply(r,P)}}}}}return r},hooks:{all:{},add:function(e,n){var a=t.hooks.all;a[e]=a[e]||[],a[e].push(n)},run:function(e,n){var a=t.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(n)}}},n=t.Token=function(e,t,n){this.type=e,this.content=t,this.alias=n};if(n.stringify=function(e,a,r){if("string"==typeof e)return e;if("Array"===t.util.type(e))return e.map(function(t){return n.stringify(t,a,e)}).join("");var l={type:e.type,content:n.stringify(e.content,a,r),tag:"span",classes:["token",e.type],attributes:{},language:a,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===t.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}t.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var n=JSON.parse(e.data),a=n.language,r=n.code,l=n.immediateClose;_self.postMessage(t.highlight(r,t.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var a=document.getElementsByTagName("script");return a=a[a.length-1],a&&(t.filename=a.src,document.addEventListener&&!a.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",t.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
