@@ -2,7 +2,7 @@
 
 <head>
 <meta charset="utf-8">
-<title>index</title>
+<title>Network</title>
 <style type="text/css">
 body {
   font-family: Helvetica, arial, sans-serif;
@@ -443,72 +443,417 @@ pre[class*="language-"] {
 </style>
 </head>
 <body>
-<p><a href="http://s05.flagcounter.com/more/r8F"><img style="float:right" src="http://s05.flagcounter.com/count2/r8F/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_From+2016.2.28/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a></p>
-
-<h1 id="toc_0">IceDream61</h1>
+<h1 id="toc_0">Note of Network</h1>
 
 <blockquote>
-<p>All I wanna say is that they don&#39;t really care about us</p>
-
-<p>When I lost in this society, they will forget me, just like now</p>
-
-<p>English, Finance, Code... I hate them but they are full of my life.</p>
-
-<p>All I wanna say is that they don&#39;t really care about us</p>
+<p>a single technology</p>
 </blockquote>
 
-<h3 id="toc_1">Note</h3>
+<h2 id="toc_1">Chapter 2.</h2>
+
+<h2 id="toc_2">Chapter 1. Introduction</h2>
+
+<h3 id="toc_3">Topic: network core: packet/circuit switching, Internet structure</h3>
+
+<h3 id="toc_4">Topic: network edge: hosts, access net, physical media</h3>
+
+<h3 id="toc_5">Topic: What&#39;s the Internet?</h3>
+
+<h3 id="toc_6">Topic: basic concepts of data transmission</h3>
+
+<ul>
+<li>What happens to a signal as it passes over a wire?
+
+<ul>
+<li>The signal is delayed (propagates at 2⁄3c)</li>
+<li>The signal is attenuated (energy lose)</li>
+<li>The signal is distorted (high frequency lose)</li>
+<li>Noise is added to the signal (causes errors)</li>
+</ul></li>
+<li>Bandwidth 带宽
+
+<ul>
+<li>in <strong>EE</strong>: width of frequency band, measured in <strong>Hz</strong></li>
+<li>in <strong>CS</strong>: information carrying capacity, in <strong>bits/sec</strong></li>
+</ul></li>
+<li>Baud Rate 波特率 and Bit Rate 比特率
+
+<ul>
+<li><strong>Baud Rate</strong>: the number of <strong>samples or symbols</strong> per second sent over the channel</li>
+<li><strong>Bit Rate</strong>: the amount of <strong>information in bits</strong> per second sent over the channel</li>
+<li><strong>bit rate = baud rate x bits/symbol</strong></li>
+<li>The data encoding determines the number of bits/symbol (such as QPSK)</li>
+<li><strong>B is for bytes, and b is for bits</strong></li>
+</ul></li>
+<li>Throughput 吞吐量
+
+<ul>
+<li>rate (bits/sec) at which bits transferred between sender/receiver</li>
+<li><strong>instantaneous</strong>: rate at given point in time</li>
+<li><strong>average</strong>: rate over longer period of time</li>
+</ul></li>
+<li>Switching 交换（机制）
+
+<ul>
+<li>Circuit switching</li>
+<li>Packet switching
+
+<ul>
+<li>Datagram</li>
+<li>Virtual Circuit</li>
+</ul></li>
+</ul></li>
+<li>Queuing, delay 延迟 and loss 丢包 in packet-switched network
+
+<ul>
+<li>packets queue in router buffers when packet arrival rate exceeds output link capacity</li>
+<li>queue (buffer) has finite capacity</li>
+<li>packet arriving to full queue dropped (lost)</li>
+<li>lost packet may be retransmitted by previous node, by source end system, or not at all</li>
+<li>Four sources of packet delay
 
 <ol>
-<li><a href="learn/Network.html">Computer Network</a></li>
-<li><a href="learn/ChezScheme%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0.html">Chez Scheme初步学习</a></li>
-<li><a href="learn/%E5%8F%AF%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">可计算理论 学习笔记</a></li>
-<li><a href="learn/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%9F%E7%90%86%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">数据库原理 学习笔记</a></li>
-<li><a href="learn/OI%E7%9C%81%E9%80%89%E7%AE%97%E6%B3%95%E6%B5%85%E8%B0%88.html">OI省选算法浅谈</a></li>
-</ol>
+<li>processing</li>
+<li>queuing</li>
+<li>transmission</li>
+<li>propagation</li>
+</ol></li>
+<li>eg: Router Nodal Delay
 
-<h3 id="toc_2">Code</h3>
+<ol>
+<li>\(d_{proc}\): typically a few microsecs or less</li>
+<li>\(d_{queue}\): depends on congestion</li>
+<li>\(d_{trans}\): L/R, significant for low-speed links</li>
+<li>\(d_{prop}\): a few microsecs to hundreds of msecs</li>
+</ol></li>
+</ul></li>
+<li>Traceroute 路由跟踪 – a path and delay probe</li>
+</ul>
+
+<p><img src="Network_img2.png" alt="About Traceroute 1"></p>
+
+<p><img src="Network_img3.png" alt="About Traceroute 2"></p>
+
+<ul>
+<li>Performance Definitions
+
+<ul>
+<li>Throughput – Number of bits/time you can sustain at the receiver
+
+<ul>
+<li>Improves with technology</li>
+</ul></li>
+<li>Latency – How long for message to cross network
+
+<ul>
+<li>Propagation + Transmit + Queue</li>
+<li>We are stuck with speed of light...10s of
+milliseconds to cross country</li>
+</ul></li>
+<li>Goodput – application level throughput, the number of useful information bits/time, FileSize/Latency</li>
+<li>Jitter – Variation in latency</li>
+<li><strong>What matters most for your application?</strong>
+
+<ul>
+<li><strong>We’ll look at network applications next lecture</strong></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h3 id="toc_7">Topic: protocol layers, service models</h3>
+
+<ul>
+<li>Key Interfaces
+
+<ul>
+<li><strong>Horizontally</strong>, the interface between the apps and network is the <strong>Socket APIs</strong>.</li>
+<li><strong>Vertically</strong>, the interface between the host and network is the <strong>Network Interface Card</strong>.</li>
+</ul></li>
+<li>Services: Connections or Not
+
+<ul>
+<li>Connection-oriented, the telephone model.
+
+<ul>
+<li><strong>establish</strong> the connection</li>
+<li>do a lot communication</li>
+<li><strong>release</strong> the connection</li>
+</ul></li>
+<li>Connectionless, the postal model.
+
+<ul>
+<li>your data is put into some kind of envelope on which the destination address has been written.</li>
+<li>The envelope +contents is sent to the destination.</li>
+</ul></li>
+</ul></li>
+<li>Services: Reliable or Not</li>
+</ul>
 
 <table>
 <thead>
 <tr>
-<th style="text-align: center">Algorithm \ Language</th>
-<th style="text-align: center">Scheme</th>
-<th style="text-align: center">C</th>
+<th><em>Examples</em></th>
+<th>Connection</th>
+<th>Datagram</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td style="text-align: center">LMS</td>
-<td style="text-align: center"><a href="code/LMS-Scheme.html">code</a></td>
-<td style="text-align: center"></td>
+<td><strong>Reliable</strong></td>
+<td>TCP (www, email)</td>
+<td>Registered mail</td>
 </tr>
 <tr>
-<td style="text-align: center">SPFA</td>
-<td style="text-align: center"><a href="code/SPFA-Scheme.html">code</a></td>
-<td style="text-align: center"></td>
-</tr>
-<tr>
-<td style="text-align: center">QSort</td>
-<td style="text-align: center"></td>
-<td style="text-align: center"><a href="code/QSort-C.html">code</a></td>
+<td><strong>Unreliable</strong></td>
+<td>Voice over IP</td>
+<td>IP, UDP (DNS)</td>
 </tr>
 </tbody>
 </table>
 
-<h3 id="toc_3">Style</h3>
+<ul>
+<li>The ISO OSI 7-layer Reference Model</li>
+</ul>
 
-<ol>
-<li><a href="style/%E8%BD%AF%E4%BB%B6%E5%AE%A1%E7%BE%8E%E9%A3%8E%E6%A0%BC.html">软件</a></li>
-<li><a href="style/%E6%96%87%E5%AD%97%E5%AE%A1%E7%BE%8E%E9%A3%8E%E6%A0%BC.html">文字</a></li>
-</ol>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Translate</th>
+<th>Exchange Unit</th>
+<th>Comment</th>
+</tr>
+</thead>
 
-<h3 id="toc_4">Article</h3>
+<tbody>
+<tr>
+<td>Application</td>
+<td>应用层</td>
+<td>APDU</td>
+<td>protocols and applications needed by users</td>
+</tr>
+<tr>
+<td>Presentation</td>
+<td>表示层</td>
+<td>PPDU</td>
+<td>data exchanged in a platform-independent way</td>
+</tr>
+<tr>
+<td>Session</td>
+<td>会话层</td>
+<td>SPDU</td>
+<td>session set up and management</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>传输层</td>
+<td>TPDU</td>
+<td>provide end-to-end reliable transfer</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>网络层</td>
+<td>Packet</td>
+<td>routing and interconnect heterogeneous networks</td>
+</tr>
+<tr>
+<td>Data Link</td>
+<td>数据链路层</td>
+<td>Frame</td>
+<td>data transfer between neighbor nodes , Media Access Control</td>
+</tr>
+<tr>
+<td>Physical</td>
+<td>物理层</td>
+<td>Bit</td>
+<td>raw bits &quot;on the wire&quot;</td>
+</tr>
+</tbody>
+</table>
 
-<ol>
-<li><a href="article/%E7%9F%AD%E7%AF%87%E6%96%87%E5%AD%97.html">短篇文字</a></li>
-</ol>
+<ul>
+<li>The TCP/IP 4-layer Reference Model</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Translate</th>
+<th>Mapping at OSI 7-layer</th>
+<th>Comment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Application</td>
+<td>应用层</td>
+<td>Application, Presentation</td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>传输层</td>
+<td>Session, Transport</td>
+<td>TCP</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>网络层</td>
+<td>Network</td>
+<td>IP</td>
+</tr>
+<tr>
+<td>Link</td>
+<td>连接层</td>
+<td>Link, Physical</td>
+<td>802.11 / Ethernet</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>&quot;Hourglass&quot; philosophy of Internet</li>
+</ul>
+
+<p><img src="Network_img1.png" alt="IP bridges different applications over different networks"></p>
+
+<ul>
+<li><p>How to understand this sentence &quot;TCP/IP Model is practically nonexistent&quot; ?</p>
+
+<blockquote>
+<p>DYZ&#39;s opinion:</p>
+
+<p>OSI is a piece of shit made by the professors in college. OSI has three no-use layers which do not appear in TCP/IP model. There is no professor think up TCP/IP so &quot;TCP/IP Model is practically nonexistent&quot; is written on the PPT.</p>
+</blockquote></li>
+<li><p>The Hybrid Model Used in this Course</p></li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Translate</th>
+<th>Unit Name</th>
+<th>Key Works</th>
+<th>Comment</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Application</td>
+<td>应用层</td>
+<td>Message</td>
+<td>HTTP, FTP, SMTP</td>
+<td>programs using network services</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>传输层</td>
+<td>Segment</td>
+<td>TCP, UDP</td>
+<td>end-end reliable data transfer</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>网络层</td>
+<td>Datagram / Packet</td>
+<td>IP</td>
+<td>send packets over multiple networks</td>
+</tr>
+<tr>
+<td>Link</td>
+<td>连接层</td>
+<td>Frame</td>
+<td>Ethernet, WiFi, PPP, MAC</td>
+<td>data transfer between neighboring network nodes</td>
+</tr>
+<tr>
+<td>Physical</td>
+<td>物理层</td>
+<td>Bit</td>
+<td>Twisted Pair, Fiber Optics, Wireless</td>
+<td>send bits as signals &quot;on the wire&quot;</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><p>Protocol Walkthrough</p>
+
+<ul>
+<li>terminal (source / destination): Application, Transport, Network, Link, Physical</li>
+<li>switch: Link, Physical</li>
+<li>router: Network, Link, Physical</li>
+</ul></li>
+<li><p>Seeing protocols in action with <strong>WireShark</strong> – a packet sniffer</p>
+
+<ul>
+<li>go to <a href="http://www.wireshark.org/download.html">download</a> and try it</li>
+</ul></li>
+</ul>
+
+<h3 id="toc_8">Topic: What&#39;s Computer Network?</h3>
+
+<ul>
+<li>Classification
+
+<ul>
+<li>Broadcast network 广播网络</li>
+<li>Point-to-point network 点对点网络</li>
+</ul></li>
+<li>Internetwork 互联网络 / 网际
+
+<ul>
+<li>homogeneous 同种类的</li>
+<li>interconnecting 互联</li>
+<li>heterogeneous 各种各样的</li>
+<li>LAN 局域网 \(\rightarrow\) WAN 广域网 \(\rightarrow\) Internet 因特网 / 互联网</li>
+</ul></li>
+<li>Component
+
+<ul>
+<li>Hardware
+
+<ul>
+<li>Network Interface Cards 网络接口卡 / Network Adapter 网络适配器 (Network Interface Adapter 网络接口适配器)</li>
+<li>Repeaters 中继器</li>
+<li>(Network )Bridges 网桥</li>
+<li>Switches 交换机</li>
+<li>Routers 路由器</li>
+<li>Firewalls 防火墙</li>
+</ul></li>
+<li>Software
+
+<ul>
+<li>Protocols 协议</li>
+<li>Services 服务</li>
+<li>Interfaces 接口</li>
+</ul></li>
+</ul></li>
+<li>Internet As an Example
+
+<ul>
+<li>Communication links
+
+<ul>
+<li>fiber 光纤</li>
+<li>copper 铜</li>
+<li>radio 无线电</li>
+<li>satellite 卫星</li>
+</ul></li>
+<li>Routers
+
+<ul>
+<li>forward packets 传输数据包</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p><img src="Network_img4.png" alt="Internet As an Example"></p>
 
 <script type="text/javascript">
 var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(?!\*)(\w+)\b/i,t=_self.Prism={util:{encode:function(e){return e instanceof n?new n(e.type,t.util.encode(e.content),e.alias):"Array"===t.util.type(e)?e.map(t.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},clone:function(e){var n=t.util.type(e);switch(n){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=t.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return t.util.clone(e)})}return e}},languages:{extend:function(e,n){var a=t.util.clone(t.languages[e]);for(var r in n)a[r]=n[r];return a},insertBefore:function(e,n,a,r){r=r||t.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==n)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return t.languages.DFS(t.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,n,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(n.call(e,l,e[l],a||l),"Object"!==t.util.type(e[l])||r[e[l]]?"Array"!==t.util.type(e[l])||r[e[l]]||(r[e[l]]=!0,t.languages.DFS(e[l],n,l,r)):(r[e[l]]=!0,t.languages.DFS(e[l],n,null,r)))}},plugins:{},highlightAll:function(e,n){for(var a,r=document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'),l=0;a=r[l++];)t.highlightElement(a,e===!0,n)},highlightElement:function(n,a,r){for(var l,i,o=n;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=t.languages[l]),n.className=n.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=n.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=n.textContent,u={element:n,language:l,grammar:i,code:s};if(!s||!i)return t.hooks.run("complete",u),void 0;if(t.hooks.run("before-highlight",u),a&&_self.Worker){var g=new Worker(t.filename);g.onmessage=function(e){u.highlightedCode=e.data,t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},g.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=t.highlight(u.code,u.grammar,u.language),t.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(n),t.hooks.run("after-highlight",u),t.hooks.run("complete",u)},highlight:function(e,a,r){var l=t.tokenize(e,a);return n.stringify(t.util.encode(l),r)},tokenize:function(e,n){var a=t.Token,r=[e],l=n.rest;if(l){for(var i in l)n[i]=l[i];delete n.rest}e:for(var i in n)if(n.hasOwnProperty(i)&&n[i]){var o=n[i];o="Array"===t.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],g=u.inside,c=!!u.lookbehind,f=0,h=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var d=r[p];if(r.length>e.length)break e;if(!(d instanceof a)){u.lastIndex=0;var m=u.exec(d);if(m){c&&(f=m[1].length);var y=m.index-1+f,m=m[0].slice(f),v=m.length,k=y+v,b=d.slice(0,y+1),w=d.slice(k+1),P=[p,1];b&&P.push(b);var A=new a(i,g?t.tokenize(m,g):m,h);P.push(A),w&&P.push(w),Array.prototype.splice.apply(r,P)}}}}}return r},hooks:{all:{},add:function(e,n){var a=t.hooks.all;a[e]=a[e]||[],a[e].push(n)},run:function(e,n){var a=t.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(n)}}},n=t.Token=function(e,t,n){this.type=e,this.content=t,this.alias=n};if(n.stringify=function(e,a,r){if("string"==typeof e)return e;if("Array"===t.util.type(e))return e.map(function(t){return n.stringify(t,a,e)}).join("");var l={type:e.type,content:n.stringify(e.content,a,r),tag:"span",classes:["token",e.type],attributes:{},language:a,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===t.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}t.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var n=JSON.parse(e.data),a=n.language,r=n.code,l=n.immediateClose;_self.postMessage(t.highlight(r,t.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var a=document.getElementsByTagName("script");return a=a[a.length-1],a&&(t.filename=a.src,document.addEventListener&&!a.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",t.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
