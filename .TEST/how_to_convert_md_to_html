@@ -1,0 +1,1 @@
+python -m markdown -x markdown.extensions.tables try.md > try_python.html
