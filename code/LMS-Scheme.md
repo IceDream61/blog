@@ -1,0 +1,60 @@
+# Algorithm: LMS
+# Language: Scheme
+
+``` scheme
+(define (look name var)
+  (display (string-append name ": ")) (write var) (newline))
+
+(define (add a b)
+  (map + a b))
+(define (mul a b)
+  ;(look "a" a)
+  ;(look "b" b)
+  (apply + (map * a b)))
+(define (mul-x x a)
+  ;(look "x" x)
+  ;(look "a" a)
+  (map * (make-list (length a) x) a))
+(define (pct-test pct p)
+  (let* ((w (car pct))
+	 (b (cadr pct))
+	 (a (+ (mul w p) b)))
+    (if (>= a 0) 1 0)))
+(define (pct-learn-once pct data)
+  (let* ((w (car pct))          ;(look "w" w)
+	 (b (cadr pct))         ;(look "b" b)
+	 (alpha (caddr pct))
+	 (p (car data))         ;(look "p" p)
+	 (t (cadr data))        ;(look "t" t)
+	 (a (+ (mul w p) b))    ;(look "a" a)
+	 (e (- t a))            ;(look "e" e)
+	 (new-w (add w (mul-x (* 2 alpha e) p)))
+	 (new-b (+ b (* 2 alpha e))))
+    (list new-w new-b alpha)))
+	
+(define (pct-learn pct time)
+  (let* ((pct1 (pct-learn-once pct (list (list 1 -1) 1)))
+	 (pct2 (pct-learn-once pct1 (list (list -1 -1) 1)))
+	 (pct3 (pct-learn-once pct2 (list (list 0 0) 0)))
+	 (pct4 (pct-learn-once pct3 (list (list 1 0) 0)))
+	 )
+    (display (- 5001 time)) (display ".\tW: ") (display (car pct4)) (display " b: ") (display (cadr pct4)) (newline)
+    (if (= time 1)
+	pct4
+	(pct-learn pct4 (- time 1)))))
+
+;(define pct (list (list 0.3 -0.7) 0.5 0.01))
+(define pct (list (list 0.3 -0.7) 0.5 0.1))
+;(define pct (list (list 0.3 -0.7) 0.5 0.5))
+(define time 5000)
+
+(transcript-on "transcript.txt")
+(set! pct (pct-learn pct time)) (look "pct" pct)
+(display (pct-test pct (list -2 0))) (newline)
+(display (pct-test pct (list 1 1))) (newline)
+(display (pct-test pct (list 0 1))) (newline)
+(display (pct-test pct (list -1 -2))) (newline)
+(transcript-off)
+
+(exit)
+```
