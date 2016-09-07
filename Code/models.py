@@ -13,6 +13,8 @@ class Article(object):
 
     属性：
         Title: 文章标题。
+        Content: 文章内容，html格式。
+        Model: 文章模版，html＋自定义模版格式。
     """
 
     def __init__(self, title='无题'):
