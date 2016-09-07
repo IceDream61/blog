@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""将我自定义的write格式转换到html格式。
+"""将我自定义的article格式转换到html格式。
 """
 
 
