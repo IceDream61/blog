@@ -29,11 +29,14 @@ def makeNormal():
     if not os.path.exists('../Website'):
         os.mkdir('../Website')
     articles = []
-    for article in os.listdir(Path["Localsite"]):
+    for article in os.listdir(os.path.join(Path["Localsite"], 'Articles')):
+        if article.startswith('.'):
+            continue
         name, ext = os.path.splitext(article) # 形如："联系我们", ".article"
         if ext == '.article':
             articles.append(name)
-    articles.remove('index')
+    if 'index' in articles:
+        articles.remove('index')
     print 'get articles: %s' % articles # 形如：["index", "联系我们"]
     for article in articles:
         convert(article)
@@ -46,7 +49,15 @@ def makeAlgorithm():
         os.mkdir('../Website')
     if not os.path.exists('../Website/Algorithm'):
         os.mkdir('../Website/Algorithm')
-    pass
+    articles = []
+    for article in os.listdir(os.path.join(Path["Localsite"], 'Algorithm')):
+        if article.startswith('.'):
+            continue
+        name, ext = os.path.splitext(article)
+        if ext == '.article':
+            articles.append(name)
+    for article in articles:
+        convert(article)
 
 
 def make():

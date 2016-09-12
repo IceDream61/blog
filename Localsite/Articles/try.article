@@ -1,0 +1,14 @@
+{
+"Title": "try",
+"Model": "algorithm.model"
+}
+------> DD: Content
+
+# Happy in coding~
+
+做自己喜欢的事情，真好！
+
+------> DD: Code
+
+#include <iostream>
+using namespace std;
