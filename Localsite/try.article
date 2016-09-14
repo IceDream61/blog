@@ -8,7 +8,8 @@
 
 做自己喜欢的事情，真好！
 
+[hi](http://www.baidu.com)
+
 ------> DD: Code
 
-#include <iostream>
-using namespace std;
+```../../Algorithms/快速排序/code.cpp```

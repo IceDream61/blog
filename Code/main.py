@@ -6,7 +6,7 @@
 import os
 import sys
 import time
-from convert import convert
+from convert import article_html
 
 
 # 或许没啥用
@@ -20,7 +20,7 @@ Path = {"Root": "..",
 def makeIndex():
     """生成站点主页。
     """
-    convert('index', Path["Root"])
+    article_html('index', Path["Root"])
 
 
 def makeNormal():
@@ -29,7 +29,7 @@ def makeNormal():
     if not os.path.exists('../Website'):
         os.mkdir('../Website')
     articles = []
-    for article in os.listdir(os.path.join(Path["Localsite"], 'Articles')):
+    for article in os.listdir(Path["Localsite"]):
         if article.startswith('.'):
             continue
         name, ext = os.path.splitext(article) # 形如："联系我们", ".article"
@@ -39,7 +39,7 @@ def makeNormal():
         articles.remove('index')
     print 'get articles: %s' % articles # 形如：["index", "联系我们"]
     for article in articles:
-        convert(article)
+        article_html(article)
 
 
 def makeAlgorithm():
@@ -57,7 +57,7 @@ def makeAlgorithm():
         if ext == '.article':
             articles.append(name)
     for article in articles:
-        convert(article)
+        article_html(article)
 
 
 def make():

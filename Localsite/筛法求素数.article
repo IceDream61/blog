@@ -1,0 +1,8 @@
+{
+"Title": "筛法求素数",
+"Model": "algorithm.model"
+}
+------> DD: Content
+# 筛法求素数
+------> DD: Code
+```../../Algorithms/筛法求素数/code.cpp```

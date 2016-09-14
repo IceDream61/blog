@@ -5,5 +5,5 @@
 ------> DD: Content
 # tencent 2017
 ------> DD: Code
-#include &lt;iostream&gt;
+#include <iostream>
 using namespace std;
