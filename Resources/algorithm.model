@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>{{Title}}</title>
+<link rel="stylesheet" href="../Resources/GitHub2.css">
+<link rel="stylesheet" href="../Resources/prism.css">
+</head>
+
+<body>
+
+{{Content}}
+
+<pre>
+<code class="language-cpp">
+{{Code}}
+</code>
+</pre>
+
+<script type="text/javascript" src="../Resources/mathjax.js"></script>
+<script type="text/x-mathjax-config">
+if (typeof MathJaxListener !== 'undefined') {
+  MathJax.Hub.Register.StartupHook('End', function () {
+    MathJaxListener.invokeCallbackForKey_('End');
+  });
+}
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="../Resources/prism.js"></script>
+</body>
+
+</html>

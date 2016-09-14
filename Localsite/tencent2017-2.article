@@ -1,0 +1,9 @@
+{
+"Title": "腾讯2017校招笔试第一道编程题",
+"Model": "algorithm.model"
+}
+------> DD: Content
+# tencent 2017
+------> DD: Code
+#include <iostream>
+using namespace std;

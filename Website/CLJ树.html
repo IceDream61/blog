@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>CLJ树</title>
+<link rel="stylesheet" href="../Resources/GitHub2.css">
+<link rel="stylesheet" href="../Resources/prism.css">
+</head>
+
+<body>
+
+<h1>CLJ树</h1>
+
+<pre>
+<code class="language-cpp">
+#include&#160;&#60;iostream&#62;
+using&#160;namespace&#160;std;
+
+struct&#160;node&#160;{
+&#160;&#160;&#160;&#160;int&#160;value;
+&#160;&#160;&#160;&#160;node*&#160;up;
+&#160;&#160;&#160;&#160;node*&#160;son[2];&#160;//&#160;son[0]是左孩子,&#160;son[1]是右孩子
+&#160;&#160;&#160;&#160;node()&#160;{
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;son[0]&#160;=&#160;son[1]&#160;=&#160;NULL;
+&#160;&#160;&#160;&#160;}
+&#160;&#160;&#160;&#160;void&#160;born(bool&#160;k)&#160;{&#160;//&#160;生一个孩子结点
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;this-&#62;son[k]&#160;=&#160;new&#160;node();
+&#160;&#160;&#160;&#160;}
+&#160;&#160;&#160;&#160;bool&#160;check()&#160;{&#160;//&#160;检查自己是父亲的左孩子还是右孩子
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;return&#160;this-&#62;up-&#62;son[1]==this;
+&#160;&#160;&#160;&#160;}
+};
+
+
+</code>
+</pre>
+
+<script type="text/javascript" src="../Resources/mathjax.js"></script>
+<script type="text/x-mathjax-config">
+if (typeof MathJaxListener !== 'undefined') {
+  MathJax.Hub.Register.StartupHook('End', function () {
+    MathJaxListener.invokeCallbackForKey_('End');
+  });
+}
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="../Resources/prism.js"></script>
+</body>
+
+</html>
