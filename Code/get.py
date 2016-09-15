@@ -36,6 +36,7 @@ def main():
             u'并查集': u'../../Algorithms/并查集/code.c',
             u'快速排序': u'../../Algorithms/快速排序/code.cpp',
             u'筛法求素数': u'../../Algorithms/筛法求素数/code.cpp',
+            u'Floyd': u'../../Algorithms/Floyd/code.cpp',
             }
     for name in Algorithms:
         get(name, Algorithms[name])
