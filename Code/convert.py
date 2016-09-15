@@ -58,17 +58,7 @@ def cpp_html(content):
 def markdown_html(content):
     """把一段markdown转换成html
     """
-    with codecs.open('tmp.md', 'w', 'utf-8') as fout:
-        # Debug(content)
-        fout.write(content)
-    os.system('python -m markdown -x markdown.extensions.tables tmp.md > tmp.html')
-    with codecs.open('tmp.html', 'r', 'utf-8') as fin:
-        t = fin.read()
-        # Debug(t)
-        html = t
-    os.remove('tmp.md')
-    os.remove('tmp.html')
-    return html
+    return markdown.markdown(content, extensions=['markdown.extensions.tables'])
 
 
 def article_html(article, outputPath = Path["Website"]):
