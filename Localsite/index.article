@@ -9,9 +9,11 @@
 
 [语法试验页](Website/try.html)
 
-- [并查集](Website/并查集.html)
-- [CLJ树](Website/CLJ树.html)
 - [快速排序](Website/快速排序.html)
-- [01背包](Website/01背包.html)
 - [筛法求素数](Website/筛法求素数.html)
+- [01背包](Website/01背包.html)
+- [并查集](Website/并查集.html)
+- [Floyd](Website/Floyd.html)
+- [KMP](Website/KMP.html)
+- [CLJ树](Website/CLJ树.html)
 

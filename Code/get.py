@@ -26,6 +26,8 @@ def indexList(Algorithms):
     article = u''
     for name in Algorithms:
         article += u'- [%s](Website/%s.html)\n' % (name, name)
+    # print 'Algorithms: \n%s' % Algorithms
+    # print 'article: \n%s' % article
     return article
 
 
@@ -37,12 +39,17 @@ def main():
             u'快速排序': u'../../Algorithms/快速排序/code.cpp',
             u'筛法求素数': u'../../Algorithms/筛法求素数/code.cpp',
             u'Floyd': u'../../Algorithms/Floyd/code.cpp',
+            u'KMP': u'../../Algorithms/KMP/code.cpp',
             }
     for name in Algorithms:
         get(name, Algorithms[name])
-    with codecs.open('../Localsite/index.article', 'r', 'utf-8') as fin:
+    with codecs.open('../Localsite/index.articleGet', 'r', 'utf-8') as fin:
         index = fin.read()
-    newIndex = index.replace(u'{{Algorithms}}', indexList(Algorithms))
+    il = indexList(Algorithms)
+    newIndex = index.replace(u'{{Algorithms}}', il)
+    print 'il:'
+    print il
+    print 'newIndex:'
     print newIndex
     with codecs.open('../Localsite/index.article', 'w', 'utf-8') as fout:
         fout.write(newIndex)

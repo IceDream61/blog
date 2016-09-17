@@ -1,0 +1,8 @@
+{
+"Title": "KMP",
+"Model": "algorithm.model"
+}
+------> DD: Content
+# KMP
+------> DD: Code
+```../../Algorithms/KMP/code.cpp```
