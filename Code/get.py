@@ -22,12 +22,26 @@ def get(name, path):
     print 'Already get %s from "%s"' % (name, path)
 
 
-def indexList(Algorithms):
+def make(name, path):
+    article = u"""{
+"Title": "-.-",
+"Model": "normal.model"
+}
+------> DD: Content
+|||
+"""
+    with codecs.open(path, 'r', 'utf-8') as fin:
+        article = article.replace(u'|||', fin.read())
+    article = article.replace(u'-.-', name)
+    with codecs.open('../Localsite/%s' % (name+'.article'), 'w', 'utf-8') as fout:
+        fout.write(article)
+    print 'Already make %s from "%s"' % (name, path)
+
+
+def indexList(items):
     article = u''
-    for name in Algorithms:
+    for name in items:
         article += u'- [%s](Website/%s.html)\n' % (name, name)
-    # print 'Algorithms: \n%s' % Algorithms
-    # print 'article: \n%s' % article
     return article
 
 
@@ -41,14 +55,23 @@ def main():
             u'Floyd': u'../../Algorithms/Floyd/code.cpp',
             u'KMP': u'../../Algorithms/KMP/code.cpp',
             }
+    Mds = {
+            u'论考试的心态': u'../Localsite/论考试的心态.md',
+            }
     for name in Algorithms:
         get(name, Algorithms[name])
+    for name in Mds:
+        make(name, Mds[name])
     with codecs.open('../Localsite/index.articleGet', 'r', 'utf-8') as fin:
         index = fin.read()
     il = indexList(Algorithms)
+    ml = indexList(Mds)
     newIndex = index.replace(u'{{Algorithms}}', il)
+    newIndex = newIndex.replace(u'{{Mds}}', ml)
     print 'il:'
     print il
+    print 'ml:'
+    print ml
     print 'newIndex:'
     print newIndex
     with codecs.open('../Localsite/index.article', 'w', 'utf-8') as fout:
