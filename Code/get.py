@@ -57,6 +57,7 @@ def main():
             }
     Mds = {
             u'论考试的心态': u'../Localsite/论考试的心态.md',
+            u'论中文作为象形文字的优势': u'../Localsite/论中文作为象形文字的优势.md',
             }
     for name in Algorithms:
         get(name, Algorithms[name])
