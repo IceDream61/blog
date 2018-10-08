@@ -1,8 +1,0 @@
-{
-"Title": "快速排序",
-"Model": "algorithm.model"
-}
-------> DD: Content
-# 快速排序
-------> DD: Code
-```../../Algorithms/快速排序/code.cpp```

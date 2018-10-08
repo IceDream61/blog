@@ -1,8 +1,0 @@
-{
-"Title": "并查集",
-"Model": "algorithm.model"
-}
-------> DD: Content
-# 并查集
-------> DD: Code
-```../../Algorithms/并查集/code.c```
