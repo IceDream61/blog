@@ -11,6 +11,7 @@ tags: []
 #+END_HTML
 
 * 炸弹人攻略
+bong！
 
 
 #+BEGIN_HTML
