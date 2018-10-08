@@ -1,0 +1,23 @@
+#+BEGIN_HTML
+---
+layout: post
+title: 炸弹人攻略
+excerpt:
+keywords: ""
+categories:
+tags: []
+---
+{% include JB/setup %}
+#+END_HTML
+
+* 炸弹人攻略
+
+
+#+BEGIN_HTML
+<!-- more-forword -->
+#+END_HTML
+
+
+#+BEGIN_HTML
+<!-- more -->
+#+END_HTML
