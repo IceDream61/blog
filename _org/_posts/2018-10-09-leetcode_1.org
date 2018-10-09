@@ -1,0 +1,43 @@
+#+BEGIN_HTML
+---
+layout: post
+title: LeetCode 1 两数之和
+excerpt: 
+keywords: ""
+categories: 
+tags: []
+---
+#+END_HTML
+
+* LeetCode 1 两数之和
+
+** 题目分析
+   暴力尝试即可。
+
+** Java代码
+#+BEGIN_SRC java -n -t -h 7 -w 40
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] result = {0, 0};
+        for(int i=0; i<nums.length; i++) {
+            for(int j=i+1; j<nums.length; j++) {
+                if(nums[i] + nums[j] == target) {
+                    result[0] = i;
+                    result[1] = j;
+                    return result;
+                }
+            }
+        }
+    }
+}
+#+END_SRC
+
+
+#+BEGIN_HTML
+<!-- more-forword -->
+#+END_HTML
+
+
+#+BEGIN_HTML
+<!-- more -->
+#+END_HTML
