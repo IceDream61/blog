@@ -1,0 +1,63 @@
+---
+layout: post
+title: LeetCode 2 两数相加
+excerpt: 
+keywords: ""
+categories: 
+tags: []
+---
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> LeetCode 2 两数相加</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 题目分析</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+高精度加法，链表实现，基础题目。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Java代码</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+
+<pre class="src src-java">class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+	ListNode result = new ListNode(0);
+	ListNode now = result;
+	ListNode pre = null;
+	while(l1 != null || l2 != null) {
+	    if(l1 != null) {
+		now.val += l1.val;
+		l1 = l1.next;
+	    }
+	    if(l2 != null) {
+		now.val += l2.val;
+		l2 = l2.next;
+	    }
+	    now.next = new ListNode(now.val/10);
+	    now.val %= 10;
+	    pre = now;
+	    now = now.next;
+	}
+	if(now.val == 0) {
+	    pre.next = null;
+	}
+	return result;
+    }
+}
+</pre>
+</div>
+
+
+
+<!-- more-forword -->
+
+
+<!-- more -->
+</div>
+</div>
+</div>
