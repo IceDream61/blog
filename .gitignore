@@ -1,2 +1,7 @@
 _site/
 .sass-cache/
+*~
+*.swp
+*.swo
+\#*\#
+.\#*

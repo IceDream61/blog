@@ -2,10 +2,6 @@
 ---
 layout: post
 title: LeetCode 1 两数之和
-excerpt: 
-keywords: ""
-categories: 
-tags: []
 ---
 #+END_HTML
 
@@ -15,7 +11,7 @@ tags: []
    暴力尝试即可。
 
 ** Java代码
-#+BEGIN_SRC java -n -t -h 7 -w 40
+#+BEGIN_SRC java
 class Solution {
     public int[] twoSum(int[] nums, int target) {
         int[] result = {0, 0};
@@ -24,7 +20,7 @@ class Solution {
                 if(nums[i] + nums[j] == target) {
                     result[0] = i;
                     result[1] = j;
-                    return result;
+                    return result;  // comment for test2
                 }
             }
         }

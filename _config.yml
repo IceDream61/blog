@@ -29,9 +29,14 @@ github_username:  IceDream61
 
 # Build settings
 markdown: kramdown
-theme: minima
+kramdown:
+    input: GFM
+    syntax_highlighter: rouge
+highlighter: rouge
+#theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
