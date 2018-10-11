@@ -1,0 +1,64 @@
+---
+layout: post
+title: LeetCode 6 Z字形变换
+excerpt: 
+keywords: ""
+categories: 
+tags: []
+---
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> LeetCode 6 Z字形变换</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 题目分析</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+计算一下对应字符的位置即可，注意numRows为1的边界情况。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Java代码</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+
+<pre class="src src-java">class Solution {
+    public String convert(String s, int numRows) {
+	if(numRows == 1) return s;
+
+	char[] result = new char[s.length()];
+	int tail = 0;
+	for(int begin=0; begin&lt;numRows; begin++) {
+	    if(begin &gt;= s.length()) break;
+	    if(begin == 0 || begin == numRows-1) {
+		for(int i=begin; i&lt;s.length(); i+=2*(numRows-1))
+		    result[tail++] = s.charAt(i);
+	    } else {
+		for(int i=begin; i&lt;s.length(); i+=2*(numRows-1)) {
+		    result[tail++] = s.charAt(i);
+		    int j = i + 2*(numRows-1-begin);
+		    if(j &gt;= s.length())
+			break;
+		    else
+			result[tail++] = s.charAt(j);
+		}
+	    }
+	}
+	String realResult = new String(result);
+	return realResult;
+    }
+}
+</pre>
+</div>
+
+
+
+<!-- more-forword -->
+
+
+<!-- more -->
+</div>
+</div>
+</div>

@@ -1,0 +1,48 @@
+#+BEGIN_HTML
+---
+layout: post
+title: LeetCode 5 最长回文子串
+excerpt: 
+keywords: ""
+categories: 
+tags: []
+---
+#+END_HTML
+
+* LeetCode 5 最长回文子串
+
+** 题目分析
+   数据很小，时间上允许暴力，所以直接数过来就好了。
+
+** Java代码
+#+BEGIN_SRC java
+class Solution {
+    public String longestPalindrome(String s) {
+        String result = "";
+        for(int i=0; i<s.length(); i++) {
+            for(int j=0; i-j>=0 && i+j<s.length(); j++)
+                if(s.charAt(i-j) != s.charAt(i+j))
+                    break;
+                else if(1+2*j > result.length())
+                    result = s.substring(i-j, i+j+1);
+            for(int j=0; i-j>=0 && i+1+j<s.length(); j++)
+                if(s.charAt(i-j) != s.charAt(i+1+j))
+                    break;
+                else if(2+2*j > result.length())
+                    result = s.substring(i-j, i+1+j+1);
+        }
+        return result;
+    }
+}
+#+END_SRC
+
+
+
+#+BEGIN_HTML
+<!-- more-forword -->
+#+END_HTML
+
+
+#+BEGIN_HTML
+<!-- more -->
+#+END_HTML
