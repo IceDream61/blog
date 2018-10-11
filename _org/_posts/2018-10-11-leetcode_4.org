@@ -1,0 +1,87 @@
+#+BEGIN_HTML
+---
+layout: post
+title: LeetCode 4 两个排序数组的中位数
+excerpt: 
+keywords: ""
+categories: 
+tags: []
+---
+#+END_HTML
+
+* LeetCode 4 两个排序数组的中位数
+
+** 题目分析
+   这题数据不咋地。
+   我这段代码的复杂度其实是O((m+n)/2)，但是直接就通过了，而且时间上战胜的代码数量从13%波动到89%。
+   可见，LeetCode数据的质量非常低，甚至无法分辨算法的复杂度=。=
+
+   把twoCondition中主循环改成二分，便可以达到O(log(m)+log(n))。
+   因为log(m)+log(n)<2log(m+n)，所以这样一来算法的复杂度就是O(log(m+n))。
+
+** Java代码
+#+BEGIN_SRC java
+class Solution {
+    double getResult(int[] nums1, int[] nums2, int i, int j) {
+        double result = nums1[i];
+        if((nums1.length + nums2.length) % 2==0) {
+            int another = 0;
+            boolean hasAnother = false;
+            if(0<=i+1 && i+1<nums1.length) {
+                another = nums1[i+1];
+                hasAnother = true;
+            }
+            if(0<=j && j<nums2.length) {
+                if(!hasAnother) {
+                    another = nums2[j];
+                    hasAnother = true;
+                } else if(nums2[j] < another){
+                    another = nums2[j];
+                }
+            }
+            if(hasAnother) result = (result + another) / 2;
+        }
+        return result;
+    }
+    double[] twoCondition(int[] nums1, int[] nums2) {
+        int site = (nums1.length + nums2.length - 1) / 2;
+        int begin = site - nums2.length, end = site;
+        if(begin<0) begin = 0;
+        if(end>nums1.length-1) end = nums1.length - 1;
+        double[] result = {0, 0};
+        for(int i=begin; i<=end; i++) {
+            int j = site - i;
+            if(j<0) j = 0;
+            if(j>nums2.length) j = nums2.length;
+            boolean rightHere = true;
+            if(0<=j-1 && j-1<nums2.length) rightHere &= nums2[j-1] <= nums1[i];
+            if(0<=j && j<nums2.length) rightHere &= nums1[i] <= nums2[j];
+            if(rightHere) {
+                result[0] = 1;
+                result[1] = getResult(nums1, nums2, i, j);
+                return result;
+            }
+        }
+        return result;
+    }
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        double[] result;
+        result = twoCondition(nums1, nums2);
+        if(result[0] == 1) return result[1];
+        result = twoCondition(nums2, nums1);
+        if(result[0] == 1) return result[1];
+        return 0;
+    }
+}
+#+END_SRC
+
+
+
+#+BEGIN_HTML
+<!-- more-forword -->
+#+END_HTML
+
+
+#+BEGIN_HTML
+<!-- more -->
+#+END_HTML
