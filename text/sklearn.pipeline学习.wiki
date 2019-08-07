@@ -1,8 +1,10 @@
 = sklearn.pipeline学习 =
-- [[草稿]]
 - 进度：376/950
+- 进度：456/950
+- 前半部分函数看过，基本明白含义和写法
+- 暂时告一段落，后面需要再找时间深入看
 
-== Pipeline类口述 ==
+== Pipeline类前半部分函数口述 ==
 - 通过steps构造，可选设定memory和verbose。构造逻辑：
     - 记录steps、memory、verbose参数
     - 执行`self._validate_steps()`验证逻辑：
@@ -40,13 +42,18 @@
     2. 调用estimator.fit，同时打印log（TODO：这个fit有什么意义）
     3. 返回self
 - fit_transform函数
-    1. fit
-    2. if estimator then transform
+    1. 依次fit，最后fit_transform
+- predict函数
+    1. 依次transform，最后predict
+    2. TODO 带`if_delegate_has_method`修饰器
+- fit_predict函数
+    1. _fit
+    2. estimator.fit_predict
 - 不好猜含义的相关函数
     1. `check_memory`: 检查memory相关目录等是否有效
     2. `memory.caceh`: TODO 未深究
     3. `_print_elapsed_time`: 对打印的log配上时间信息
-    4. `@if_delegate_has_method`: 
+    4. `@if_delegate_has_method(delegate='_final_estimator')`: TODO 对_final_estimator是否有同名函数进行验证
 
 = 附录 =
 

@@ -15,14 +15,20 @@
 <div id="sklearn.pipeline学习"><h1 id="sklearn.pipeline学习" class="header"><a href="#sklearn.pipeline学习">sklearn.pipeline学习</a></h1></div>
 <ul>
 <li>
-<a href="草稿.html">草稿</a>
+进度：376/950
 
 <li>
-进度：376/950
+进度：456/950
+
+<li>
+前半部分函数看过，基本明白含义和写法
+
+<li>
+暂时告一段落，后面需要再找时间深入看
 
 </ul>
 
-<div id="sklearn.pipeline学习-Pipeline类口述"><h2 id="Pipeline类口述" class="header"><a href="#sklearn.pipeline学习-Pipeline类口述">Pipeline类口述</a></h2></div>
+<div id="sklearn.pipeline学习-Pipeline类前半部分函数口述"><h2 id="Pipeline类前半部分函数口述" class="header"><a href="#sklearn.pipeline学习-Pipeline类前半部分函数口述">Pipeline类前半部分函数口述</a></h2></div>
 <ul>
 <li>
 通过steps构造，可选设定memory和verbose。构造逻辑：
@@ -157,10 +163,29 @@ fit_transform函数
 
 <ol>
 <li>
-fit
+依次fit，最后fit_transform
+
+</ol>
+<li>
+predict函数
+
+<ol>
+<li>
+依次transform，最后predict
 
 <li>
-if estimator then transform
+<span class="todo">TODO</span> 带<code>if_delegate_has_method</code>修饰器
+
+</ol>
+<li>
+fit_predict函数
+
+<ol>
+<li>
+_fit
+
+<li>
+estimator.fit_predict
 
 </ol>
 <li>
@@ -177,7 +202,7 @@ if estimator then transform
 <code>_print_elapsed_time</code>: 对打印的log配上时间信息
 
 <li>
-<code>@if_delegate_has_method</code>: 
+<code>@if_delegate_has_method(delegate='_final_estimator')</code>: <span class="todo">TODO</span> 对_final_estimator是否有同名函数进行验证
 
 </ol>
 </ul>

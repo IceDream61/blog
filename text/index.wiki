@@ -1,5 +1,11 @@
 = 计算机科学与技术 笔记 =
 
+- TODO
+    - Python
+    - Shell
+    - Linux Tools
+    - Nginx
+    - Pip
 - sklearn
     - [[sklearn.pipeline学习]]
 - Vim
