@@ -1,0 +1,232 @@
+= Contents =
+    - [[#介绍|介绍]]
+    - [[#安装|安装]]
+    - [[#准备工作|准备工作]]
+    - [[#基本命令|基本命令]]
+    - [[#快捷键|快捷键]]
+        - [[#快捷键#全局快捷键|全局快捷键]]
+        - [[#快捷键#局部快捷键|局部快捷键]]
+        - [[#快捷键#文本对象|文本对象]]
+    - [[#Wiki语法|Wiki语法]]
+        - [[#Wiki语法#字体|字体]]
+        - [[#Wiki语法#链接|链接]]
+        - [[#Wiki语法#嵌入链接|嵌入链接]]
+        - [[#Wiki语法#缩略图链接|缩略图链接]]
+        - [[#Wiki语法#标题|标题]]
+        - [[#Wiki语法#段落|段落]]
+        - [[#Wiki语法#列表|列表]]
+        - [[#Wiki语法#表格|表格]]
+        - [[#Wiki语法#原格式文本|原格式文本]]
+        - [[#Wiki语法#数学公式|数学公式]]
+        - [[#Wiki语法#引用|引用]]
+        - [[#Wiki语法#注释|注释]]
+        - [[#Wiki语法#分割线|分割线]]
+    - [[#折叠|折叠]]
+    - [[#占位符|占位符]]
+    - [[#TODO 任务|TODO 任务]]
+    - [[#日记|日记]]
+
+%title VimWiki 2.1 文档阅读笔记
+
+= 介绍 =
+    * 引用官方介绍吧：VimWiki 是基于 Vim 的个人 wiki —— 有自己语法及高亮的很多超链接纯文本文件。
+
+= 安装 =
+    # 去 [[http://www.vim.org/scripts/script.php?script_id=2226|vim.org:vimwiki]] 下载 VimWiki 2.1 版本
+    # 解压，得到 vimwiki-2-1.vba
+    # 用 vim 打开它，输入命令 `:so %` 即可完成安装
+
+= 准备工作 =
+    * 需要好好设置一番 .vimrc ，个人设置了如下条目：
+{{{
+set nocompatible
+filetype plugin on
+syntax on
+let g:vimwiki_use_mouse = 1
+let g:vimwiki_camel_case = 0
+let g:vimwiki_html_header_numbering = 2
+let g:vimwiki_file_exts = 'c, cpp, wav, txt, h, hpp, zip, sh, awk, ps, pdf'
+let g:vimwiki_list = [{'path': '~/vimwiki/text/',
+            \'path_html': '~/vimwiki/html/',
+            \'template_path' : '~/vimwiki/template/',
+            \'template_default': 'default.tpl', }]
+nmap <F5>  :Vimwiki2HTML<CR>
+nmap <F6>  :VimwikiAll2HTML<CR>
+nmap <F9>  :VimwikiToggleListItem<CR>
+nmap <F10> :VimwikiTable<CR>
+nmap <F11> :VimwikiDiaryIndex<CR>
+}}}
+    * 还有几个相关的东西需要下载：
+        * Calendar
+            * Vim插件——日历
+            * 可以配合VimWiki中的日志使用
+            * 去 [[http://www.vim.org/scripts/script.php?script_id=52|vim.org:calendar]] 下载，安装vba即可，方法同VimWiki的安装
+            * 在Vim中用 `:Calendar` 打开，左右键按月移动日期，上下键按年移动日期
+        * MathJax
+            * JS库——数学公式
+            * 用于在VimWiki中输入数学公式
+            * 从github安装即可，命令：`git clone git://github.com/mathjax/MathJax.git ~/vimwiki/mathjax/`
+            * 这篇教程很适合入门：[[http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/|Mathjax与LaTex公式简介]]
+                * 上文已失效，替代之：[[https://colobu.com/2014/08/17/MathJax-quick-reference/|MathJax 快速参考]]
+            * 如何使用，见后文 *数学公式* 部分
+        * SyntaxHighlighter
+            * JS库——语法高亮
+            * 用于在VimWiki中加入代码高亮
+            * 去 [[http://alexgorbatchev.com/SyntaxHighlighter/download/|官网下载地址]] 下载
+            * 另需要在模版中设置好，可以仿照其tests设置，暂略
+            * 如何使用，见后文 *原格式文本* 部分
+
+= 基本命令 =
+    * 首先，你需要记住两个入口命令：
+        * 进入VimWiki：`\ww`
+        * 进入Diary Index：`\wi`
+    * 然后，就是几个我自己定义的快捷键
+        * `<F5>`：生成当前wiki当前文件的html
+        * `<F6>`：生成当前wiki所有文件的html
+        * `<F9>`：设置为TODO任务、转换TODO任务状态（原本是<C-Space>，跟我Mac的SpotLight冲突，故更改）
+        * `<F10>`：生成初始表格（原`:VimwikiTable`）
+
+= 快捷键 =
+== 全局快捷键 ==
+== 局部快捷键 ==
+
+| 快捷键                    | 解释                                                 |
+|---------------------------|------------------------------------------------------|
+| `\wd`                     | 删除当前wiki页面                                     |
+| `\wr`                     | 重命名当前wiki页面                                   |
+| `=`                       | 添加一重标题级别                                     |
+| `-`                       | 减少一重标题级别                                     |
+| `+`                       | 添加链接（根据光标所在or选中内容，自动决定链接类别） |
+| `glm`                     | 添加一层当前行缩进                                   |
+| `gll`                     | 减少一层当前行缩进                                   |
+| `gl*` or `gl8`            | 设置当前行为`*`                                      |
+| `gl#` or `gl3`            | 设置当前行为`#`                                      |
+| `gl-`                     | 设置当前行为`-`                                      |
+| `gqq` or `gww`            | 将当前表格格式调好                                   |
+| `<A-Left>`                | 表格中向左移动                                       |
+| `<A-Right>`               | 表格中向右移动                                       |
+| `<C-Up>`                  | 打开前一天的日记                                     |
+| `<C-Down>`                | 打开下一天的日记                                     |
+| `<2-LeftMouse>`           | g:vimwiki_use_mouse=1 才能用，打开链接               |
+| `<RightMouse><LeftMouse>` | g:vimwiki_use_mouse=1 才能用，后退                   |
+
+== 文本对象 ==
+
+| 对应按键 | 解释                               |
+|----------|------------------------------------|
+| `ah`     | 小节（两个标题之间，含末尾空行）   |
+| `ih`     | 小节（两个标题之间，不含末尾空行） |
+| `a\`     | 单元格（内容＋边框）               |
+| `i\`     | 单元格（仅内容）                   |
+| `ac`     | 列（内容＋边框）                   |
+| `ic`     | 列（仅内容）                       |
+
+%%= 命令 =
+%%== 全局命令 ==
+%%== 局部命令 ==
+
+= Wiki语法 =
+== 字体 ==
+    * *粗体*
+    * _斜体_
+    * ~~删除线~~
+    * `行内代码`
+    * 上^标^
+    * 下,,标,,
+
+== 链接 ==
+    * 可以直接写链接
+    * 可以写在 `[[ ]]` 里面，有两种形式：
+        * `[[ url ]]`
+        * `[[ url | name ]]`
+
+| 名字        | 举例                            | 注解                                     |
+|-------------|---------------------------------|------------------------------------------|
+| http, https | `http://dota2.uuu9.com/`        | 网址                                     |
+| mailto      | `mailto:icedream@sjtu.edu.cn`   | 邮箱                                     |
+| ftp         | `ftp://vim.org/`                | ftp                                      |
+| local       | `local:../template/default.tpl` | 本地文件，相对路径                       |
+| file        | `file:///Users/icedream/`       | 本地文件，绝对路径                       |
+| wiki#       | 转换到别的wiki，暂无            | VimWiki内部打开，在不同的VimWiki之间切换 |
+| diary       | `diary:2012-03-05`              | VimWiki内部打开，链接到VimWiki的日记     |
+
+== 嵌入链接 ==
+    * 主要为了能够嵌入图片
+        * 可以嵌入本地图片、网络图片
+        * 可以加style参数、class参数
+    * 写在 `{{ }}` 里面，有？种形式：
+        * `{{ url }}`
+        * `{{ url | name }}`
+        * `{{ url | name | style="..." }}`
+        * `{{ url || class="..." }}`
+== 缩略图链接 ==
+    * 图片形式的链接
+    * 形如：`[[ url | {{ image_url }} ]]`
+
+== 标题 ==
+    * 用 - = 来控制几级标题
+    * 用开头的空格来表示居中标题
+
+== 段落 ==
+    * 直接开头写就好了，中间换行也还是一段
+    * 中间空一行，才算另起一段
+
+== 列表 ==
+    * 用 * - 都可以，甚至不同层之间混用也行
+    * 换成 # 则表示有序号的列表
+    * 列表元素可以是多行的
+    * 还有一种定义列表，形如
+        * Term :: Definition
+        * Term::
+        * :: Definition
+        * :: Definition
+    * 用 <gl> + <something> 快捷操作：
+        * <->, <#>, <*>：改为 - # *
+        * <m>：缩进一层
+        * <l>：缩退一层
+
+== 表格 ==
+    * 直接用 | 分隔即可
+    * 用 \/、<、> 可以合并单元格
+    * 用 <Tab> 和 <S-Tab> 可以快速编辑
+
+== 原格式文本 ==
+    * 用 `{{{ text }}}` 可以输出原格式文本
+    * 用 `{{{class="brush: python" code }}}` 可以输出带高亮的代码
+
+== 数学公式 ==
+    * 用 `$ formula $` 可以输出行内公式
+    * 用 `{{$ formula }}$` 可以输出行间公式
+    * 用 `{{$%enviroment% formula }}$` 可以输出带LaTeX环境的行间公式
+
+注：上面三个 `$` 实际上在VimWiki中直接写美元符号即可，VimWiki自动转义成 `$` 了。
+
+== 引用 ==
+    * 用每行的开头至少四个空格，来代表引用
+
+== 注释 ==
+    * 用 `%%` 来输入行内注释
+
+== 分割线 ==
+    * 用 `----` 或更多 `-` 来表示分割线
+
+= 折叠 =
+    * 用 zM、zr 收起、折叠
+    * 用 zc、zo 也行
+    * 总之是大写就是全都收起、折叠，小写就只是操作当前光标所在地方
+
+= 占位符 =
+    * `%toc` 表示生成目录，可以写上目录名称，也可以放空
+    * `%title` 表示生成标题，没有则以文件名为标题
+    * `%nohtml` 表示本wiki永不生成html文件
+    * `%template` 指定本wiki所用html模版，后跟模版名称
+
+= TODO 任务 =
+    * 用 <F9>（原<C-Space>）添加TODO的任务
+    * 用 <F9>（原<C-Space>）更改任务状态（完成/未完成）
+
+= 日记 =
+    * 用 `\w\w` 建立当天的日记
+    * 用 `\w\i` 建立日记的链接列表，仅在日记的index文件内可用
+    * 用 `:Calendar` 打开Vim的日历，可用它结合日记使用：
+        * 在日期上按`<CR>`则在那天创建日历

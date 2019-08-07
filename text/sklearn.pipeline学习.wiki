@@ -1,0 +1,74 @@
+= sklearn.pipeline学习 =
+- [[草稿]]
+- 进度：376/950
+
+== Pipeline类口述 ==
+- 通过steps构造，可选设定memory和verbose。构造逻辑：
+    - 记录steps、memory、verbose参数
+    - 执行`self._validate_steps()`验证逻辑：
+        - `self._validate_names(names)`验证names
+        - 保证transformers和estimator是合法的，否则报`TypeError`
+- 关于参数的查看和设置：
+    - 令`p = Pipeline(...)`
+    - notebook直接查看`p`即可看到全部内容：steps, memory, verbose
+    - `p.get_params()`会得到详细冗余内容dict：steps, memory, verbose; 'name'系列属性; 'name__parameter'系列属性
+    - `p.set_params()`可以通过对应名字修改对应参数，自然也可以由此替换某个step
+    - `p.named_steps`: dict形式的name -> step，而非`p.steps`的tuple形式(name, step)
+- 对于pipeline信息的查看：
+    - `p.iter()`: Generate (idx, (name, trans)) tuples from self.steps
+    - `p.__len__()`: return len(self.steps)
+    - `p.__getitem__()`: 支持slice、下标、名字三种访问step的逻辑
+- 几个只读属性
+    - `p._estimator_type`: 即`estimator._estimator_type`
+    - `p._final_estimator`: 即`estimator`
+    - `p.named_steps`: 上面说过，略
+- log函数
+    - `p._log_message()`: 若verbose为真，打印某step执行的消息，至于verbose说明中表示的具体耗时开关，此函数调用的确都与计时器结合
+        - TODO: 从cache读steps的时候，message的赋值并未与计时器结合，待完善此细节
+- _fit函数
+    1. 重新验证steps、memory
+    2. 读memory cache
+    3. 把所有的**fit_params都set进去，如有不符合`stepname__parameter`的格式则报错
+    4. 遍历所有transformer：
+        1. 对于pass的直接打log
+        2. 对于有cache的，直接读取
+        3. 把fit的内容加入，保存到cache中
+        4. 把上面fit的结果更新到self.steps中
+        5. 返回Xt，如果有estimator则同时返回estimate结果
+- fit函数
+    1. 调用_fit函数（TODO：这里面对于各个transform在memory.cache中有没有与下面estimator同样的fit操作？）
+    2. 调用estimator.fit，同时打印log（TODO：这个fit有什么意义）
+    3. 返回self
+- fit_transform函数
+    1. fit
+    2. if estimator then transform
+- 不好猜含义的相关函数
+    1. `check_memory`: 检查memory相关目录等是否有效
+    2. `memory.caceh`: TODO 未深究
+    3. `_print_elapsed_time`: 对打印的log配上时间信息
+    4. `@if_delegate_has_method`: 
+
+= 附录 =
+
+== 相关python语法学习 ==
+- 切片，`slice`
+    - 学习`sklearn.pipeline.Pipeline.__getitem__`函数实现时遇到的
+    - details: [[https://blog.csdn.net/liuyuan185442111/article/details/47039651|详解Python的切片(Slice)]]
+- 装饰器
+    - 学习`sklearn.pipeline.Pipeline`中只读属性定义函数时遇到`@property`
+    - 学习`sklearn.pipeline.Pipeline._fit`时打耗时log时需要计时器，遇到`@contextlib.contextmanager`
+    - details:
+        - [[https://www.liaoxuefeng.com/wiki/1016959663602400/1017451662295584|装饰器]]
+        - [[https://www.liaoxuefeng.com/wiki/897692888725344/923030547069856|使用@property]]
+    - related:
+        - [[https://blog.csdn.net/wangyangzhizhou/article/details/51698638|Java注解机制及其原理]]
+        - [[https://www.zhihu.com/question/24401191/answer/37601385?utm_source=wechat_session&utm_medium=social&utm_oi=53708763168768|java注解是怎么实现的？]]
+- 上下文管理(`with`, `try`)
+    - `with func: continue`，其中`func`是一个内含yield且带`@contextlib.contextmanager`的函数
+        - 学习`sklearn.pipeline.Pipeline._fit`时打耗时log时需要计时器，遇到`@contextlib.contextmanager`
+    - details:
+        - [[http://www.bjhee.com/python-context.html|谈一谈Python的上下文管理器]]
+        - [[https://blog.csdn.net/u012609509/article/details/72911564|Python 中 with用法及原理]]
+
+== 收藏博客 ==
+- [[http://www.bjhee.com/|思诚之道——Billy.J.Hee的技术博客]]

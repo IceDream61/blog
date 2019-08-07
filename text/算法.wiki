@@ -1,0 +1,5 @@
+= 算法 =
+我目前的算法资料，暂时列举如下：
+    - 对我所知算法的草草总结：[[http://icedream61.github.io/learn/OI%E7%9C%81%E9%80%89%E7%AE%97%E6%B3%95%E6%B5%85%E8%B0%88.html|OI省选算法浅谈]]
+    - 为祺祺写的算法入门指南：[[https://shimo.im/doc/S5IDZVMBJYA1CA2C|算法筑基]]
+

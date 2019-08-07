@@ -1,0 +1,27 @@
+%title 可计算理论
+
+= 考试情报 $\rightarrow$ 目标：期末64分 =
+    - 找宋振宇、遥远问情报
+    - 分数设定
+        - 30：作业
+        - 70：期末考试
+    - 作业我大概也就是15分，那么期末就是要拿45分，也就是64分喽～
+= 课程目录 =
+    == 1. 可计算函数 Computable Function (Sections 1~5) ==
+    == 2. 生成可计算函数 Generating Computable Functions (1~5) ==
+基础，要完全搞懂
+    == 3. 图灵理论 Church's Thesis (只要求Thesis本身) ==
+用自然语言描述来说明一个东西是可计算的，并非严格数学证明
+    == 4. 编码可计算函数 Numbering Computable Function (1~4) ==
+    == 5. 通用程序 Universal Programs (1, 3) ==
+    == 6. 可判定、不可判定、部分可判定 (Un)decidability and P.D. (1, 6) ==
+    == 7. 递归集、递归可枚举集 Recursive and R.E. Sets (1, 2, 3, 4) ==
+需要会用几个核心定理、方法就好
+    == 8. 哥德尔不完备定理 Godel's Incompleteness Theorem (知道结论即可) ==
+这个基本不考
+    == 9. 规约、度 Reducibility and Degrees (1~5) ==
+    == 11. 第二递归定理 The Second Recursion Theorem (1) ==
+只占大约30%
+    == (10, 12章不要求) ==
+= 体系 =
+= 附录 =

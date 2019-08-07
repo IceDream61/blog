@@ -1,0 +1,25 @@
+= 计算机科学与技术 笔记 =
+
+[[sklearn.pipeline学习]]
+- [[算法]]
+- 基本课程
+    - [[Linux内核]]
+    - [[可计算理论]]
+    - [[人工智能]]
+    - [[数据库]]
+- 技术细节
+    - [[快速入门pyquery]]
+    - 学习CSS
+        - [[http://www.w3school.com.cn/css/|CSS 教程 - w3school 在线教程]]
+        - [[http://zh.learnlayout.com/|学习CSS布局]]
+        - [[https://derobukal.gitbooks.io/learn-to-code-html-css/content/Lesson1.html|Learn to Code HTML & CSS 翻译]]
+- Vim
+    - [[VimWiki 2.1 文档翻译]]
+    - [[VimWiki语法试验]]
+    - [[测试vimwiki标签语法]]
+    - [[https://blog.csdn.net/lalor/article/details/7288553|vim缩写iab介绍]]
+
+----
+
+= 附录 =
+- [[上层整理的尝试]]
