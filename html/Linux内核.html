@@ -1,0 +1,3440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Linux内核</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<p>
+%toc
+</p>
+
+<div id="计算机是什么样子的？"><h1 id="计算机是什么样子的？" class="header"><a href="#计算机是什么样子的？">计算机是什么样子的？</a></h1></div>
+<ul>
+<li>
+计算资源（SMP）：多个CPU，每个里面有多个核，普遍使用SMP架构
+
+<li>
+计算任务（进程管理）：多个任务，每个任务多个进程（Linux里面的LWP），互相之间根据优先级抢占运行
+
+<li>
+计算数据（内存管理）：多个MM（Memory），每个进程有各自的MM，全局也有公有的MM，进程优先使用自己的
+
+<li>
+计算难点（内核同步）：内核同步，在如此复杂并行下保证所有数据的正确性
+
+<li>
+计算细节（Booting、源码结构、虚拟文件系统）：如何启动与中止，其内部细节具体如何
+
+<li>
+计算扩容（基于对象的文件系统）：将内存独立出去，处理更大的计算量
+
+<li>
+计算迁移（安卓介绍、电源管理）：在手机上，电量极少，如何进行计算
+
+</ul>
+
+<div id="最终要掌握的东西"><h1 id="最终要掌握的东西" class="header"><a href="#最终要掌握的东西">最终要掌握的东西</a></h1></div>
+<div id="最终要掌握的东西-进程管理"><h2 id="进程管理" class="header"><a href="#最终要掌握的东西-进程管理" class="justcenter">进程管理</a></h2></div>
+<div id="最终要掌握的东西-进程管理-介绍"><h3 id="介绍" class="header"><a href="#最终要掌握的东西-进程管理-介绍">介绍</a></h3></div>
+<ul>
+<li>
+Linux里面没有进程、线程，只有：LWP
+
+<ul>
+<li>
+并行、共享资源，对多进程的支持更好
+
+</ul>
+<li>
+Process Descriptor: task_struct
+
+<ul>
+<li>
+各种信息：state, thread_info, mm, tty, fs, signal, ...
+
+<li>
+state
+
+<ul>
+<li>
+Running：TASK_RUNNING, TASK_TRACED
+
+<li>
+Sleeping：TASK_INTERRUPTABLE, TASK_UNINTERRUPTABLE
+
+<li>
+Non-exist：TASK_STOPPED, EXIT_ZOMBIE, EXIT_DEAD
+
+</ul>
+<li>
+PID 16-bit
+
+</ul>
+<li>
+Process Kernel Stack
+
+<ul>
+<li>
+为当前进程，存下thread_info，其与Process Descriptor可以相互找到
+
+</ul>
+<li>
+Process List
+
+<ul>
+<li>
+所有的进程
+
+<li>
+Doubly linked list
+
+</ul>
+<li>
+Wait Queue
+
+<ul>
+<li>
+所有Sleeping的进程
+
+<li>
+Doubly linked list
+
+</ul>
+<li>
+Run Queue
+
+<ul>
+<li>
+所有Running的进程
+
+<li>
+<img src="../text/ local:../image/Linux内核/37.png "  style="width: 1000px"   />
+
+</ul>
+<li>
+PID Hash Table \(\times\) 4
+
+<ul>
+<li>
+pid, tgid, pgid, sid
+
+<li>
+<img src="../text/ local:../image/Linux内核/38.png "  style="width: 1000px"   />
+
+</ul>
+<li>
+Process Resouce Limits
+
+<ul>
+<li>
+eg: RLIMIT_CORE, RLIMIT_CPU, RLIMIT_MSGQUEUE, RLIMIT_SIGPENDING
+
+</ul>
+<li>
+Process Switch
+
+<ul>
+<li>
+Process switch, task switch, context switch
+
+<ul>
+<li>
+Hardware context switch: a far jmp (in older Linux)
+
+<li>
+Software context switch: a sequence of mov
+
+</ul>
+<li>
+Performing the Process Switch
+
+<ul>
+<li>
+Switching the Page Global Directory
+
+<li>
+Switching the Kernel Mode stack and the hardware context
+
+</ul>
+</ul>
+<li>
+Process Type
+
+<ul>
+<li>
+Kernel Process
+
+<ul>
+<li>
+Process 0 (swapper process)
+
+<li>
+Process 1 (init process)
+
+<li>
+Others: keventd, kapm, kswapd, kflushd (also bdflush), kupdated, ksoftirqd, ...
+
+</ul>
+<li>
+User Process
+
+</ul>
+<li>
+Creating Processes
+
+<ul>
+<li>
+clone(), fork(), and vfork()
+
+<li>
+kernel_thread(): to create a kernel thread
+
+</ul>
+<li>
+Destroying Processes
+
+<ul>
+<li>
+exit() library function
+
+<li>
+Process removal: Releasing the process descriptor of a zombie process by release_task()
+
+</ul>
+</ul>
+
+<div id="最终要掌握的东西-进程管理-调度"><h3 id="调度" class="header"><a href="#最终要掌握的东西-进程管理-调度">调度</a></h3></div>
+<ul>
+<li>
+Scheduling Policy
+
+<ul>
+<li>
+Based on time-sharing: Time slice
+
+<li>
+Based on priority ranking: Dynamic
+
+<li>
+Classification of processes: Interactive processes, Batch processes, Real-time processes
+
+</ul>
+<li>
+System Calls
+
+<ul>
+<li>
+eg: <code>nice() // change the priority</code>, <code>setpriority()</code>, <code>getpriority()</code>
+
+</ul>
+<li>
+Process Preemption
+
+<ul>
+<li>
+根据公式计算优先级
+
+<li>
+Real time priority: 1-99
+
+<li>
+Conventional processes: 100-139
+
+</ul>
+<li>
+Active and Expired Processes
+
+<ul>
+<li>
+区分是否处于其时间片
+
+</ul>
+<li>
+The schedule() Function
+
+<ul>
+<li>
+进程切换的具体动作
+
+<li>
+Direct invocation
+
+<li>
+Lazy invocation
+
+</ul>
+<li>
+Motivation of Completely Fair Scheduler (CFS)
+
+<ul>
+<li>
+Red-Black Tree
+
+</ul>
+</ul>
+
+<div id="最终要掌握的东西-内核同步"><h2 id="内核同步" class="header"><a href="#最终要掌握的东西-内核同步" class="justcenter">内核同步</a></h2></div>
+<div id="最终要掌握的东西-内核同步-何时需要，何时不需要"><h3 id="何时需要，何时不需要" class="header"><a href="#最终要掌握的东西-内核同步-何时需要，何时不需要">何时需要，何时不需要</a></h3></div>
+<blockquote>
+有问题就需要，没有就不需要……
+</blockquote>
+
+<div id="最终要掌握的东西-内核同步-各种同步的方法"><h3 id="各种同步的方法" class="header"><a href="#最终要掌握的东西-内核同步-各种同步的方法">各种同步的方法</a></h3></div>
+<ul>
+<li>
+Per-CPU variables
+
+<li>
+Atomic operation
+
+<li>
+等待
+
+<ul>
+<li>
+Memory barrier：某个空间上的操作，前面的都运行完，再去跑后面的
+
+<li>
+Completions：更精细，例如：<code>wait()</code>
+
+</ul>
+<li>
+Read-Copy Update（RCU）：RCU保护下的Kernel Control Path不可以被睡眠
+
+<li>
+Lock
+
+<ul>
+<li>
+Spin Lock：曾经很简单，同时就一个人能动；可以一起读，但是只能有一个人写（MP further protection）
+
+<li>
+Semaphore：同上改进版，反正比Spin Lock复杂
+
+<li>
+SeqLocks：有读的也能写
+
+</ul>
+<li>
+Interrupt
+
+<ul>
+<li>
+不让某些中断启动，从而防止出问题，注意：是local的
+
+<li>
+Local Interrupt disabling
+
+<li>
+Local Softirq disabling
+
+</ul>
+<li>
+Rule of thumb for kernel developers:
+
+<ul>
+<li>
+Always keep the concurrency level as high as possible in the system
+
+<li>
+Two factors:
+
+<ul>
+<li>
+The number of I/O devices that operate concurrently
+
+<li>
+The number of CPUs that do productive work
+
+</ul>
+</ul>
+</ul>
+
+<div id="最终要掌握的东西-对称多处理器（SMP）"><h2 id="对称多处理器（SMP）" class="header"><a href="#最终要掌握的东西-对称多处理器（SMP）" class="justcenter">对称多处理器（SMP）</a></h2></div>
+<div id="最终要掌握的东西-对称多处理器（SMP）-什么是SMP"><h3 id="什么是SMP" class="header"><a href="#最终要掌握的东西-对称多处理器（SMP）-什么是SMP">什么是SMP</a></h3></div>
+<ul>
+<li>
+多个核，一个内存，共享IO和device
+
+</ul>
+<div id="最终要掌握的东西-对称多处理器（SMP）-什么是NUMA"><h3 id="什么是NUMA" class="header"><a href="#最终要掌握的东西-对称多处理器（SMP）-什么是NUMA">什么是NUMA</a></h3></div>
+<ul>
+<li>
+很多内存，分给各个核，有本地的和公有的，本地的更快（和距离有关）
+
+</ul>
+<div id="最终要掌握的东西-对称多处理器（SMP）-SMP Scheduling"><h3 id="SMP Scheduling" class="header"><a href="#最终要掌握的东西-对称多处理器（SMP）-SMP Scheduling">SMP Scheduling</a></h3></div>
+<ul>
+<li>
+我们有多个核和多个任务
+
+<li>
+一个任务就用一个核的时候，可以不断将任务分配给空闲的核
+
+<li>
+一个任务可以用多个核的时候，可以用多个核同时跑一个任务
+
+</ul>
+<div id="最终要掌握的东西-对称多处理器（SMP）-Synchronization Problem"><h3 id="Synchronization Problem" class="header"><a href="#最终要掌握的东西-对称多处理器（SMP）-Synchronization Problem">Synchronization Problem</a></h3></div>
+<ul>
+<li>
+多个核可能同时操作一块内存空间
+
+<li>
+因此，需要用很多锁来解决这个问题
+
+</ul>
+    
+<div id="最终要掌握的东西-内存管理"><h2 id="内存管理" class="header"><a href="#最终要掌握的东西-内存管理" class="justcenter">内存管理</a></h2></div>
+<div id="最终要掌握的东西-内存管理-逻辑地址、虚拟地址、物理地址"><h3 id="逻辑地址、虚拟地址、物理地址" class="header"><a href="#最终要掌握的东西-内存管理-逻辑地址、虚拟地址、物理地址">逻辑地址、虚拟地址、物理地址</a></h3></div>
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/25.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/21.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/22.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/23.png "  style="width: 1000px"  />
+
+</ul>
+
+<div id="最终要掌握的东西-内存管理-Linux的具体情况"><h3 id="Linux的具体情况" class="header"><a href="#最终要掌握的东西-内存管理-Linux的具体情况">Linux的具体情况</a></h3></div>
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/19.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/20.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/24.png "  style="width: 1000px"  />
+
+</ul>
+
+<div id="最终要掌握的东西-内存管理-Methods"><h3 id="Methods" class="header"><a href="#最终要掌握的东西-内存管理-Methods">Methods</a></h3></div>
+<ul>
+<li>
+Page Frame Management
+
+<li>
+Memory Area Management
+
+<li>
+Noncontiguous Memory Area Management
+
+<li>
+记下了nothing！没看懂！
+
+</ul>
+    
+<div id="最终要掌握的东西-虚拟文件系统理论？"><h2 id="虚拟文件系统理论？" class="header"><a href="#最终要掌握的东西-虚拟文件系统理论？" class="justcenter">虚拟文件系统理论？</a></h2></div>
+<ul>
+<li>
+Role of VFS
+
+<ul>
+<li>
+A common interface to several kinds of filesystems
+
+<li>
+Filesystems supported by the VFS
+
+<ul>
+<li>
+Disk-based filesystems
+
+<li>
+Network filesystems
+
+<li>
+Special filesystems
+
+<ul>
+<li>
+eg: /proc
+
+</ul>
+</ul>
+</ul>
+<li>
+VFS Data Structures
+
+<ul>
+<li>
+Superblock objects: super_block structure
+
+<li>
+Inode objects: inode structure
+
+<li>
+File objects: file structure (Table 12-4)
+
+<li>
+Dentry objects: (Table 12-5)
+
+<li>
+Dentry cache
+
+<ul>
+<li>
+A set of dentry objects
+
+<li>
+A hash table
+
+</ul>
+</ul>
+<li>
+Filesystem Types
+
+<ul>
+<li>
+Files Associated with a Process
+
+<ul>
+<li>
+fs field: fs_struct structure
+
+<li>
+files field: files_struct structure
+
+<ul>
+<li>
+fd: file descriptors
+
+<li>
+fd[0]: stdin
+
+<li>
+fd[1]: stdout
+
+<li>
+fd[2]: stderr
+
+</ul>
+<li>
+NR_OPEN: max # of file descriptors for a process
+
+<ul>
+<li>
+Usually 1,048,576
+
+</ul>
+</ul>
+<li>
+Special Filesystems
+
+<ul>
+<li>
+/dev/pts: pseudo terminal support
+
+<li>
+/proc: general access point to kernel data structures
+
+<li>
+/sys: general access point to system data
+
+<li>
+/proc/bus/usb: USB devices
+
+<li>
+...
+
+</ul>
+<li>
+Filesystem Type Registration
+
+<ul>
+<li>
+File_system_type object
+
+<li>
+Fs_flags
+
+</ul>
+</ul>
+<li>
+Filesystem Handling
+
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/26.png "  style="width: 1000px"  />
+
+</ul>
+<li>
+Pathname Lookup
+
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/27.png "  style="width: 1000px"  />
+
+</ul>
+<li>
+Implementation of VFS System Calls
+
+<ul>
+<li>
+Open()
+
+<li>
+Read()
+
+<li>
+Write()
+
+<li>
+Close()
+
+</ul>
+<li>
+File Locking
+
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/28.png "  style="width: 1000px"  />
+
+</ul>
+</ul>
+
+
+
+<div id="最终要掌握的东西-安卓介绍"><h2 id="安卓介绍" class="header"><a href="#最终要掌握的东西-安卓介绍" class="justcenter">安卓介绍</a></h2></div>
+<ul>
+<li>
+代码结构
+
+<li>
+四大组件
+
+<ul>
+<li>
+Activity
+
+<li>
+Service
+
+<li>
+Broadcast Receivers
+
+<li>
+Content Provider
+
+</ul>
+</ul>
+
+<div id="最终要掌握的东西-电源管理"><h2 id="电源管理" class="header"><a href="#最终要掌握的东西-电源管理" class="justcenter">电源管理</a></h2></div>
+<ul>
+<li>
+Advanced Power Management (APM)
+
+<ul>
+<li>
+完全由BIOS决定
+
+<li>
+看timeout决定是否把某设备power down
+
+</ul>
+<li>
+Advanced Configuration and Power Interface (ACPI)
+
+<ul>
+<li>
+与BIOS有关，其操作由OS决定
+
+<li>
+通过自动机，软件层的power down
+
+<li>
+Global State(4) and Sleeping State(6)
+
+<li>
+Legacy State：若这个启动，说明系统不支持或没启用ACPI
+
+</ul>
+<li>
+Wake Lock
+
+<ul>
+<li>
+如果一个App启动了Wake Lock，那么系统就常亮了
+
+</ul>
+<li>
+Main Lock
+
+<ul>
+<li>
+系统灭了时，就把它解锁
+
+</ul>
+<li>
+Early Suspend
+
+<ul>
+<li>
+在Kernel Suspend（灭掉）之前，系统需要做的一些事情
+
+</ul>
+<li>
+Resume Late
+
+<ul>
+<li>
+类似
+
+</ul>
+<li>
+Battery Service
+
+<ul>
+<li>
+电池管理
+
+</ul>
+</ul>
+
+<div id="最终要掌握的东西-Project"><h2 id="Project" class="header"><a href="#最终要掌握的东西-Project" class="justcenter">Project</a></h2></div>
+
+<div id="考试情报 $\rightarrow$ 目标：期末60分"><h1 id="考试情报 $\rightarrow$ 目标：期末60分" class="header"><a href="#考试情报 $\rightarrow$ 目标：期末60分">考试情报 \(\rightarrow\) 目标：期末60分</a></h1></div>
+<ul>
+<li>
+分数设定
+
+<ul>
+<li>
+10：参与
+
+<li>
+20：Project
+
+<li>
+20：报告（读内核代码 or 参与贡献文档）
+
+<li>
+50：期末考试
+
+</ul>
+<li>
+Project、报告要全部做完，怎么也能拿到30+，那么期末就是也要30+，即60分。
+
+</ul>
+
+<div id="脑子里还剩下的东西"><h1 id="脑子里还剩下的东西" class="header"><a href="#脑子里还剩下的东西">脑子里还剩下的东西</a></h1></div>
+<div id="脑子里还剩下的东西-进程管理"><h2 id="进程管理" class="header"><a href="#脑子里还剩下的东西-进程管理" class="justcenter">进程管理</a></h2></div>
+<ul>
+<li>
+轻量级进程 LWP(Lightweight Process)
+
+<li>
+进程描述符 Process Descriptor
+
+<ul>
+<li>
+task_struct data structure
+
+<ul>
+<li>
+注：tty是控制台终端，ttyx是串口终端
+
+<li>
+这里放上SMP中的相关内容做参考
+
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/17.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/18.png "  style="width: 1000px"  />
+
+</ul>
+</ul>
+</ul>
+<li>
+PID（Process ID）、TGID（Thread Group ID）
+
+<ul>
+<li>
+getpid()
+
+</ul>
+<li>
+The Process List
+
+<ul>
+<li>
+???
+
+</ul>
+<li>
+Pidhash Table and Chained Lists
+
+<ul>
+<li>
+pid, tgid, pgid, sid
+
+<li>
+???
+
+</ul>
+<li>
+Wait Queues
+
+<ul>
+<li>
+???
+
+</ul>
+<li>
+Process Resource Limits
+
+<li>
+Process Switch
+
+<li>
+Creating Processes
+
+<ul>
+<li>
+clone(), fork(), and vfork()
+
+</ul>
+<li>
+Destroying Processes
+
+<ul>
+<li>
+exit() library function: _exit(), exit_group()
+
+<li>
+Process removal: Releasing the process descriptor of a zombie process by release_task()
+
+</ul>
+<li>
+Process Preemption
+
+<ul>
+<li>
+Conventional processes: 100-139
+
+<li>
+Real time priority: 1-99
+
+</ul>
+<li>
+Runqueue Balancing in Multiprocessor Systems
+
+<ul>
+<li>
+3 types of multiprocessor systems
+
+<ul>
+<li>
+Classic multiprocessor architecture
+
+<li>
+Hyper-threading
+
+<li>
+NUMA
+
+</ul>
+</ul>
+<li>
+Motivation of Completely Fair Scheduler (CFS)
+
+<ul>
+<li>
+Red-Black Tree
+
+<ul>
+<li>
+Value = fair_clock - wait_runtime + nice (smaller value \(\rightarrow\) higher priority)
+
+<li>
+nice(): change the priority
+
+</ul>
+</ul>
+</ul>
+
+<div id="脑子里还剩下的东西-内核同步"><h2 id="内核同步" class="header"><a href="#脑子里还剩下的东西-内核同步" class="justcenter">内核同步</a></h2></div>
+<ul>
+<li>
+Kernel Control Paths
+
+<ul>
+<li>
+a sequence of instructions executed in kernel mode on behalf of current process
+
+<li>
+Three CPU states are considered
+
+<ul>
+<li>
+Running a process in User Mode (User)
+
+<li>
+Running an exception or a system call handler (Excp)
+
+<li>
+Running an interrupt handler (Intr)
+
+</ul>
+</ul>
+<li>
+Kernel Preemption
+
+<ul>
+<li>
+The main motivation for making a kernel preemptive is to reduce the dispatch latency of the user mode processes: Delay between the time they become runnable and the time they actually begin running
+
+</ul>
+<li>
+When Synchronization is Necessary
+
+<ul>
+<li>
+A race condition can occur when the outcome of a computation depends on how two or more interleaved kernel control paths are nested
+
+<li>
+To identify and protect the critical regions in exception handlers, interrupt handlers, deferrable functions, and kernel threads
+
+<ul>
+<li>
+On single CPU, critical region can be implemented by disabling interrupts while accessing shared data
+
+<li>
+If the same data is shared only by the service routines of system calls, critical region can be implemented by disabling kernel preemption while accessing shared data
+
+</ul>
+<li>
+Things are more complicated on multiprocessor systems
+
+<ul>
+<li>
+Different synchronization techniques are necessary
+
+</ul>
+</ul>
+<li>
+When Synchronization is not Necessary
+
+<ul>
+<li>
+The same interrupt cannot occur until the handler terminates
+
+<li>
+Interrupt handlers and softirqs are non- preemptable, non-blocking
+
+<li>
+A kernel control path performing interrupt handling cannot be interrupted by a kernel control path executing a deferrable function or a system call service routine
+
+<li>
+Softirqs cannot be interleaved
+
+</ul>
+<li>
+Synchronization Primitives
+
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/13.png "  style="width: 1000px"  />
+
+</ul>
+<li>
+Synchronizing Accesses to Kernel Data Structures
+
+<li>
+Examples of Race Condition Prevention
+
+</ul>
+    
+<div id="脑子里还剩下的东西-对称多处理器 (SMP)"><h2 id="对称多处理器 (SMP)" class="header"><a href="#脑子里还剩下的东西-对称多处理器 (SMP)" class="justcenter">对称多处理器 (SMP)</a></h2></div>
+<ul>
+<li>
+Introduction on SMP
+
+<ul>
+<li>
+Categories of Computer Systems
+
+<ul>
+<li>
+Single Instruction Single Data (SISD) stream
+
+<li>
+Single Instruction Multiple Data (SIMD) stream
+
+<li>
+Multiple Instruction Single Data (MISD) stream (Never implemented)
+
+<li>
+Multiple Instruction Multiple Data (MIMD)
+
+<ul>
+<li>
+Shared-Memory
+
+<ul>
+<li>
+Master/Slave
+
+<li>
+<span id="脑子里还剩下的东西-对称多处理器 (SMP)-Symmetric Multiprocessors (SMP)"></span><strong id="Symmetric Multiprocessors (SMP)">Symmetric Multiprocessors (SMP)</strong>
+
+</ul>
+<li>
+Distributed-Memory
+
+<ul>
+<li>
+Clusters
+
+</ul>
+</ul>
+</ul>
+<li>
+Typical SMP Organization
+
+<ul>
+<li>
+<img src="../image/Linux内核/14.png "  style="width: 1000px" />
+
+</ul>
+</ul>
+<li>
+SMP and NUMA
+
+<ul>
+<li>
+Symmetric multiprocessing (SMP) involves
+
+<ul>
+<li>
+a multiprocessor computer hardware and software architecture where two or more identical processors connect to a single, shared main memory, have full access to all I/O devices, and are controlled by a single OS instance that treats all processors equally, reserving none for special purposes.
+
+<li>
+Most multiprocessor systems today use an SMP architecture. In the case of multi-core processors, the SMP architecture applies to the cores, treating them as separate processors.
+
+<li>
+<img src="../image/Linux内核/15.png "  style="width: 1000px" />
+
+</ul>
+<li>
+Non-uniform memory access (NUMA) is
+
+<ul>
+<li>
+a computer memory design used in multiprocessing, where the memory access time depends on the memory location relative to the processor.
+
+<li>
+Under NUMA, a processor can access its own local memory faster than non-local memory (memory local to another processor or memory shared between processors).
+
+<li>
+The benefits of NUMA are limited to particular workloads, notably on servers where the data are often associated strongly with certain tasks or users
+
+<li>
+<img src="../image/Linux内核/16.png "  style="width: 1000px" />
+
+</ul>
+</ul>
+<li>
+Process Scheduling with SMP
+
+<ul>
+<li>
+就两张图，看不懂啊......
+
+</ul>
+<li>
+Synchronization Problem with SMP
+
+<ul>
+<li>
+Lock
+
+<li>
+不需要知道啥吧？？？
+
+</ul>
+</ul>
+    
+<div id="脑子里还剩下的东西-读源代码 -- SMP"><h2 id="读源代码 -- SMP" class="header"><a href="#脑子里还剩下的东西-读源代码 -- SMP" class="justcenter">读源代码 -- SMP</a></h2></div>
+<ul>
+<li>
+两类CPU
+
+<ul>
+<li>
+BSP，又称BP，全称Bootstrap Processor，中文：启动CPU
+
+<li>
+AP，全称Application Processor，中文：应用CPU
+
+</ul>
+<li>
+两类中断
+
+<ul>
+<li>
+APIC，中文：高级可编程中断控制器
+
+<ul>
+<li>
+本地APIC
+
+<li>
+IO APIC
+
+</ul>
+<li>
+IPI，中文：处理器间中断 \(\leftarrow\) 处理器间通信
+
+</ul>
+<li>
+在SMP机器上,Linux的启动过程是怎样的?
+
+<ul>
+<li>
+BSP负责操作系统的启动,在启动的最后阶段,BSP通过IPI激活各个AP,在系统的正常运行过程中,BSP和AP基本上是无差别的。
+
+<li>
+BSP启动主要流程如下：
+
+<ol>
+<li>
+BIOS初始化（屏蔽AP，建配置表格）
+
+<li>
+MBR里的初始程序（GRUB、LILO等）将内核加载到内存
+
+<li>
+执行head.s中的start_up32函数（其末尾将调用start_kernel）
+
+<li>
+执行start_kernel（曾main）
+
+<li>
+其进行一系列初始化，最后将执行：
+
+<ul>
+<li>
+smp_init()    // 启动各AP
+
+<li>
+rest_init()   // 创建1号进程，自身成为0号进程 \(leftarrow\) cpu_idel()
+
+</ul>
+<li>
+1号进程（init进程）完成其余工作
+
+</ol>
+<li>
+AP启动流程：
+
+<ol>
+<li>
+被BSP启动后，在执行head.s中的start_up32函数时，进入initialize_secondary()
+
+<li>
+执行后，再跳至start_secondary()，大体流程如下：
+
+<ul>
+<li>
+cpu_init()
+
+<li>
+smp_callin()
+
+<li>
+...
+
+<li>
+return cpu_idle()
+
+</ul>
+</ol>
+</ul>
+<li>
+在SMP机器上,Linux的进程调度如何进行?
+
+<ul>
+<li>
+与UP系统的主要差别是执行进程切换后, 被换下的进程有可能会换到其他CPU上继续运行。在计算优先权时,如果进程上次运行的CPU也是当前CPU,则会适当提高优先权,这样可以更有效地利用 Cache。
+
+<li>
+<img src="../text/ local:../image/Linux内核/17.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/18.png "  style="width: 1000px"  />
+
+</ul>
+<li>
+在SMP机器中,中断系统有何特点?
+
+<ul>
+<li>
+为了支持SMP,在硬件上需要APIC中断控制系统。Linux定义了各种IPI的中断向量以及传送IPI的函数。
+
+</ul>
+</ul>
+    
+<div id="脑子里还剩下的东西-基于对象的文件系统 (Object-based File System)"><h2 id="基于对象的文件系统 (Object-based File System)" class="header"><a href="#脑子里还剩下的东西-基于对象的文件系统 (Object-based File System)" class="justcenter">基于对象的文件系统 (Object-based File System)</a></h2></div>
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/30.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/31.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/32.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/33.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/34.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/35.png "  style="width: 1000px"  />
+
+<li>
+<img src="../text/ local:../image/Linux内核/36.png "  style="width: 1000px"  />
+
+</ul>
+    
+<div id="课程内容摘抄"><h1 id="课程内容摘抄" class="header"><a href="#课程内容摘抄">课程内容摘抄</a></h1></div>
+<div id="课程内容摘抄-整体介绍"><h2 id="整体介绍" class="header"><a href="#课程内容摘抄-整体介绍" class="justcenter">整体介绍</a></h2></div>
+<div id="课程内容摘抄-整体介绍-什么是Linux（历史、家族、特点、发行版）"><h3 id="什么是Linux（历史、家族、特点、发行版）" class="header"><a href="#课程内容摘抄-整体介绍-什么是Linux（历史、家族、特点、发行版）">什么是Linux（历史、家族、特点、发行版）</a></h3></div>
+<ul>
+<li>
+作者 Linus Torvalds
+
+<li>
+更多历史详见<a href="https://zh.wikipedia.org/wiki/Linux ">维基百科 -- Linux</a>
+
+</ul>
+<div id="课程内容摘抄-整体介绍-两种模式"><h3 id="两种模式" class="header"><a href="#课程内容摘抄-整体介绍-两种模式">两种模式</a></h3></div>
+<ul>
+<li>
+User mode: Application software, C standard library
+
+<li>
+Kernel mode: System Calls, Linux kernel, Hardware
+
+</ul>
+<div id="课程内容摘抄-整体介绍-什么是内核"><h3 id="什么是内核" class="header"><a href="#课程内容摘抄-整体介绍-什么是内核">什么是内核</a></h3></div>
+<ul>
+<li>
+设计目标
+
+<ol>
+<li>
+性能：效率、速度
+
+<li>
+稳定：健壮、适应
+
+<li>
+能力：多面、灵活、兼容
+
+<li>
+安全
+
+<li>
+可移植
+
+<li>
+可扩展
+
+</ol>
+<li>
+举例
+
+<ol>
+<li>
+应用
+
+<li>
+系统库（libc）
+
+<li>
+模块
+
+<ol>
+<li>
+系统调用接口
+
+<li>
+I/O相关
+
+<ol>
+<li>
+文件系统
+
+<li>
+网络
+
+<li>
+设备驱动
+
+</ol>
+<li>
+进程相关
+
+<ol>
+<li>
+调度
+
+<li>
+内存管理
+
+<li>
+IPC
+
+</ol>
+<li>
+架构独立代码
+
+</ol>
+<li>
+硬件
+
+</ol>
+<li>
+架构特点
+
+<ol>
+<li>
+巨大
+
+<li>
+分层
+
+<li>
+模块化
+
+<li>
+微核
+
+<li>
+虚拟机
+    == 源码介绍 ==
+
+</ol>
+</ul>
+<div id="课程内容摘抄-整体介绍-系统源码结构"><h3 id="系统源码结构" class="header"><a href="#课程内容摘抄-整体介绍-系统源码结构">系统源码结构</a></h3></div>
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-root"></span><strong id="root">root</strong> - The home directory for the root user.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-home"></span><strong id="home">home</strong> - Contains the user's home directories along with directories for services..
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-bin"></span><strong id="bin">bin</strong> - Commands needed during booting up that might be needed by normal users
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-sbin"></span><strong id="sbin">sbin</strong> - Like bin but commands are not intended for normal users. Commands run by LINUX.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-proc"></span><strong id="proc">proc</strong> - This filesystem is not on a disk. It is a virtual filesystem that exists in the kernels imagination which is memory.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-usr"></span><strong id="usr">usr</strong> - Contains all commands, libraries, man pages, games and static files for normal operation.
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-bin"></span><strong id="bin">bin</strong> - Almost all user commands. some commands are in /bin or /usr/local/bin.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-sbin"></span><strong id="sbin">sbin</strong> - System admin commands not needed on the root filesystem. e.g., most server programs.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-include"></span><strong id="include">include</strong> - Header files for the C programming language. Should be below /user/lib for consistency.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-lib"></span><strong id="lib">lib</strong> - Unchanging data files for programs and subsystems.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-local"></span><strong id="local">local</strong> - The place for locally installed software and other files.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-man"></span><strong id="man">man</strong> - Manual pages.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-info"></span><strong id="info">info</strong> - Info documents.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-doc"></span><strong id="doc">doc</strong> - Documentation.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-tmp"></span><strong id="tmp">tmp</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-X11R6"></span><strong id="X11R6">X11R6</strong> - The X windows system files. There is a directory similar to usr below this directory.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-X386"></span><strong id="X386">X386</strong> - Like X11R6 but for X11 release 5.
+
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-boot"></span><strong id="boot">boot</strong> - Files used by the bootstrap loader. Kernel images are often kept here.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-lib"></span><strong id="lib">lib</strong> - Shared libraries needed by the programs on the root filesystem.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-modules"></span><strong id="modules">modules</strong> - Loadable kernel modules, especially those needed to boot the system after disasters.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-dev"></span><strong id="dev">dev</strong> - Device files.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-etc"></span><strong id="etc">etc</strong> - Configuration files specific to the machine.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-skel"></span><strong id="skel">skel</strong> - When a home directory is created it is initialized with files from this directory.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-sysconfig"></span><strong id="sysconfig">sysconfig</strong> - Files that configure the linux system for devices.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-var"></span><strong id="var">var</strong> - Contains files that change for mail, news, printers log files, man pages, temp files.
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-file"></span><strong id="file">file</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-lib"></span><strong id="lib">lib</strong> - Files that change while the system is running normally.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-local"></span><strong id="local">local</strong> - Variable data for programs installed in /usr/local.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-lock"></span><strong id="lock">lock</strong> - Lock files. Used by a program to indicate it is using a particular device or file.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-log"></span><strong id="log">log</strong> - Log files from programs such as login and syslog which logs all logins and logouts.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-run"></span><strong id="run">run</strong> - Files that contain information about the system that is valid until the system is next booted.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-spool"></span><strong id="spool">spool</strong> - Directories for mail, printer spools, news and other spooled work.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-tmp"></span><strong id="tmp">tmp</strong> - Temporary files that are large or need to exist for longer than they should in /tmp.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-catman"></span><strong id="catman">catman</strong> - A cache for man pages that are formatted on demand.
+
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-mnt"></span><strong id="mnt">mnt</strong> - Mount（挂载） points for temporary mounts by the system administrator.
+
+<li>
+<span id="课程内容摘抄-整体介绍-系统源码结构-tmp"></span><strong id="tmp">tmp</strong> - Temporary files. Programs running after bootup should use /var/tmp.
+
+</ul>
+<div id="课程内容摘抄-整体介绍-内核源码结构"><h3 id="内核源码结构" class="header"><a href="#课程内容摘抄-整体介绍-内核源码结构">内核源码结构</a></h3></div>
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/arch"></span><strong id="linux/arch">linux/arch</strong>
+
+<ul>
+<li>
+都是针对各个不同系统架构的源代码
+
+<li>
+Each contains <span id="课程内容摘抄-整体介绍-内核源码结构-kernel"></span><strong id="kernel">kernel</strong>, <span id="课程内容摘抄-整体介绍-内核源码结构-lib"></span><strong id="lib">lib</strong>, <span id="课程内容摘抄-整体介绍-内核源码结构-mm"></span><strong id="mm">mm</strong>, <span id="课程内容摘抄-整体介绍-内核源码结构-boot"></span><strong id="boot">boot</strong> and other directories whose contents override code stubs in architecture independent code.
+
+<li>
+具体讲几个子目录：
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-lib"></span><strong id="lib">lib</strong> contains highly-optimized common utility routines such as memcpy, checksums, etc.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/drivers"></span><strong id="linux/drivers">linux/drivers</strong>
+
+<ul>
+<li>
+所有Linux的设备驱动，源代码中绝大多数都是这些（大约1.5M）
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-device"></span><strong id="device">device</strong>, <span id="课程内容摘抄-整体介绍-内核源码结构-bus"></span><strong id="bus">bus</strong>, <span id="课程内容摘抄-整体介绍-内核源码结构-platform"></span><strong id="platform">platform</strong> and general directories.
+
+<li>
+具体讲几个子目录：
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-char"></span><strong id="char">char</strong> – n_tty.c is the default line discipline.
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-block"></span><strong id="block">block</strong> – elevator.c, genhd.c, linear.c, ll_rw_blk.c, raidN.c.
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-net"></span><strong id="net">net</strong> – specific drivers and general routines Space.c and net_init.c.
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-scsi"></span><strong id="scsi">scsi</strong> – scsi_*.c files are generic;
+
+<ul>
+<li>
+sd.c (disk)
+
+<li>
+sr.c (CD- ROM)
+
+<li>
+st.c (tape)
+
+<li>
+sg.c (generic)
+
+</ul>
+<li>
+常用的几个：
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-cdrom"></span><strong id="cdrom">cdrom</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-ide"></span><strong id="ide">ide</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-isdn"></span><strong id="isdn">isdn</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-parport"></span><strong id="parport">parport</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-pcmcia"></span><strong id="pcmcia">pcmcia</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-pnp"></span><strong id="pnp">pnp</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-sound"></span><strong id="sound">sound</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-telephony"></span><strong id="telephony">telephony</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-video"></span><strong id="video">video</strong>
+
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-bus"></span><strong id="bus">bus</strong> – fc4, i2c, nubus, pci, sbus, tc, usb.
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-platform"></span><strong id="platform">platform</strong> – acorn, macintosh, s390, sgi.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/fs"></span><strong id="linux/fs">linux/fs</strong>
+
+<ul>
+<li>
+含两部分：
+
+<ul>
+<li>
+虚拟文件系统（VFS，Virtual File System）架构
+
+<li>
+实际文件系统的子目录
+
+</ul>
+<li>
+具体讲几个子文件：
+
+<ul>
+<li>
+exec.c, binfmt_*.c - files for mapping new process images.
+
+<li>
+devices.c, blk_dev.c – device registration, block device support.
+
+<li>
+super.c, filesystems.c.
+
+<li>
+inode.c, dcache.c, namei.c, buffer.c, file_table.c.
+
+<li>
+open.c, read_write.c, select.c, pipe.c, fifo.c.
+
+<li>
+fcntl.c, ioctl.c, locks.c, dquot.c, stat.c.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/include"></span><strong id="linux/include">linux/include</strong>
+
+<ul>
+<li>
+这个目录是干嘛的来着～？
+
+<li>
+具体讲几个子目录：
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-asm-generic"></span><strong id="asm-generic">asm-generic</strong> - Architecture-dependent include subdirectories.
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux"></span><strong id="linux">linux</strong>
+
+<ul>
+<li>
+Header info needed both by the kernel and user apps.
+
+<li>
+Usually linked to /usr/include/linux.
+
+<li>
+Kernel-only portions guarded by <code>#ifdef __KERNEL__</code>
+
+</ul>
+<li>
+随便列几个：
+
+<ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-math-emu"></span><strong id="math-emu">math-emu</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-net"></span><strong id="net">net</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-pcmcia"></span><strong id="pcmcia">pcmcia</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-scsi"></span><strong id="scsi">scsi</strong>
+
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-video"></span><strong id="video">video</strong>
+
+</ul>
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/init"></span><strong id="linux/init">linux/init</strong>
+
+<ul>
+<li>
+只有两个文件（新版已经不是这样了）
+
+<ul>
+<li>
+version.c – contains the version banner that prints at boot.
+
+<li>
+main.c – architecture-independent boot code.
+
+</ul>
+<li>
+start_kernel is the primary entry point.
+
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/ipc"></span><strong id="linux/ipc">linux/ipc</strong>
+
+<ul>
+<li>
+系统级进程间通信工具
+
+<li>
+If disabled at compile-time, util.c exports stubs that simply return –ENOSYS.
+
+<li>
+One file for each facility:
+
+<ul>
+<li>
+sem.c – semaphores.
+
+<li>
+shm.c – shared memory.
+
+<li>
+msg.c – message queues.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/kernel"></span><strong id="linux/kernel">linux/kernel</strong>
+
+<ul>
+<li>
+Linux内核的核心代码
+
+<li>
+sched.c – "the main kernel file":
+
+<ul>
+<li>
+scheduler
+
+<li>
+wait queues
+
+<li>
+timers
+
+<li>
+alarms
+
+<li>
+task queues
+
+</ul>
+<li>
+进程控制
+
+<ul>
+<li>
+fork.c, exec.c, signal.c, exit.c etc...
+
+</ul>
+<li>
+Kernel module support:
+
+<ul>
+<li>
+kmod.c, ksyms.c, module.c.
+
+</ul>
+<li>
+Other operations:
+
+<ul>
+<li>
+time.c, resource.c, dma.c, softirq.c, itimer.c.
+
+<li>
+printk.c, info.c, panic.c, sysctl.c, sys.c.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/lib"></span><strong id="linux/lib">linux/lib</strong>
+
+<ul>
+<li>
+内核代码不能调用这里的标准C库代码
+
+<li>
+介绍几个文件：
+
+<ul>
+<li>
+brlock.c – “Big Reader” spinlocks.
+
+<li>
+cmdline.c – kernel command line parsing routines.
+
+<li>
+errno.c – global definition of errno.
+
+<li>
+inflate.c – “gunzip” part of gzip.c used during boot.
+
+<li>
+string.c – portable string code.
+
+<ul>
+<li>
+Usually replaced by optimized, architecture- dependent routines.
+
+</ul>
+<li>
+vsprintf.c – libc replacement.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/mm"></span><strong id="linux/mm">linux/mm</strong>
+
+<ul>
+<li>
+内存
+
+<li>
+Paging and swapping:
+
+<ul>
+<li>
+swap.c, swapfile.c (paging devices), swap_state.c (cache).
+
+<li>
+vmscan.c – paging policies, kswapd.
+
+<li>
+page_io.c – low-level page transfer.
+
+</ul>
+<li>
+Allocation and deallocation:
+
+<ul>
+<li>
+slab.c – slab allocator.
+
+<li>
+page_alloc.c – page-based allocator.
+
+<li>
+vmalloc.c – kernel virtual-memory allocator.
+
+</ul>
+<li>
+Memory mapping:
+
+<ul>
+<li>
+memory.c – paging, fault-handling, page table code.
+
+<li>
+filemap.c – file mapping.
+
+<li>
+mmap.c, mremap.c, mlock.c, mprotect.c.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-整体介绍-内核源码结构-linux/scripts"></span><strong id="linux/scripts">linux/scripts</strong>
+
+<ul>
+<li>
+一些脚本，功能如下
+
+<ul>
+<li>
+Menu-based kernel configuration.
+
+<li>
+Kernel patching.
+
+<li>
+Generating kernel documentation.
+    == Booting（是什么、详细介绍：BIOS、MBR、GRUB、LILO、Init Process） ==
+
+</ul>
+</ul>
+</ul>
+<div id="课程内容摘抄-整体介绍-System startup: BIOS / BootMonitor"><h3 id="System startup: BIOS / BootMonitor" class="header"><a href="#课程内容摘抄-整体介绍-System startup: BIOS / BootMonitor">System startup: BIOS / BootMonitor</a></h3></div>
+<dl>
+<dt>Booting</dt>
+<dd>一个引导进程，会在用户打开计算机时，打开操作系统</dd>
+<dt>Booting Sequence</dt>
+<dd>载入操作系统时，计算机做的一系列操作</dd>
+<dd>1. Turn on</dd>
+<dd>2. CPU jump to address of BIOS (0xFFFF0)</dd>
+<dd>3. BIOS runs POST (Power-On Self Test)</dd>
+<dd>4. Find bootale devices</dd>
+<dd>5. Load and execute boot sector form MBR</dd>
+<dd>6. Load OS</dd>
+<dt>BIOS, Basic Input/Output System</dt>
+<dd>BIOS是计算机刚打开时运行的一段代码</dd>
+<dd>BIOS最基本的函数是一段写在芯片里的代码，可以识别和控制计算机的众多设备</dd>
+<div id="课程内容摘抄-整体介绍-Stage 1 bootloader: Master Boot Record"><h3 id="Stage 1 bootloader: Master Boot Record" class="header"><a href="#课程内容摘抄-整体介绍-Stage 1 bootloader: Master Boot Record">Stage 1 bootloader: Master Boot Record</a></h3></div>
+<dt>MBR, Master Boot Record</dt>
+<dd>OS is booted from a hard disk, where the Master Boot Record (MBR) contains the primary boot loader</dd>
+<dd>The MBR is a 512-byte sector, located in the first sector on the disk (sector 1 of cylinder 0, head 0)</dd>
+<dd>After the MBR is loaded into RAM, the BIOS yields control to it.</dd>
+<dd><img src="../image/Linux内核/6.png "  style="width:1000px" /></dd>
+<dd>The first 446 bytes are the primary boot loader, which contains both executable code and error message text</dd>
+<dd>The next 64 bytes are the partition table, which contains a record for each of four partitions</dd>
+<dd>The MBR ends with two bytes that are defined as the magic number (0xAA55). The magic number serves as a validation check of the MBR</dd>
+<dd>To see the contents of MBR, use this command:</dd>
+<dd># dd if=/dev/hda of=mbr.bin bs=512 count=1</dd>
+<dd># od -xa mbr.bin</dd>
+<dd>The dd command, which needs to be run from root, reads the first 512 bytes from /dev/hda (the first Integrated Drive Electronics, or IDE drive) and writes them to the mbr.bin file.</dd>
+<dd>The od command prints the binary file in hex and ASCII formats.</dd>
+<div id="课程内容摘抄-整体介绍-Stage 2 bootloader: LILO, GRUB, etc."><h3 id="Stage 2 bootloader: LILO, GRUB, etc." class="header"><a href="#课程内容摘抄-整体介绍-Stage 2 bootloader: LILO, GRUB, etc.">Stage 2 bootloader: LILO, GRUB, etc.</a></h3></div>
+<dt>Boot Loader</dt>
+<dd>其实应该叫Kernel Loader，作用是载入Linux Kernel</dd>
+<dd>Optional, initial RAM disk</dd>
+<dd>GRUB和LILO是最流行的两种Linux Boot Loader</dd>
+<dt>GRUB, GRand Unified Bootloader</dt>
+<dd>GRUB is an operating system independant boot loader</dd>
+<dd>A multiboot software packet from GNU</dd>
+<dd>GRUB boot process</dd>
+<dd>1. The BIOS finds a bootable device (hard disk) and transfers control to the master boot record</dd>
+<dd>2. The MBR contains GRUB stage 1. Given the small size of the MBR, Stage 1 just load the next stage of GRUB</dd>
+<dd>3. GRUB Stage 1.5 is located in the first 30 kilobytes of hard disk immediately following the MBR. Stage 1.5 loads Stage 2.</dd>
+<dd>4. GRUB Stage 2 receives control, and displays to the user the GRUB boot menu (where the user can manually specify the boot parameters).</dd>
+<dd>5. GRUB loads the user-selected (or default) kernel into memory and passes control on to the kernel.</dd>
+<dd><img src="../image/Linux内核/7.png "  style="width:1000px" /></dd>
+<dt>LILO, LInux LOader</dt>
+<dd>Not depend on a specific file system</dd>
+<dd>Can boot from harddisk and floppy</dd>
+<dd>Up to 16 different images</dd>
+<dd>Must change LILO when kernel image file or config file is changed</dd>
+<div id="课程内容摘抄-整体介绍-Kernel: Linux"><h3 id="Kernel: Linux" class="header"><a href="#课程内容摘抄-整体介绍-Kernel: Linux">Kernel: Linux</a></h3></div>
+<dt>Kernel</dt>
+<dd>大多数计算机操作系统的核心部分</dd>
+<dd>Kernel会一直存在于内存中，直至断电</dd>
+<dd>Tasks</dd>
+<dd>1. Process management</dd>
+<dd>2. Memory management</dd>
+<dd>3. Device management</dd>
+<dd>4. System call</dd>
+<dt>Kernel Image</dt>
+<dd>压缩过的Kernel图标</dd>
+<dd>zImage size less than 512 KB</dd>
+<dd>bzImage size greater than 512 KB</dd>
+<dd>Major functions flow for Linux kernel boot</dd>
+<dd><img src="../image/Linux内核/8.png "  style="width:1000px" /></dd>
+<div id="课程内容摘抄-整体介绍-Init: User-space"><h3 id="Init: User-space" class="header"><a href="#课程内容摘抄-整体介绍-Init: User-space">Init: User-space</a></h3></div>
+<dt>Init Process</dt>
+<dd>Kernel运行的第一段代码，也是Linux中所有进程的父进程</dd>
+<dd>The first processes that init starts is a script /etc/rc.d/rc.sysinit</dd>
+<dd>Based on the appropriate run-level, scripts are executed to start various processes to run the system and make it functional</dd>
+<dd>Process Id = 1</dd>
+<dd>Init is responsible for starting system processes as defined in the /etc/inittab file</dd>
+<dd>Init typically will start multiple instances of "getty" which waits for console logins which spawn one's user shell process</dd>
+<dd>Upon shutdown, init controls the sequence and processes for shutdown</dd>
+<dd><img src="../image/Linux内核/9.png "  style="width:1000px" /></dd>
+<dt>Inittab file</dt>
+<dd>The inittab file describes which processes are started at bootup and during normal operation</dd>
+<dd>/etc/init.d/boot</dd>
+<dd>/etc/init.d/rc</dd>
+<dd>The computer will be booted to the runlevel as defined by the initdefault directive in the /etc/inittab file</dd>
+<dd>id:5:initdefault:</dd>
+<dt>RunLevels</dt>
+<dd>A runlevel is a software configuration of the system which allows only a selected group of processes to exist</dd>
+<dd>The processes spawned by init for each of these runlevels are defined in the /etc/inittab file</dd>
+<dd>Init can be in one of eight runlevels: 0-6</dd>
+<dd><img src="../image/Linux内核/10.png "  style="width:1000px" /></dd>
+<dt>rc#.d files</dt>
+<dd>rc#.d files are the scripts for a given run level that run during boot and shutdown</dd>
+<dd>The scripts are found in the directory /etc/rc.d/rc#.d/ where the symbol # represents the run level</dd>
+<dt>init.d</dt>
+<dd>Deamon is a background process</dd>
+<dd>init.d is a directory that admin can start/stop individual demons by changing on it</dd>
+<dd>/etc/rc.d/init.d/ (Red Hat/Fedora )</dd>
+<dd>/etc/init.d/ (S.u.s.e.)</dd>
+<dd>/etc/init.d/ (Debian)</dd>
+<dt>Start/stop deamon</dt>
+<dd>Admin can issuing the command and either the start, stop, status, restart or reload option</dd>
+<dd>i.e. to stop the web server:</dd>
+<dd>cd /etc/rc.d/init.d/</dd>
+<dd>(or /etc/init.d/ for S.u.s.e. and Debian)</dd>
+<dd>httpd stop</dd>
+<div id="课程内容摘抄-编程基础"><h2 id="编程基础" class="header"><a href="#课程内容摘抄-编程基础" class="justcenter">编程基础</a></h2></div>
+<div id="课程内容摘抄-编程基础-内核编程的不同之处"><h3 id="内核编程的不同之处" class="header"><a href="#课程内容摘抄-编程基础-内核编程的不同之处">内核编程的不同之处</a></h3></div>
+</dl>
+<ul>
+<li>
+OS management
+
+<ul>
+<li>
+Process management, memory management
+
+<li>
+File systems
+
+</ul>
+<li>
+Types of devices
+
+<ul>
+<li>
+(Char, Block, SCSI, Net)-based devices \(\rightarrow\) device drivers
+
+</ul>
+<li>
+Loaded as modules or static in the kernel
+
+<li>
+Challenges
+
+<ul>
+<li>
+Portability
+
+<li>
+IPC (Inter-Process Communication)
+
+<li>
+Hardware Management
+
+<li>
+Interface Stability
+
+</ul>
+</ul>
+<div id="课程内容摘抄-编程基础-模块（什么是内核模块、优缺点、举例、如何编译）"><h3 id="模块（什么是内核模块、优缺点、举例、如何编译）" class="header"><a href="#课程内容摘抄-编程基础-模块（什么是内核模块、优缺点、举例、如何编译）">模块（什么是内核模块、优缺点、举例、如何编译）</a></h3></div>
+<dl>
+<dt>Module, Kernel Module</dt>
+<dd>(wiki) An object file that contains code to extend the running kernel;</dd>
+<dd>(RedHat) Modules are pieces of code that can be loaded and unloaded into the kernel upon demand.</dd>
+<dd>Advantages</dd>
+<dd>1. Allowing the dynamic insertion and removal of code from the kernel at run-time.</dd>
+<dd>2. Save memory cost</dd>
+<dd>Disadvantages</dd>
+<dd>1. Fragmentation Penalty \(\rightarrow\) decrease memory performance</dd>
+</dl>
+<ul>
+<li>
+查看所有模块
+<pre class='brush: shell'>
+# cd /lib/modules/&lt;kernel-version&gt;/
+# find . -name "*.ko"
+</pre>
+
+<li>
+查看正在运行的模块
+<pre class='brush: shell'>
+# lsmod
+</pre>
+
+<li>
+查看正在运行的模块（另一种方法）
+<pre class='brush: shell'>
+# cat /proc/modules
+</pre>
+
+<li>
+模块代码样例
+
+<ul>
+<li>
+Project中有，暂略
+
+</ul>
+<li>
+编译模块代码
+
+<ul>
+<li>
+Project中有，暂略
+
+</ul>
+<li>
+模块相关命令
+
+<ul>
+<li>
+Project中有，暂略
+
+</ul>
+</ul>
+<div id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）"><h3 id="/proc 文件系统（介绍、在其内创建文件的模块编程）" class="header"><a href="#课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）">/proc 文件系统（介绍、在其内创建文件的模块编程）</a></h3></div>
+<ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> 是一个虚拟的文件系统
+
+<ul>
+<li>
+Real time, resides in the virtual memory
+
+<li>
+Tracks the processes running on the machine and the state of the system
+
+<li>
+A new <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> file system is created every time your Linux machine reboots
+
+<li>
+Highly dynamic. The size of the proc directory is 0 and the last time of modification is the last bootup time.
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> file system doesn't exist on any particular media.
+
+<li>
+The contents of the <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> file system can be read by anyone who has the requisite permissions.
+
+<li>
+Certain parts of the <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> file system can be read only by the owner of the process and of course root. (and some not even by root!!)
+
+<li>
+The contents of the <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> are used by many utilities which grab the data from the particular <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc"></span><strong id="/proc">/proc</strong> directory and display it.
+
+<li>
+eg : top, ps, lspci, dmesg etc
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys"></span><strong id="/proc/sys">/proc/sys</strong> 更改此目录的文件内容，可以实时更改内核变量
+
+<ul>
+<li>
+allows you to make configuration changes to a running kernel
+
+<li>
+Changing a value within a <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys"></span><strong id="/proc/sys">/proc/sys</strong> file is done by the 'echo' command
+
+<li>
+Any configuration changes made thus will disappear when the system is restarted
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys/dev"></span><strong id="/proc/sys/dev">/proc/sys/dev</strong> : provides parameters for particular devices on the system
+
+<ul>
+<li>
+cdrom/info : many important CD-ROM parameters
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys/fs"></span><strong id="/proc/sys/fs">/proc/sys/fs</strong>
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys/kernel"></span><strong id="/proc/sys/kernel">/proc/sys/kernel</strong>
+
+<ul>
+<li>
+acct — Controls the suspension of process accounting based on the percentage of free space available on the filesystem containing the log
+
+<li>
+ctrl-alt-del — Controls whether [Ctrl]-[Alt]-[Delete] will gracefully restart the computer using init (value 0) or force an immediate reboot without syncing the dirty buffers to disk (value 1).
+
+<li>
+domainname — Allows you to configure the system's domain name, such as domain.com.
+
+<li>
+hostname — Allows you to configure the system's host name, such as host.domain.com.
+
+<li>
+threads-max — Sets the maximum number of threads to be used by the kernel, with a default value of 4095.
+
+<li>
+The random directory data related to generating random numbers for the kernel.
+
+<li>
+panic — Defines the number of seconds the kernel will postpone rebooting the system when a kernel panic is experienced. By default, the value is set to 0, which disables automatic rebooting after a panic.
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys/net"></span><strong id="/proc/sys/net">/proc/sys/net</strong>
+
+<ul>
+<li>
+eg : /proc/sys/net/ipv4/ip_forward
+
+<ul>
+<li>
+It has default value of "0" which can be seen using 'cat'.
+
+<li>
+This can be changed in real time by just changing the value stored in this file from "0" to "1", thus allowing IP forwarding
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/sys/vm"></span><strong id="/proc/sys/vm">/proc/sys/vm</strong> : facilitates the configuration of the Linux kernel's virtual memory (VM) subsystem
+
+</ul>
+<li>
+下面详细介绍目录中的各种文件：
+
+<ul>
+<li>
+buddyinfo : Contains the number of free areas of each order for the kernel buddy system
+
+<li>
+cmdline : Kernel command line
+
+<li>
+cpuinfo : Information about the processor(s).(Human readable)
+
+<li>
+devices : List of device drivers configured into the currently running kernel (block and character).
+
+<li>
+dma : Shows which DMA channels are being used at the moment.
+
+<li>
+execdomains : Execdomains, related to security
+
+<li>
+fb : Frame Buffer devices.
+
+<li>
+filesystems : Filesystems configured/supported into/by the kernel.
+
+<li>
+interrupts : Number of interrupts per IRQ on the x86 architecture.
+
+<li>
+iomem : This file shows the current map of the system's memory for its various devices
+
+<li>
+ioports : provides a list of currently registered port regions used for input or output communication with a device
+
+<li>
+kcore
+
+<ul>
+<li>
+This file represents the physical memory of the system and is stored in the core file format.
+
+<li>
+Unlike most /proc files, kcore does display a size. This value is given in bytes and is equal to the size of physical memory (RAM) used plus 4KB.
+
+<li>
+Its contents are designed to be examined by a debugger, such as gdb, the GNU Debugger.
+
+<li>
+Only the root user has the rights to view this file.
+
+</ul>
+<li>
+kmsg : Used to hold messages generated by the kernel. These messages are then picked up by other programs, such as klogd
+
+<li>
+loadavg
+
+<ul>
+<li>
+Provides a look at load average
+
+<li>
+The first three columns measure CPU utilization of the last 1, 5, and 10 minute periods.
+
+<li>
+The fourth column shows the number of currently running processes and the total number of processes.
+
+<li>
+The last column displays the last process ID used.
+
+</ul>
+<li>
+locks : Displays the files currently locked by the kernel
+
+<li>
+mdstat : contains the current information for multiple-disk, RAID configurations
+
+<li>
+meminfo
+
+<ul>
+<li>
+One of the more commonly used /proc files
+
+<li>
+It reports back plenty of valuable information about the current utilization of RAM on the system
+
+</ul>
+<li>
+misc : This file lists miscellaneous drivers registered on the miscellaneous major device, which is number 10
+
+<li>
+modules : Displays a list of all modules that have been loaded by the system
+
+<li>
+mounts : This file provides a quick list of all mounts in use by the system
+
+<li>
+mtrr : This file refers to the current Memory Type Range Registers (MTRRs) in use with the system
+
+<li>
+partitions : Very detailed information on the various partitions currently available to the system
+
+<li>
+pci : Full listing of every PCI device on your system
+
+<li>
+slabinfo : Information about memory usage on the slab level
+
+<li>
+stat : Keeps track of a variety of different statistics about the system since it was last restarted
+
+<li>
+swap : Measures swap space and its utilization
+
+<li>
+uptime : Contains information about how long the system has on since its last restart
+
+<li>
+version
+
+<ul>
+<li>
+Tells the versions of the Linux kernel and gcc, as well as the version of
+
+<li>
+Red Hat Linux installed on the system.
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/&lt;number&gt;"></span><strong id="/proc/&lt;number&gt;">/proc/&lt;number&gt;</strong> 这些数字是进程Id，一个文件夹代表一个进程
+
+<ul>
+<li>
+The contents of all the directories are the same as these directories contain the various parameters and the status of the corresponding process.
+
+<li>
+You have full access only to the processes that you have started.
+
+<li>
+下面详细介绍目录中的各种文件：
+
+<ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-cmdline"></span><strong id="cmdline">cmdline</strong> : it contains the whole command line used to invoke the process. The contents of this file are the command line arguments with all the parameters (without formatting/spaces).
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-cwd"></span><strong id="cwd">cwd</strong> : symbolic link to the current working directory
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-environ"></span><strong id="environ">environ</strong> : contains all the process-specific environment variables
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-exe"></span><strong id="exe">exe</strong> : symbolic link of the executable
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-maps"></span><strong id="maps">maps</strong> : parts of the process' address space mapped to a file.
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-fd"></span><strong id="fd">fd</strong> : this directory contains the list file descriptors as opened by the particular process.
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-root"></span><strong id="root">root</strong> : symbolic link pointing to the directory which is the root file system for the particular process
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-status"></span><strong id="status">status</strong> : information about the process
+
+</ul>
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/self"></span><strong id="/proc/self">/proc/self</strong> : link to the currently running process
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/bus"></span><strong id="/proc/bus">/proc/bus</strong> : contains information specific to the various buses available on the system
+
+<ul>
+<li>
+eg : for ISA, PCI, and USB buses, current data on each is available in /proc/bus/&lt;bus type directory&gt;
+
+<li>
+Individual bus directories, signified with numbers, contains binary files that refer to the various devices available on that bus
+
+<li>
+devices file : USB root hub on the motherboard:
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/driver"></span><strong id="/proc/driver">/proc/driver</strong> : specific drivers in use by kernel
+
+<ul>
+<li>
+rtc : output from the driver for the Real Time Clock
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/fs"></span><strong id="/proc/fs">/proc/fs</strong> : specific filesystem, file handle, inode, dentry and quota information
+
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/ide"></span><strong id="/proc/ide">/proc/ide</strong> : information about IDE devices
+
+<ul>
+<li>
+Each IDE channel is represented as a separate directory, such as /proc/ide/ide0 and /proc/ide/ide1
+
+<li>
+drivers file : version number of the various drivers
+
+<li>
+Device directories : data like cache, capacity, driver, geometry, media, model, settings
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/irq"></span><strong id="/proc/irq">/proc/irq</strong> : used to set IRQ to CPU affinity
+
+<ul>
+<li>
+smp_affinity : which CPUs handle that specific IRQ
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/net"></span><strong id="/proc/net">/proc/net</strong> : networking parameters and statistics
+
+<ul>
+<li>
+arp — kernel's ARP table. Useful for connecting hardware address to an IP address on a system.
+
+<li>
+dev — Lists the network devices along with transmit and receive statistics.
+
+<li>
+route — Displays the kernel's routing table.
+
+</ul>
+<li>
+<span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/scsi"></span><strong id="/proc/scsi">/proc/scsi</strong> : like <span id="课程内容摘抄-编程基础-/proc 文件系统（介绍、在其内创建文件的模块编程）-/proc/ide"></span><strong id="/proc/ide">/proc/ide</strong> it gives info about scsi devices
+
+</ul>
+
+<div id="课程内容摘抄-安卓介绍"><h2 id="安卓介绍" class="header"><a href="#课程内容摘抄-安卓介绍" class="justcenter">安卓介绍</a></h2></div>
+<div id="课程内容摘抄-安卓介绍-Java回顾"><h3 id="Java回顾" class="header"><a href="#课程内容摘抄-安卓介绍-Java回顾">Java回顾</a></h3></div>
+<div id="课程内容摘抄-安卓介绍-XML回顾"><h3 id="XML回顾" class="header"><a href="#课程内容摘抄-安卓介绍-XML回顾">XML回顾</a></h3></div>
+<div id="课程内容摘抄-电源管理"><h2 id="电源管理" class="header"><a href="#课程内容摘抄-电源管理" class="justcenter">电源管理</a></h2></div>
+<div id="课程内容摘抄-电源管理-Linux"><h3 id="Linux" class="header"><a href="#课程内容摘抄-电源管理-Linux">Linux</a></h3></div>
+<div id="课程内容摘抄-电源管理-Android"><h3 id="Android" class="header"><a href="#课程内容摘抄-电源管理-Android">Android</a></h3></div>
+<div id="课程内容摘抄-电源管理-Wava Lock"><h3 id="Wava Lock" class="header"><a href="#课程内容摘抄-电源管理-Wava Lock">Wava Lock</a></h3></div>
+<div id="课程内容摘抄-电源管理-System Sleep (又名Suspend)"><h3 id="System Sleep (又名Suspend)" class="header"><a href="#课程内容摘抄-电源管理-System Sleep (又名Suspend)">System Sleep (又名Suspend)</a></h3></div>
+<div id="课程内容摘抄-电源管理-Battery Service"><h3 id="Battery Service" class="header"><a href="#课程内容摘抄-电源管理-Battery Service">Battery Service</a></h3></div>
+
+<div id="课程内容摘抄-读源代码 -- Booting"><h2 id="读源代码 -- Booting" class="header"><a href="#课程内容摘抄-读源代码 -- Booting" class="justcenter">读源代码 -- Booting</a></h2></div>
+<div id="课程内容摘抄-读源代码 -- Booting-代码类型"><h3 id="代码类型" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-代码类型">代码类型</a></h3></div>
+<ul>
+<li>
+C语言代码
+
+<ul>
+<li>
+Linux主体是用GNU的C语言编写
+
+<li>
+从c++中吸收了“inline”和“const”
+
+<li>
+支持“属性描述符”(attribute)
+
+<li>
+增加了新的基本数据类型“long long int”用于支持64位cpu
+
+</ul>
+<li>
+汇编代码
+
+<ul>
+<li>
+分布在两个位置
+
+<ul>
+<li>
+完全的汇编代码，<code>.s</code>后缀
+
+<li>
+嵌入在C语言代码中的汇编代码
+
+</ul>
+<li>
+与一般的386汇编语言采用intel定义不同,它采用的是 AT&amp;T定义的格式。主要差别如下:
+
+<ul>
+<li>
+Intel中多使用大写字母,而这里大多使用小写字母
+
+<li>
+寄存器名前面要加“%”作为前缀,
+
+<li>
+指令的源操作数与目标操作数的顺序与intel的正好相反。AT&amp;T格式中,源在前,目标在后
+
+<li>
+访问内存的指令的操作数大小(即宽度)由操作码名 称的最后一个字母决定,用作操作码后缀的字母有b( 8位),w(16位),l(32位),e.g movb
+
+<li>
+直接操作数要加“$”作为前缀,intel中不用
+
+<li>
+基本格式 -- asm(“汇编语句” :输出寄存器 :输入寄存器 :会被修改的寄存器);
+
+<li>
+输出和输入寄存器统一按顺序编号,起始是%0
+
+</ul>
+</ul>
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-基础知识"><h3 id="基础知识" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-基础知识">基础知识</a></h3></div>
+<ul>
+<li>
+Linux的启动是指从系统加电到控制台显示登录提示为止的运行阶段:
+
+<ul>
+<li>
+主要相关的代码是在arch/i386/boot中:
+
+<ul>
+<li>
+bootsect.S,这是linux引导扇区的源代码
+
+<li>
+setup.S这是辅助程序的一部分
+
+<li>
+video.S这是辅助程序的另外一部分,用于引导过程中的屏幕显示
+
+</ul>
+<li>
+另外,子目录compressed中还有两个源代码文件 head.S,misc.c。用于内核映象的解压缩。也属于辅助程序一部分。
+
+<li>
+经过编译,汇编和连接后就形成三个部分:引导扇区的映象bootsetc, 辅助程序setup 和 内核映象本身。
+
+<li>
+大小不超过508KB的内核引导映象称为小映象zImage; 否则称为大内核bzImage
+
+</ul>
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-系统引导"><h3 id="系统引导" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-系统引导">系统引导</a></h3></div>
+<ul>
+<li>
+加电开机后,intel cpu在实模式下工作,只能使用低端 的640kb(即0XA0000以下)的内存空间(why?)
+
+<li>
+由ROM BIOS或者lilo将启动盘的第一扇区(引导扇区 )的内容装入起始地址为0x7c00的内存空间,然后跳 转到0x7c00开始执行引导扇区的代码
+
+<li>
+该引导扇区内的代码就是bootset.S汇编后生成的二进 制代码
+
+<li>
+该段代码(bootset.S)将自身转移到0x90000处,然后跳 转到那里继续执行,并通过bios提供的“int 0x13”调用 从磁盘上读入setup和内核的映象,然后跳转到setup 的代码中,为执行内核映象做准备
+
+<li>
+对部分代码的解释如下所示: 
+
+<ul>
+<li>
+<img src="../image/Linux内核/1.png "  style="width:1000px" />
+
+<ul>
+<li>
+这段代码将启动扇区代码由0x7C00移至0x90000处。 Linux将地址为0x90000的代码段称为INITSEG。然后 跳转到go标志,准备一块堆栈,栈底位于 $INITSEG:0x4000-12
+
+</ul>
+<li>
+<img src="../image/Linux内核/2.png "  style="width:1000px" />
+
+<ul>
+<li>
+该段代码利用BIOS中提供的读磁盘调用“int 0x13”从 磁盘将setup.S装入到9000:0200(linux中称之为 SETUPPSEG段),即紧跟在bootsect.S之后,共四 个扇区
+
+<li>
+如果载入失败,则不断尝试循环。除非某次尝试成功 ,否则只有等待系统重启
+
+</ul>
+</ul>
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-通过LILO来进行引导"><h3 id="通过LILO来进行引导" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-通过LILO来进行引导">通过LILO来进行引导</a></h3></div>
+<ul>
+<li>
+LILO(linux loader)也存储在启动扇区中,用以让用户选择上电后使用何种操作系统
+
+<li>
+LILO在系统安装阶段建立关于核心代码占用硬盘数据 块的位置的对照表。启动时LILO将利用这张表引导 BIOS装入指定的操作系统
+
+<li>
+LILO将用户在启动时输入的命令和参数存储在 empty_zero_page(0x5000)的后半页,供 arch/i386/kernel/setup.c文件的setup_arch()函数使用
+
+<li>
+LILO完成任务后,跳转至setup.S程序,转入实模式下 的系统初始化
+
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-实模式下的系统初始化"><h3 id="实模式下的系统初始化" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-实模式下的系统初始化">实模式下的系统初始化</a></h3></div>
+<ul>
+<li>
+setup.S连同内核映象由bootsect.S装入。setup.S从 BIOS获取计算机系统的参数,放到内存参数区,仍在 实模式下运行
+
+<li>
+Cpu在setup的执行过程中转入32位保护模式的段式寻 址方式
+
+<li>
+辅助程序setup为内核映象的执行做好准备,然后跳转 到0x100000开始内核本身的执行,此后就是内核的初 始化过程
+
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-实模式下的系统初始化-setup.S"><h3 id="实模式下的系统初始化-setup.S" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-实模式下的系统初始化-setup.S">实模式下的系统初始化-setup.S</a></h3></div>
+<ul>
+<li>
+版本检查和参数设置
+
+<ul>
+<li>
+检查签名“55AA5A5A”,此签名位于setup.S代 码段的末尾,判断安装程序是否完全安装进来
+
+<li>
+判断核心(kernel)是否为BIG_KERNEL
+
+<li>
+设置参数
+
+</ul>
+<li>
+为进入保护模式做准备,主要包括
+
+<ul>
+<li>
+关中断
+
+<li>
+检查自身(setup.S)是否在SETUPSEG处
+
+<li>
+置idt(中断描述符表)为空,设置gdt(全局描述符表)
+
+<li>
+真正进入保护模式
+
+</ul>
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-保护模式下的系统初始化"><h3 id="保护模式下的系统初始化" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-保护模式下的系统初始化">保护模式下的系统初始化</a></h3></div>
+<ul>
+<li>
+保护模式下的核心初始化模块从0x10000开始执行, 负责检查数据区,idt表,页表和寄存器的初始化,同 时进行一些必要的状态检查,最后转入start_kernel() 模块。如果核心系统是压缩存放的,则先执行解压缩 。保护模式下的初始化主要包括:
+
+<ul>
+<li>
+初始化寄存器和数据区
+
+<ul>
+<li>
+Arch/i386/boot/compressed目录下的head.S是段保护 模式的汇编程序,先设置堆栈,然后调用同目录 下的 misc.c文件的decompress_kernel()函数解压缩
+
+<ul>
+<li>
+设置堆栈与寄存器
+
+<li>
+检查A20线是否有效
+
+<li>
+数据区BSS全部清零
+
+<li>
+转入核心代码解压缩过程
+
+</ul>
+</ul>
+<li>
+核心代码解压缩
+
+<ul>
+<li>
+调用mics.c中的decompress_kernel开始解压缩。解压 缩的步骤为:
+
+<ul>
+<li>
+设置output_buffer
+
+<li>
+Makecrc:建立一张CRC(校验)表(lib/inflate.c)
+
+<li>
+调用gunzip()解压缩,同时比较CRC表,如果不一 致说明解压出错。
+
+<li>
+检查kernel的大小
+
+<li>
+解除压缩以后的内核映象放在0x10000处,调转到 此处执行。
+
+</ul>
+</ul>
+<li>
+页表初始化
+
+<ul>
+<li>
+进行解压缩后,核心系统的入口就是arch/i386/kernel 目录下的head.S。系统先初始化寄存器和数据区,然 后执行以下步骤:
+
+<ul>
+<li>
+将ds,es,fs,gs寄存器初始化为_KERNEL_DS的 值
+
+<li>
+进行两级页表的部分初始化。其中第一级 swapper_pg_dir是页目录,页目录的第一个表项所 指的第二级页表称为pg0
+
+<li>
+清空BSS区(未初始化数据区)
+
+<li>
+跳转到setup_idt处对idt表进行初始化
+
+<li>
+复制bootup参数到empty_zero_page
+
+<li>
+检查cpu类型
+
+</ul>
+<li>
+下面详细解释一下如何进行两级页表的初始化:
+
+<ul>
+<li>
+先把swapper_pg_dir清零
+
+<li>
+Pg0登记在页目录的第0项和第768项,即把线性地 址0和3G都指向pg0
+
+<li>
+初始化二级页表pg0和pg1
+
+<li>
+CPU控制寄存器的初始化:使CR3指向 swapper_page_dir,将CR0的PG位置位(CPU的 paging功能启动位)。CPU的页管理功能便生效
+
+</ul>
+<li>
+两级页表初始化的图示如下: <img src="../image/Linux内核/3.png "  style="width:1000px" />
+
+</ul>
+<li>
+初始化idt,gdt和ldt
+
+<ul>
+<li>
+1、初始化gdt
+
+<ul>
+<li>
+Gdt表项数=2个内核态段+两个用户态段+4个空闲表 项+4个APM段+2×NRTASK个用于LDT和TSS描述 的段。
+
+<li>
+Gdt的初始化的代码如下页图示: <img src="../image/Linux内核/4.png "  style="width:1000px" />
+
+</ul>
+<li>
+2、设定idt寄存器为idt_descr变量的当前值,指向idt表 (共256项),但目前不允许中断(尚未设置中断门)
+
+<li>
+3、在新的页管理方式下,重新设置堆栈,段选择寄存 器,描述符寄存器。
+
+</ul>
+<li>
+启动核心
+
+<ul>
+<li>
+前面对CPU进行了初始化,并启动了保护模式
+
+<li>
+现在的任务是初始化内核的核心数据结构,这些数据结构主要涉及:
+
+<ul>
+<li>
+中断管理
+
+<li>
+进程管理
+
+<li>
+内存管理
+
+<li>
+设备管理
+
+</ul>
+<li>
+各种数据结构纷繁复杂,需要对各部分进行分析
+
+<li>
+进入保护模式后,系统从start_kernel处开始执行, Start_kernel()函数变成0号进程,不再返回
+
+<li>
+Start_kernel显示版本信息,调用setup_arch() (arch/i386/kernel/setup.c):初始化核心的数据结构
+
+<li>
+最后,调用kernel_thread()创建init进程,进行系统配置
+
+<li>
+该部分的代码在init/main.c中
+
+<li>
+核心数据结构的初始化
+
+<ul>
+<li>
+调用paging_init()初始化页表
+
+<li>
+调用mem_init()初始化页描述符
+
+<li>
+调用trap_init()和init_IRQ()完成IDT最后的初始化工作
+
+<li>
+调用k_mem_cache_init()和kmem_cache_sizes_init()初始化slab分配器
+
+<li>
+调用time_init()初始化系统日期和时间
+
+<li>
+调用kernel_thread为进程1创建内核线程
+
+</ul>
+<li>
+父进程创建init子进程之后,返回执行cpu_idle
+
+</ul>
+</ul>
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-Init进程和系统配置"><h3 id="Init进程和系统配置" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-Init进程和系统配置">Init进程和系统配置</a></h3></div>
+<ul>
+<li>
+Init进程(1号进程)首先创建一些后台进程来维护系 统,然后进行系统配置,执行shell编写的初始化程序 。然后转入用户态运行
+
+<li>
+Init进程的执行流程如下：<img src="../image/Linux内核/5.png "  style="width:1000px" />
+
+<ul>
+<li>
+首先调用函数do_basic_setup()做系统初始化的工作( 这之前系统只启动了cpu,内存和一些进程管理方面的 工作)
+
+<li>
+调用free_initmem()函数,将初始化过程中使用的范围 在_init_begin和_init_end之间的页面释放给空闲页面 链表
+
+<li>
+打开一个控制台设备
+
+<li>
+如果存在指定命令就执行,否则,按顺序执行:
+
+<ul>
+<li>
+如果存在“/sbin/init”文件,则跳转去执行“/sbin/init”
+
+<li>
+如果存在“/etc/init”文件,则跳转去执行“/etc/init”
+
+<li>
+如果存在“/bin/init”文件,则跳转去执行“/bin/init”
+
+<li>
+如果存在“/bin/sh”文件,则跳转去执行“/bin/sh”
+
+</ul>
+</ul>
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- Booting-思考题"><h3 id="思考题" class="header"><a href="#课程内容摘抄-读源代码 -- Booting-思考题">思考题</a></h3></div>
+<ul>
+<li>
+在i386中,内核可执行代码在内存中的首地址是否可随意选择?为什么?
+
+<li>
+主引导扇区位于硬盘什么位置?如果一个硬盘的主引导扇区有故障,此硬盘是否还可以使用?
+
+<li>
+在没有LILO的情况下,系统是怎么样引导的
+
+<li>
+进入保护模式为什么要打开A20地址线?
+
+<li>
+Linux内核在实模式下的初始化完成哪些功能?
+
+<li>
+进程0和init进程的主要任务是什么?
+
+</ul>
+
+<div id="课程内容摘抄-读源代码 -- 文件系统"><h2 id="读源代码 -- 文件系统" class="header"><a href="#课程内容摘抄-读源代码 -- 文件系统" class="justcenter">读源代码 -- 文件系统</a></h2></div>
+<ul>
+<li>
+<img src="../text/ local:../image/Linux内核/29.png "  style="width: 1000px"  />
+
+<li>
+后面整个就不知道思路了，感觉全是碎片，求教！！
+
+</ul>
+
+<div id="课程内容摘抄-Project 1 -- 编译Linux内核"><h2 id="Project 1 -- 编译Linux内核" class="header"><a href="#课程内容摘抄-Project 1 -- 编译Linux内核" class="justcenter">Project 1 -- 编译Linux内核</a></h2></div>
+<div id="课程内容摘抄-Project 1 -- 编译Linux内核-下载Linux内核"><h3 id="下载Linux内核" class="header"><a href="#课程内容摘抄-Project 1 -- 编译Linux内核-下载Linux内核">下载Linux内核</a></h3></div>
+<p>
+<a href="https://www.kernel.org">https://www.kernel.org</a>
+</p>
+
+<div id="课程内容摘抄-Project 1 -- 编译Linux内核-编译Linux内核"><h3 id="编译Linux内核" class="header"><a href="#课程内容摘抄-Project 1 -- 编译Linux内核-编译Linux内核">编译Linux内核</a></h3></div>
+<ul>
+<li>
+直接运行下面的命令
+
+<li>
+过程中有什么报错，就把对应的包安装上
+<pre class="brush: shell">
+cd ~/Downloads/linux-4.5
+make
+make modules_install
+make install
+
+cd /boot
+mkinitramfs  -o /boot/initrd.img-4.5.0 4.5.0
+</pre>
+
+</ul>
+
+<div id="课程内容摘抄-Project 2A -- 模块编程"><h2 id="Project 2A -- 模块编程" class="header"><a href="#课程内容摘抄-Project 2A -- 模块编程" class="justcenter">Project 2A -- 模块编程</a></h2></div>
+<div id="课程内容摘抄-Project 2A -- 模块编程-调试方法"><h3 id="调试方法" class="header"><a href="#课程内容摘抄-Project 2A -- 模块编程-调试方法">调试方法</a></h3></div>
+<ul>
+<li>
+安装模块：<code>insmod 文件名 [模块参数名=参数值] ...</code>
+
+<li>
+列出模块：<code>lsmod</code>
+
+<li>
+删除模块：<code>rmmod 模块名</code>
+
+<li>
+查看模块：<code>modinfo *.ko</code>
+
+<li>
+看内核缓冲区：<code>dmesg</code>
+
+</ul>
+
+<div id="课程内容摘抄-Project 2A -- 模块编程-编程方法"><h3 id="编程方法" class="header"><a href="#课程内容摘抄-Project 2A -- 模块编程-编程方法">编程方法</a></h3></div>
+<ul>
+<li>
+肯定要有这三个库：
+
+<ul>
+<li>
+<code>#include &lt;linux/init.h&gt;</code>
+
+<li>
+<code>#include &lt;linux/module.h&gt;</code>
+
+<li>
+<code>#include &lt;linux/kernel.h&gt;</code>
+
+</ul>
+<li>
+想要操作 <span id="课程内容摘抄-Project 2A -- 模块编程-编程方法-/proc"></span><strong id="/proc">/proc</strong> 需要 <code>#include &lt;linux/proc_fs.h&gt;</code>
+
+<ul>
+<li>
+在4.5.0中，还需要 <code>#include &lt;linux/seq_file.h&gt;</code>
+
+</ul>
+<li>
+模块入口：
+<pre class="brush: c">
+static int __init hello_init(void) {
+    printk("&lt;6&gt;Greeting from a linux kernel module.\n");
+    printk("&lt;6&gt;whom=%s,howmany=%d\n",whom,howmany);
+    proc_create("hello_proc", 0, NULL, &amp;hello_proc_fops);
+    return 0;
+}
+module_init(hello_init);
+</pre>
+
+<li>
+模块出口：
+<pre class="brush: c">
+static void __exit hello_exit(void) {
+    remove_proc_entry("hello_proc", NULL);
+    printk("&lt;6&gt;Bye.\n");
+}
+module_exit(hello_exit);
+</pre>
+
+<li>
+模块参数：
+
+<ul>
+<li>
+添加变量：module_param(name, type, perm)
+<pre class="brush: c">
+static char* whom="world";
+static int howmany=1;
+module_param(howmany, int, S_IRUGO);
+module_param(whom, charp, S_IRUGO);
+</pre>
+
+<li>
+type的取值：
+
+<ul>
+<li>
+byte(unsigned char)
+
+<li>
+short
+
+<li>
+ushort
+
+<li>
+int
+
+<li>
+uint
+
+<li>
+long
+
+<li>
+ulong
+
+<li>
+charp(char* 不超1024字节的字符串)
+
+<li>
+bool(int 取值y Y 1 or n N 0)
+
+<li>
+invbool(int 同bool 但意义相反)
+
+</ul>
+<li>
+perm的取值：若不为零，则模块装载后，会在 /sys/module/模块名/parameters/ 目录中产生对应于每个模块参数的文件
+<pre class="brush: c">
+#define S_IRUSR 00400 // 文件所有者可读
+#define S_IWUSR 00200 // 文件所有者可写
+#define S_IXUSR 00100 // 文件所有者可执行
+#define S_IRGRP 00040 // 与文件所有者同组的用户可读
+#define S_IWGRP 00020
+#define S_IXGRP 00010
+#define S_IROTH 00004 // 与文件所有者不同组的用户可读
+#define S_IWOTH 00002
+#define S_IXOTH 00001
+// 在 C 语言中,将以上权限用|操作符连接以得到你想设置的权限。:)
+</pre>
+
+<li>
+添加数组：module_param_array(name, type, num, perm)
+
+<li>
+num: 是整型指针(int *)，模块装载成功后，数组元素个数会被存于 *num。
+
+</ul>
+<li>
+打印语句：<code>printk("&lt;0~7&gt;...");</code>
+
+<ul>
+<li>
+开头这个数字，表示打印内容的优先级别
+<pre class="brush: c">
+#define KERN_EMERG      "&lt;0&gt;"   /* system is unusable */
+#define KERN_ALERT      "&lt;1&gt;"   /* action must be taken immediately */
+#define KERN_CRIT       "&lt;2&gt;"   /* critical conditions */
+#define KERN_ERR        "&lt;3&gt;"   /* error conditions */
+#define KERN_WARNING    "&lt;4&gt;"   /* warning conditions */
+#define KERN_NOTICE     "&lt;5&gt;"   /* normal but significant condition */
+#define KERN_INFO       "&lt;6&gt;"   /* informational */
+#define KERN_DEBUG      "&lt;7&gt;"   /* debug-level messages */
+</pre>
+
+</ul>
+<li>
+模块操作 <span id="课程内容摘抄-Project 2A -- 模块编程-编程方法-/proc"></span><strong id="/proc">/proc</strong> 文件：
+<pre class="brush: c">
+static int hello_proc_show(struct seq_file *m, void *v) {
+    seq_printf(m, "Hello proc!\n");
+    return 0;
+}
+static int hello_proc_open(struct inode *inode, struct file *file) {
+    return single_open(file, hello_proc_show, NULL);
+}
+static const struct file_operations hello_proc_fops = {
+    .owner = THIS_MODULE,
+    .open = hello_proc_open,
+    .read = seq_read,
+    .llseek = seq_lseek,
+    .release = single_release,
+};
+</pre>
+
+</ul>
+
+<div id="课程内容摘抄-Project 2A -- 模块编程-样例代码"><h3 id="样例代码" class="header"><a href="#课程内容摘抄-Project 2A -- 模块编程-样例代码">样例代码</a></h3></div>
+<pre class="brush: c">
+#include &lt;linux/init.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/proc_fs.h&gt;
+#include &lt;linux/seq_file.h&gt;
+
+//struct proc_dir_entry *entry;
+static char* whom="world";
+static int howmany=1;
+
+static int hello_proc_show(struct seq_file *m, void *v) {
+    seq_printf(m, "Hello proc!\n");
+    return 0;
+}
+
+static int hello_proc_open(struct inode *inode, struct file *file) {
+    return single_open(file, hello_proc_show, NULL);
+}
+
+static const struct file_operations hello_proc_fops = {
+    .owner = THIS_MODULE,
+    .open = hello_proc_open,
+    .read = seq_read,
+    .llseek = seq_lseek,
+    .release = single_release,
+};
+
+static int __init hello_init(void) {
+    printk("&lt;6&gt;Greeting from a linux kernel module.\n");
+    printk("&lt;6&gt;whom=%s,howmany=%d\n",whom,howmany);
+    proc_create("hello_proc", 0, NULL, &amp;hello_proc_fops);
+    return 0;
+}
+
+static void __exit hello_exit(void) {
+    remove_proc_entry("hello_proc", NULL);
+    printk("&lt;6&gt;Bye.\n");
+}
+
+module_init(hello_init);
+
+module_exit(hello_exit);
+
+MODULE_LICENSE("GPL");
+
+module_param(howmany, int, S_IRUGO);
+module_param(whom, charp, S_IRUGO);
+</pre>
+
+<div id="课程内容摘抄-Project 2B -- 进程管理"><h2 id="Project 2B -- 进程管理" class="header"><a href="#课程内容摘抄-Project 2B -- 进程管理" class="justcenter">Project 2B -- 进程管理</a></h2></div>
+<div id="课程内容摘抄-Project 2B -- 进程管理-编程方法"><h3 id="编程方法" class="header"><a href="#课程内容摘抄-Project 2B -- 进程管理-编程方法">编程方法</a></h3></div>
+<ul>
+<li>
+统计模块调用次数
+
+<ul>
+<li>
+全在这篇 <a href="http://freemanhsu.github.io/Add-Schedule-Counter-in-Kernel/">博客</a> 里，只要解决一下版本问题就好
+
+<li>
+重新编译内核：
+<pre class="brush: c">
+cd ~/Downloads/linux-4.5
+make clean                  // 加上这句
+make mrproper               // 加上这句
+make
+make modules_install
+make install
+
+cd /boot
+mkinitramfs  -o /boot/initrd.img-4.5.0 4.5.0
+</pre>
+
+</ul>
+</ul>
+
+<div id="课程内容摘抄-Project 2B -- 进程管理-Commands Frequently Used"><h3 id="Commands Frequently Used" class="header"><a href="#课程内容摘抄-Project 2B -- 进程管理-Commands Frequently Used">Commands Frequently Used</a></h3></div>
+<p>
+<img src="../image/Linux内核/11.png "  style="width:1000px" />
+<img src="../image/Linux内核/12.png "  style="width:1000px" />
+</p>
+
+<div id="课程内容摘抄-Project 3 -- 内存管理"><h2 id="Project 3 -- 内存管理" class="header"><a href="#课程内容摘抄-Project 3 -- 内存管理" class="justcenter">Project 3 -- 内存管理</a></h2></div>
+<div id="课程内容摘抄-Project 3 -- 内存管理-调试流程"><h3 id="调试流程" class="header"><a href="#课程内容摘抄-Project 3 -- 内存管理-调试流程">调试流程</a></h3></div>
+<ol>
+<li>
+安装自己写的mtest模块
+
+<li>
+执行下列命令，分别使用dmesg察看结果
+
+<ol>
+<li>
+<code>echo listvma &gt; mtest</code>
+
+<ul>
+<li>
+列出当前进程的所有虚拟内存
+
+</ul>
+<li>
+<code>echo findpage &lt;addr&gt; &gt; mtest</code>
+
+<ul>
+<li>
+找到某虚拟地址对应的物理地址
+
+</ul>
+<li>
+<code>echo writeval &lt;addr&gt; &lt;value&gt; &gt; mtest</code>
+
+<ul>
+<li>
+向某虚拟地址写对应的值
+
+</ul>
+</ol>
+</ol>
+
+<div id="课程内容摘抄-Project 4 -- 文件系统"><h2 id="Project 4 -- 文件系统" class="header"><a href="#课程内容摘抄-Project 4 -- 文件系统" class="justcenter">Project 4 -- 文件系统</a></h2></div>
+<div id="课程内容摘抄-Project 4 -- 文件系统-调试流程"><h3 id="调试流程" class="header"><a href="#课程内容摘抄-Project 4 -- 文件系统-调试流程">调试流程</a></h3></div>
+<ol>
+<li>
+安装自己改好的romfs模块
+
+<li>
+<code>apt-get install genromfs</code>
+
+<li>
+创建一个文件夹，里面放上各种文件（当然得有NULL文件），把执行权限都删去
+
+<li>
+把这个文件夹生成romfs：<code>genromfs -f &lt;xx.img&gt;</code>
+
+<li>
+生成一个空文件夹
+
+<li>
+然后挂载：<code>mount -o loop &lt;xx.img&gt; &lt;empty_dir&gt;</code>
+
+<li>
+执行测试命令
+
+<ul>
+<li>
+<code>ls -l &lt;empty_dir&gt;</code>，结果应当没有NULL
+
+<li>
+<code>ls -l &lt;empty_dir&gt;/NULL</code>，应当可以看到NULL，并且发现其有x权限
+
+<li>
+<code>cat &lt;empty_dir&gt;/NULL</code>，应当看不到NULL的内容，只能看到*******
+
+<li>
+<code>cat &lt;origin_dir&gt;/NULL</code>，应当看得到NULL的内容
+
+</ul>
+</ol>
+
+<div id="附录"><h1 id="附录" class="header"><a href="#附录">附录</a></h1></div>
+<ul>
+<li>
+吴晨涛 老师
+
+<ul>
+<li>
+<a href="mailto:wuct@cs.sjtu.edu.cn ">邮箱</a>
+
+<li>
+办公室 SEIEE 3-513
+
+<li>
+职位 Associate Professor Dept. of CSE, SJTU
+
+<li>
+学历 Dual Ph.D.
+
+<ul>
+<li>
+2012, Electrical and Computer Engineering, Virginia Commonwealth University (VCU), Richmond, VA, USA
+
+<li>
+2010, Computer Architecture, Huazhong University of Science and Technology (HUST), Wuhan, China
+
+</ul>
+<li>
+研究领域 Data Storage Systems
+
+<ul>
+<li>
+Storage management for Big Data
+
+<li>
+Cloud storage, Green storage
+
+<li>
+Reliable storage systems (e.g., disk arrays)
+
+<li>
+Semantic file systems (e.g., object-based storage sys.)
+
+<li>
+Cache Algorithms in storage systems
+
+</ul>
+<li>
+<a href="http://epcc.sjtu.edu.cn ">实验室</a>
+
+<ul>
+<li>
+领导 Prof. Minyi Guo (Dean of CSE Dept.)
+
+<li>
+研究领域 Parallel and Distributed Computing
+
+<ul>
+<li>
+Parallel and Distributed Systems/Networks
+
+<li>
+High Performance Computing
+
+<li>
+Cloud Computing
+
+<li>
+Big Data
+
+</ul>
+</ul>
+</ul>
+<li>
+在这里 下载课件、上传Project
+
+<ul>
+<li>
+<a href="ftp://public.sjtu.edu.cn ">ftp</a>
+
+<li>
+User: wuct
+
+<li>
+Password: wuct123456
+
+</ul>
+<li>
+谭超 助教
+
+<ul>
+<li>
+<a href="mailto:345243921@qq.com ">邮箱</a>
+
+<li>
+手机 15821274485
+
+</ul>
+<li>
+书籍
+
+<ul>
+<li>
+没有教材
+
+<li>
+参考书
+
+<ul>
+<li>
+Understanding the Linux Kernel 3<sup><small>rd</small></sup> Edition
+
+<li>
+Linux Kernel Drivers 3<sup><small>rd</small></sup> Edition
+
+<li>
+Linux Kernel Development 3<sup><small>rd</small></sup> Edition
+
+</ul>
+</ul>
+<li>
+前置课程
+
+<ul>
+<li>
+计算机组成、操作系统
+
+<li>
+C/C++编程
+
+</ul>
+<li>
+教学目标
+
+<ul>
+<li>
+理解Linux内核中的C语言编程（即模块编程）
+
+<li>
+理解操作系统内核内容（包括进程、线程、同步、虚拟内存管理、文件管理）
+
+<li>
+学习Linux计算机的内核都实际做了些什么，从芯片一直到应用
+
+</ul>
+<li>
+阅读源码
+
+<ul>
+<li>
+Source Insight 3.5
+
+<ul>
+<li>
+Download source code from <a href="http://www.kernel.org">http://www.kernel.org</a>
+
+</ul>
+<li>
+Web site:
+
+<ul>
+<li>
+<a href="http://lxr.oss.org.cn/">http://lxr.oss.org.cn/</a>
+
+<li>
+<a href="http://lxr.free-electrons.com">http://lxr.free-electrons.com</a>
+
+</ul>
+</ul>
+<li>
+一本参考书
+
+<ul>
+<li>
+<a href="../book/Linux内核注释.pdf ">Linux内核注释</a>
+
+</ul>
+</ul>
+
+</div>
+
+<hr class="comment">
+<section class="comment">
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'lotaboutvimwiki'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+   
+</section>
+
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

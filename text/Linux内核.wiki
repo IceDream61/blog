@@ -1,0 +1,1203 @@
+%toc
+
+= 计算机是什么样子的？ =
+- 计算资源（SMP）：多个CPU，每个里面有多个核，普遍使用SMP架构
+- 计算任务（进程管理）：多个任务，每个任务多个进程（Linux里面的LWP），互相之间根据优先级抢占运行
+- 计算数据（内存管理）：多个MM（Memory），每个进程有各自的MM，全局也有公有的MM，进程优先使用自己的
+- 计算难点（内核同步）：内核同步，在如此复杂并行下保证所有数据的正确性
+- 计算细节（Booting、源码结构、虚拟文件系统）：如何启动与中止，其内部细节具体如何
+- 计算扩容（基于对象的文件系统）：将内存独立出去，处理更大的计算量
+- 计算迁移（安卓介绍、电源管理）：在手机上，电量极少，如何进行计算
+
+= 最终要掌握的东西 =
+    == 进程管理 ==
+=== 介绍 ===
+    - Linux里面没有进程、线程，只有：LWP
+        - 并行、共享资源，对多进程的支持更好
+    - Process Descriptor: task_struct
+        - 各种信息：state, thread_info, mm, tty, fs, signal, ...
+        - state
+            - Running：TASK_RUNNING, TASK_TRACED
+            - Sleeping：TASK_INTERRUPTABLE, TASK_UNINTERRUPTABLE
+            - Non-exist：TASK_STOPPED, EXIT_ZOMBIE, EXIT_DEAD
+        - PID 16-bit
+    - Process Kernel Stack
+        - 为当前进程，存下thread_info，其与Process Descriptor可以相互找到
+    - Process List
+        - 所有的进程
+        - Doubly linked list
+    - Wait Queue
+        - 所有Sleeping的进程
+        - Doubly linked list
+    - Run Queue
+        - 所有Running的进程
+        - {{ local:../image/Linux内核/37.png || style="width: 1000px"  }}
+    - PID Hash Table $\times$ 4
+        - pid, tgid, pgid, sid
+        - {{ local:../image/Linux内核/38.png || style="width: 1000px"  }}
+    - Process Resouce Limits
+        - eg: RLIMIT_CORE, RLIMIT_CPU, RLIMIT_MSGQUEUE, RLIMIT_SIGPENDING
+    - Process Switch
+        - Process switch, task switch, context switch
+            - Hardware context switch: a far jmp (in older Linux)
+            - Software context switch: a sequence of mov
+        - Performing the Process Switch
+            - Switching the Page Global Directory
+            - Switching the Kernel Mode stack and the hardware context
+    - Process Type
+        - Kernel Process
+            - Process 0 (swapper process)
+            - Process 1 (init process)
+            - Others: keventd, kapm, kswapd, kflushd (also bdflush), kupdated, ksoftirqd, ...
+        - User Process
+    - Creating Processes
+        - clone(), fork(), and vfork()
+        - kernel_thread(): to create a kernel thread
+    - Destroying Processes
+        - exit() library function
+        - Process removal: Releasing the process descriptor of a zombie process by release_task()
+
+=== 调度 ===
+    - Scheduling Policy
+        - Based on time-sharing: Time slice
+        - Based on priority ranking: Dynamic
+        - Classification of processes: Interactive processes, Batch processes, Real-time processes
+    - System Calls
+        - eg: `nice() // change the priority`, `setpriority()`, `getpriority()`
+    - Process Preemption
+        - 根据公式计算优先级
+        - Real time priority: 1-99
+        - Conventional processes: 100-139
+    - Active and Expired Processes
+        - 区分是否处于其时间片
+    - The schedule() Function
+        - 进程切换的具体动作
+        - Direct invocation
+        - Lazy invocation
+    - Motivation of Completely Fair Scheduler (CFS)
+        - Red-Black Tree
+
+    == 内核同步 ==
+=== 何时需要，何时不需要 ===
+    有问题就需要，没有就不需要……
+
+=== 各种同步的方法 ===
+    - Per-CPU variables
+    - Atomic operation
+    - 等待
+        - Memory barrier：某个空间上的操作，前面的都运行完，再去跑后面的
+        - Completions：更精细，例如：`wait()`
+    - Read-Copy Update（RCU）：RCU保护下的Kernel Control Path不可以被睡眠
+    - Lock
+        - Spin Lock：曾经很简单，同时就一个人能动；可以一起读，但是只能有一个人写（MP further protection）
+        - Semaphore：同上改进版，反正比Spin Lock复杂
+        - SeqLocks：有读的也能写
+    - Interrupt
+        - 不让某些中断启动，从而防止出问题，注意：是local的
+        - Local Interrupt disabling
+        - Local Softirq disabling
+    - Rule of thumb for kernel developers:
+        - Always keep the concurrency level as high as possible in the system
+        - Two factors:
+            - The number of I/O devices that operate concurrently
+            - The number of CPUs that do productive work
+
+    == 对称多处理器（SMP） ==
+=== 什么是SMP ===
+    - 多个核，一个内存，共享IO和device
+=== 什么是NUMA ===
+    - 很多内存，分给各个核，有本地的和公有的，本地的更快（和距离有关）
+=== SMP Scheduling ===
+    - 我们有多个核和多个任务
+    - 一个任务就用一个核的时候，可以不断将任务分配给空闲的核
+    - 一个任务可以用多个核的时候，可以用多个核同时跑一个任务
+=== Synchronization Problem ===
+    - 多个核可能同时操作一块内存空间
+    - 因此，需要用很多锁来解决这个问题
+    
+    == 内存管理 ==
+=== 逻辑地址、虚拟地址、物理地址 ===
+    - {{ local:../image/Linux内核/25.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/21.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/22.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/23.png || style="width: 1000px" }}
+
+=== Linux的具体情况 ===
+    - {{ local:../image/Linux内核/19.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/20.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/24.png || style="width: 1000px" }}
+
+=== Methods ===
+    - Page Frame Management
+    - Memory Area Management
+    - Noncontiguous Memory Area Management
+    - 记下了nothing！没看懂！
+    
+    == 虚拟文件系统理论？ ==
+    - Role of VFS
+        - A common interface to several kinds of filesystems
+        - Filesystems supported by the VFS
+            - Disk-based filesystems
+            - Network filesystems
+            - Special filesystems
+                - eg: /proc
+    - VFS Data Structures
+        - Superblock objects: super_block structure
+        - Inode objects: inode structure
+        - File objects: file structure (Table 12-4)
+        - Dentry objects: (Table 12-5)
+        - Dentry cache
+            - A set of dentry objects
+            - A hash table
+    - Filesystem Types
+        - Files Associated with a Process
+            - fs field: fs_struct structure
+            - files field: files_struct structure
+                - fd: file descriptors
+                - fd[0]: stdin
+                - fd[1]: stdout
+                - fd[2]: stderr
+            - NR_OPEN: max # of file descriptors for a process
+                - Usually 1,048,576
+        - Special Filesystems
+            - /dev/pts: pseudo terminal support
+            - /proc: general access point to kernel data structures
+            - /sys: general access point to system data
+            - /proc/bus/usb: USB devices
+            - ...
+        - Filesystem Type Registration
+            - File_system_type object
+            - Fs_flags
+    - Filesystem Handling
+        - {{ local:../image/Linux内核/26.png || style="width: 1000px" }}
+    - Pathname Lookup
+        - {{ local:../image/Linux内核/27.png || style="width: 1000px" }}
+    - Implementation of VFS System Calls
+        - Open()
+        - Read()
+        - Write()
+        - Close()
+    - File Locking
+        - {{ local:../image/Linux内核/28.png || style="width: 1000px" }}
+
+
+
+    == 安卓介绍 ==
+    - 代码结构
+    - 四大组件
+        - Activity
+        - Service
+        - Broadcast Receivers
+        - Content Provider
+
+    == 电源管理 ==
+    - Advanced Power Management (APM)
+        - 完全由BIOS决定
+        - 看timeout决定是否把某设备power down
+    - Advanced Configuration and Power Interface (ACPI)
+        - 与BIOS有关，其操作由OS决定
+        - 通过自动机，软件层的power down
+        - Global State(4) and Sleeping State(6)
+        - Legacy State：若这个启动，说明系统不支持或没启用ACPI
+    - Wake Lock
+        - 如果一个App启动了Wake Lock，那么系统就常亮了
+    - Main Lock
+        - 系统灭了时，就把它解锁
+    - Early Suspend
+        - 在Kernel Suspend（灭掉）之前，系统需要做的一些事情
+    - Resume Late
+        - 类似
+    - Battery Service
+        - 电池管理
+
+    == Project ==
+
+= 考试情报 $\rightarrow$ 目标：期末60分 =
+    - 分数设定
+        - 10：参与
+        - 20：Project
+        - 20：报告（读内核代码 or 参与贡献文档）
+        - 50：期末考试
+    - Project、报告要全部做完，怎么也能拿到30+，那么期末就是也要30+，即60分。
+
+= 脑子里还剩下的东西 =
+    == 进程管理 ==
+    - 轻量级进程 LWP(Lightweight Process)
+    - 进程描述符 Process Descriptor
+        - task_struct data structure
+            - 注：tty是控制台终端，ttyx是串口终端
+            - 这里放上SMP中的相关内容做参考
+                - {{ local:../image/Linux内核/17.png || style="width: 1000px" }}
+                - {{ local:../image/Linux内核/18.png || style="width: 1000px" }}
+    - PID（Process ID）、TGID（Thread Group ID）
+        - getpid()
+    - The Process List
+        - ???
+    - Pidhash Table and Chained Lists
+        - pid, tgid, pgid, sid
+        - ???
+    - Wait Queues
+        - ???
+    - Process Resource Limits
+    - Process Switch
+    - Creating Processes
+        - clone(), fork(), and vfork()
+    - Destroying Processes
+        - exit() library function: _exit(), exit_group()
+        - Process removal: Releasing the process descriptor of a zombie process by release_task()
+    - Process Preemption
+        - Conventional processes: 100-139
+        - Real time priority: 1-99
+    - Runqueue Balancing in Multiprocessor Systems
+        - 3 types of multiprocessor systems
+            - Classic multiprocessor architecture
+            - Hyper-threading
+            - NUMA
+    - Motivation of Completely Fair Scheduler (CFS)
+        - Red-Black Tree
+            - Value = fair_clock - wait_runtime + nice (smaller value $\rightarrow$ higher priority)
+            - nice(): change the priority
+
+    == 内核同步 ==
+    - Kernel Control Paths
+        - a sequence of instructions executed in kernel mode on behalf of current process
+        - Three CPU states are considered
+            - Running a process in User Mode (User)
+            - Running an exception or a system call handler (Excp)
+            - Running an interrupt handler (Intr)
+    - Kernel Preemption
+        - The main motivation for making a kernel preemptive is to reduce the dispatch latency of the user mode processes: Delay between the time they become runnable and the time they actually begin running
+    - When Synchronization is Necessary
+        - A race condition can occur when the outcome of a computation depends on how two or more interleaved kernel control paths are nested
+        - To identify and protect the critical regions in exception handlers, interrupt handlers, deferrable functions, and kernel threads
+            - On single CPU, critical region can be implemented by disabling interrupts while accessing shared data
+            - If the same data is shared only by the service routines of system calls, critical region can be implemented by disabling kernel preemption while accessing shared data
+        - Things are more complicated on multiprocessor systems
+            - Different synchronization techniques are necessary
+    - When Synchronization is not Necessary
+        - The same interrupt cannot occur until the handler terminates
+        - Interrupt handlers and softirqs are non- preemptable, non-blocking
+        - A kernel control path performing interrupt handling cannot be interrupted by a kernel control path executing a deferrable function or a system call service routine
+        - Softirqs cannot be interleaved
+    - Synchronization Primitives
+        - {{ local:../image/Linux内核/13.png || style="width: 1000px" }}
+    - Synchronizing Accesses to Kernel Data Structures
+    - Examples of Race Condition Prevention
+    
+    == 对称多处理器 (SMP) ==
+    - Introduction on SMP
+        - Categories of Computer Systems
+            - Single Instruction Single Data (SISD) stream
+            - Single Instruction Multiple Data (SIMD) stream
+            - Multiple Instruction Single Data (MISD) stream (Never implemented)
+            - Multiple Instruction Multiple Data (MIMD)
+                - Shared-Memory
+                    - Master/Slave
+                    - *Symmetric Multiprocessors (SMP)*
+                - Distributed-Memory
+                    - Clusters
+        - Typical SMP Organization
+            - {{local:../image/Linux内核/14.png || style="width: 1000px"}}
+    - SMP and NUMA
+        - Symmetric multiprocessing (SMP) involves
+            - a multiprocessor computer hardware and software architecture where two or more identical processors connect to a single, shared main memory, have full access to all I/O devices, and are controlled by a single OS instance that treats all processors equally, reserving none for special purposes.
+            - Most multiprocessor systems today use an SMP architecture. In the case of multi-core processors, the SMP architecture applies to the cores, treating them as separate processors.
+            - {{local:../image/Linux内核/15.png || style="width: 1000px"}}
+        - Non-uniform memory access (NUMA) is
+            - a computer memory design used in multiprocessing, where the memory access time depends on the memory location relative to the processor.
+            - Under NUMA, a processor can access its own local memory faster than non-local memory (memory local to another processor or memory shared between processors).
+            - The benefits of NUMA are limited to particular workloads, notably on servers where the data are often associated strongly with certain tasks or users
+            - {{local:../image/Linux内核/16.png || style="width: 1000px"}}
+    - Process Scheduling with SMP
+        - 就两张图，看不懂啊......
+    - Synchronization Problem with SMP
+        - Lock
+        - 不需要知道啥吧？？？
+    
+    == 读源代码 -- SMP ==
+    - 两类CPU
+        - BSP，又称BP，全称Bootstrap Processor，中文：启动CPU
+        - AP，全称Application Processor，中文：应用CPU
+    - 两类中断
+        - APIC，中文：高级可编程中断控制器
+            - 本地APIC
+            - IO APIC
+        - IPI，中文：处理器间中断 $\leftarrow$ 处理器间通信
+    - 在SMP机器上,Linux的启动过程是怎样的?
+        - BSP负责操作系统的启动,在启动的最后阶段,BSP通过IPI激活各个AP,在系统的正常运行过程中,BSP和AP基本上是无差别的。
+        - BSP启动主要流程如下：
+            # BIOS初始化（屏蔽AP，建配置表格）
+            # MBR里的初始程序（GRUB、LILO等）将内核加载到内存
+            # 执行head.s中的start_up32函数（其末尾将调用start_kernel）
+            # 执行start_kernel（曾main）
+            # 其进行一系列初始化，最后将执行：
+                - smp_init()    // 启动各AP
+                - rest_init()   // 创建1号进程，自身成为0号进程 $leftarrow$ cpu_idel()
+            # 1号进程（init进程）完成其余工作
+        - AP启动流程：
+            # 被BSP启动后，在执行head.s中的start_up32函数时，进入initialize_secondary()
+            # 执行后，再跳至start_secondary()，大体流程如下：
+                - cpu_init()
+                - smp_callin()
+                - ...
+                - return cpu_idle()
+    - 在SMP机器上,Linux的进程调度如何进行?
+        - 与UP系统的主要差别是执行进程切换后, 被换下的进程有可能会换到其他CPU上继续运行。在计算优先权时,如果进程上次运行的CPU也是当前CPU,则会适当提高优先权,这样可以更有效地利用 Cache。
+        - {{ local:../image/Linux内核/17.png || style="width: 1000px" }}
+        - {{ local:../image/Linux内核/18.png || style="width: 1000px" }}
+    - 在SMP机器中,中断系统有何特点?
+        - 为了支持SMP,在硬件上需要APIC中断控制系统。Linux定义了各种IPI的中断向量以及传送IPI的函数。
+    
+    == 基于对象的文件系统 (Object-based File System) ==
+    - {{ local:../image/Linux内核/30.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/31.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/32.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/33.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/34.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/35.png || style="width: 1000px" }}
+    - {{ local:../image/Linux内核/36.png || style="width: 1000px" }}
+    
+= 课程内容摘抄 =
+    == 整体介绍 ==
+=== 什么是Linux（历史、家族、特点、发行版） ===
+    - 作者 Linus Torvalds
+    - 更多历史详见[[https://zh.wikipedia.org/wiki/Linux | 维基百科 -- Linux]]
+=== 两种模式 ===
+    - User mode: Application software, C standard library
+    - Kernel mode: System Calls, Linux kernel, Hardware
+=== 什么是内核 ===
+    - 设计目标
+        # 性能：效率、速度
+        # 稳定：健壮、适应
+        # 能力：多面、灵活、兼容
+        # 安全
+        # 可移植
+        # 可扩展
+    - 举例
+        # 应用
+        # 系统库（libc）
+        # 模块
+            # 系统调用接口
+            # I/O相关
+                # 文件系统
+                # 网络
+                # 设备驱动
+            # 进程相关
+                # 调度
+                # 内存管理
+                # IPC
+            # 架构独立代码
+        # 硬件
+    - 架构特点
+        # 巨大
+        # 分层
+        # 模块化
+        # 微核
+        # 虚拟机
+    == 源码介绍 ==
+=== 系统源码结构 ===
+    - *root* - The home directory for the root user.
+    - *home* - Contains the user's home directories along with directories for services..
+    - *bin* - Commands needed during booting up that might be needed by normal users
+    - *sbin* - Like bin but commands are not intended for normal users. Commands run by LINUX.
+    - *proc* - This filesystem is not on a disk. It is a virtual filesystem that exists in the kernels imagination which is memory.
+    - *usr* - Contains all commands, libraries, man pages, games and static files for normal operation.
+        - *bin* - Almost all user commands. some commands are in /bin or /usr/local/bin.
+        - *sbin* - System admin commands not needed on the root filesystem. e.g., most server programs.
+        - *include* - Header files for the C programming language. Should be below /user/lib for consistency.
+        - *lib* - Unchanging data files for programs and subsystems.
+        - *local* - The place for locally installed software and other files.
+        - *man* - Manual pages.
+        - *info* - Info documents.
+        - *doc* - Documentation.
+        - *tmp*
+        - *X11R6* - The X windows system files. There is a directory similar to usr below this directory.
+        - *X386* - Like X11R6 but for X11 release 5.
+    - *boot* - Files used by the bootstrap loader. Kernel images are often kept here.
+    - *lib* - Shared libraries needed by the programs on the root filesystem.
+    - *modules* - Loadable kernel modules, especially those needed to boot the system after disasters.
+    - *dev* - Device files.
+    - *etc* - Configuration files specific to the machine.
+    - *skel* - When a home directory is created it is initialized with files from this directory.
+    - *sysconfig* - Files that configure the linux system for devices.
+    - *var* - Contains files that change for mail, news, printers log files, man pages, temp files.
+        - *file*
+        - *lib* - Files that change while the system is running normally.
+        - *local* - Variable data for programs installed in /usr/local.
+        - *lock* - Lock files. Used by a program to indicate it is using a particular device or file.
+        - *log* - Log files from programs such as login and syslog which logs all logins and logouts.
+        - *run* - Files that contain information about the system that is valid until the system is next booted.
+        - *spool* - Directories for mail, printer spools, news and other spooled work.
+        - *tmp* - Temporary files that are large or need to exist for longer than they should in /tmp.
+        - *catman* - A cache for man pages that are formatted on demand.
+    - *mnt* - Mount（挂载） points for temporary mounts by the system administrator.
+    - *tmp* - Temporary files. Programs running after bootup should use /var/tmp.
+=== 内核源码结构 ===
+    - *linux/arch*
+        - 都是针对各个不同系统架构的源代码
+        - Each contains *kernel*, *lib*, *mm*, *boot* and other directories whose contents override code stubs in architecture independent code.
+        - 具体讲几个子目录：
+            - *lib* contains highly-optimized common utility routines such as memcpy, checksums, etc.
+    - *linux/drivers*
+        - 所有Linux的设备驱动，源代码中绝大多数都是这些（大约1.5M）
+        - *device*, *bus*, *platform* and general directories.
+        - 具体讲几个子目录：
+            - *char* – n_tty.c is the default line discipline.
+            - *block* – elevator.c, genhd.c, linear.c, ll_rw_blk.c, raidN.c.
+            - *net* – specific drivers and general routines Space.c and net_init.c.
+            - *scsi* – scsi_*.c files are generic;
+                - sd.c (disk)
+                - sr.c (CD- ROM)
+                - st.c (tape)
+                - sg.c (generic)
+            - 常用的几个：
+                - *cdrom*
+                - *ide*
+                - *isdn*
+                - *parport*
+                - *pcmcia*
+                - *pnp*
+                - *sound*
+                - *telephony*
+                - *video*
+            - *bus* – fc4, i2c, nubus, pci, sbus, tc, usb.
+            - *platform* – acorn, macintosh, s390, sgi.
+    - *linux/fs*
+        - 含两部分：
+            - 虚拟文件系统（VFS，Virtual File System）架构
+            - 实际文件系统的子目录
+        - 具体讲几个子文件：
+            - exec.c, binfmt_*.c - files for mapping new process images.
+            - devices.c, blk_dev.c – device registration, block device support.
+            - super.c, filesystems.c.
+            - inode.c, dcache.c, namei.c, buffer.c, file_table.c.
+            - open.c, read_write.c, select.c, pipe.c, fifo.c.
+            - fcntl.c, ioctl.c, locks.c, dquot.c, stat.c.
+    - *linux/include*
+        - 这个目录是干嘛的来着～？
+        - 具体讲几个子目录：
+            - *asm-generic* - Architecture-dependent include subdirectories.
+            - *linux*
+                - Header info needed both by the kernel and user apps.
+                - Usually linked to /usr/include/linux.
+                - Kernel-only portions guarded by `#ifdef __KERNEL__`
+            - 随便列几个：
+                - *math-emu*
+                - *net*
+                - *pcmcia*
+                - *scsi*
+                - *video*
+    - *linux/init*
+        - 只有两个文件（新版已经不是这样了）
+            - version.c – contains the version banner that prints at boot.
+            - main.c – architecture-independent boot code.
+        - start_kernel is the primary entry point.
+    - *linux/ipc*
+        - 系统级进程间通信工具
+        - If disabled at compile-time, util.c exports stubs that simply return –ENOSYS.
+        - One file for each facility:
+            - sem.c – semaphores.
+            - shm.c – shared memory.
+            - msg.c – message queues.
+    - *linux/kernel*
+        - Linux内核的核心代码
+        - sched.c – "the main kernel file":
+            - scheduler
+            - wait queues
+            - timers
+            - alarms
+            - task queues
+        - 进程控制
+            - fork.c, exec.c, signal.c, exit.c etc...
+        - Kernel module support:
+            - kmod.c, ksyms.c, module.c.
+        - Other operations:
+            - time.c, resource.c, dma.c, softirq.c, itimer.c.
+            - printk.c, info.c, panic.c, sysctl.c, sys.c.
+    - *linux/lib*
+        - 内核代码不能调用这里的标准C库代码
+        - 介绍几个文件：
+            - brlock.c – “Big Reader” spinlocks.
+            - cmdline.c – kernel command line parsing routines.
+            - errno.c – global definition of errno.
+            - inflate.c – “gunzip” part of gzip.c used during boot.
+            - string.c – portable string code.
+                - Usually replaced by optimized, architecture- dependent routines.
+            - vsprintf.c – libc replacement.
+    - *linux/mm*
+        - 内存
+        - Paging and swapping:
+            - swap.c, swapfile.c (paging devices), swap_state.c (cache).
+            - vmscan.c – paging policies, kswapd.
+            - page_io.c – low-level page transfer.
+        - Allocation and deallocation:
+            - slab.c – slab allocator.
+            - page_alloc.c – page-based allocator.
+            - vmalloc.c – kernel virtual-memory allocator.
+        - Memory mapping:
+            - memory.c – paging, fault-handling, page table code.
+            - filemap.c – file mapping.
+            - mmap.c, mremap.c, mlock.c, mprotect.c.
+    - *linux/scripts*
+        - 一些脚本，功能如下
+            - Menu-based kernel configuration.
+            - Kernel patching.
+            - Generating kernel documentation.
+    == Booting（是什么、详细介绍：BIOS、MBR、GRUB、LILO、Init Process） ==
+=== System startup: BIOS / BootMonitor ===
+Booting:: 一个引导进程，会在用户打开计算机时，打开操作系统
+Booting Sequence::
+:: 载入操作系统时，计算机做的一系列操作
+:: 1. Turn on
+:: 2. CPU jump to address of BIOS (0xFFFF0)
+:: 3. BIOS runs POST (Power-On Self Test)
+:: 4. Find bootale devices
+:: 5. Load and execute boot sector form MBR
+:: 6. Load OS
+BIOS, Basic Input/Output System::
+:: BIOS是计算机刚打开时运行的一段代码
+:: BIOS最基本的函数是一段写在芯片里的代码，可以识别和控制计算机的众多设备
+=== Stage 1 bootloader: Master Boot Record ===
+MBR, Master Boot Record::
+:: OS is booted from a hard disk, where the Master Boot Record (MBR) contains the primary boot loader
+:: The MBR is a 512-byte sector, located in the first sector on the disk (sector 1 of cylinder 0, head 0)
+:: After the MBR is loaded into RAM, the BIOS yields control to it.
+:: {{local:../image/Linux内核/6.png || style="width:1000px"}}
+:: The first 446 bytes are the primary boot loader, which contains both executable code and error message text
+:: The next 64 bytes are the partition table, which contains a record for each of four partitions
+:: The MBR ends with two bytes that are defined as the magic number (0xAA55). The magic number serves as a validation check of the MBR
+:: To see the contents of MBR, use this command:
+:: # dd if=/dev/hda of=mbr.bin bs=512 count=1
+:: # od -xa mbr.bin
+:: The dd command, which needs to be run from root, reads the first 512 bytes from /dev/hda (the first Integrated Drive Electronics, or IDE drive) and writes them to the mbr.bin file.
+:: The od command prints the binary file in hex and ASCII formats.
+=== Stage 2 bootloader: LILO, GRUB, etc. ===
+Boot Loader::
+:: 其实应该叫Kernel Loader，作用是载入Linux Kernel
+:: Optional, initial RAM disk
+:: GRUB和LILO是最流行的两种Linux Boot Loader
+GRUB, GRand Unified Bootloader::
+:: GRUB is an operating system independant boot loader
+:: A multiboot software packet from GNU
+:: GRUB boot process
+:: 1. The BIOS finds a bootable device (hard disk) and transfers control to the master boot record
+:: 2. The MBR contains GRUB stage 1. Given the small size of the MBR, Stage 1 just load the next stage of GRUB
+:: 3. GRUB Stage 1.5 is located in the first 30 kilobytes of hard disk immediately following the MBR. Stage 1.5 loads Stage 2.
+:: 4. GRUB Stage 2 receives control, and displays to the user the GRUB boot menu (where the user can manually specify the boot parameters).
+:: 5. GRUB loads the user-selected (or default) kernel into memory and passes control on to the kernel.
+:: {{local:../image/Linux内核/7.png || style="width:1000px"}}
+LILO, LInux LOader::
+:: Not depend on a specific file system
+:: Can boot from harddisk and floppy
+:: Up to 16 different images
+:: Must change LILO when kernel image file or config file is changed
+=== Kernel: Linux ===
+Kernel::
+:: 大多数计算机操作系统的核心部分
+:: Kernel会一直存在于内存中，直至断电
+:: Tasks
+:: 1. Process management
+:: 2. Memory management
+:: 3. Device management
+:: 4. System call
+Kernel Image::
+:: 压缩过的Kernel图标
+:: zImage size less than 512 KB
+:: bzImage size greater than 512 KB
+:: Major functions flow for Linux kernel boot
+:: {{local:../image/Linux内核/8.png || style="width:1000px"}}
+=== Init: User-space ===
+Init Process::
+:: Kernel运行的第一段代码，也是Linux中所有进程的父进程
+:: The first processes that init starts is a script /etc/rc.d/rc.sysinit
+:: Based on the appropriate run-level, scripts are executed to start various processes to run the system and make it functional
+:: Process Id = 1
+:: Init is responsible for starting system processes as defined in the /etc/inittab file
+:: Init typically will start multiple instances of "getty" which waits for console logins which spawn one's user shell process
+:: Upon shutdown, init controls the sequence and processes for shutdown
+:: {{local:../image/Linux内核/9.png || style="width:1000px"}}
+Inittab file::
+:: The inittab file describes which processes are started at bootup and during normal operation
+:: /etc/init.d/boot
+:: /etc/init.d/rc
+:: The computer will be booted to the runlevel as defined by the initdefault directive in the /etc/inittab file
+:: id:5:initdefault:
+RunLevels::
+:: A runlevel is a software configuration of the system which allows only a selected group of processes to exist
+:: The processes spawned by init for each of these runlevels are defined in the /etc/inittab file
+:: Init can be in one of eight runlevels: 0-6
+:: {{local:../image/Linux内核/10.png || style="width:1000px"}}
+rc#.d files::
+:: rc#.d files are the scripts for a given run level that run during boot and shutdown
+:: The scripts are found in the directory /etc/rc.d/rc#.d/ where the symbol # represents the run level
+init.d::
+:: Deamon is a background process
+:: init.d is a directory that admin can start/stop individual demons by changing on it
+:: /etc/rc.d/init.d/ (Red Hat/Fedora )
+:: /etc/init.d/ (S.u.s.e.)
+:: /etc/init.d/ (Debian)
+Start/stop deamon::
+:: Admin can issuing the command and either the start, stop, status, restart or reload option
+:: i.e. to stop the web server:
+:: cd /etc/rc.d/init.d/
+:: (or /etc/init.d/ for S.u.s.e. and Debian)
+:: httpd stop
+    == 编程基础 ==
+=== 内核编程的不同之处 ===
+    - OS management
+        - Process management, memory management
+        - File systems
+    - Types of devices
+        - (Char, Block, SCSI, Net)-based devices $\rightarrow$ device drivers
+    - Loaded as modules or static in the kernel
+    - Challenges
+        - Portability
+        - IPC (Inter-Process Communication)
+        - Hardware Management
+        - Interface Stability
+=== 模块（什么是内核模块、优缺点、举例、如何编译） ===
+Module, Kernel Module::
+:: (wiki) An object file that contains code to extend the running kernel;
+:: (RedHat) Modules are pieces of code that can be loaded and unloaded into the kernel upon demand.
+:: Advantages
+:: 1. Allowing the dynamic insertion and removal of code from the kernel at run-time.
+:: 2. Save memory cost
+:: Disadvantages
+:: 1. Fragmentation Penalty $\rightarrow$ decrease memory performance
+    - 查看所有模块
+{{{class='brush: shell'
+# cd /lib/modules/<kernel-version>/
+# find . -name "*.ko"
+}}}
+    - 查看正在运行的模块
+{{{class='brush: shell'
+# lsmod
+}}}
+    - 查看正在运行的模块（另一种方法）
+{{{class='brush: shell'
+# cat /proc/modules
+}}}
+    - 模块代码样例
+        - Project中有，暂略
+    - 编译模块代码
+        - Project中有，暂略
+    - 模块相关命令
+        - Project中有，暂略
+=== /proc 文件系统（介绍、在其内创建文件的模块编程） ===
+    - */proc* 是一个虚拟的文件系统
+        - Real time, resides in the virtual memory
+        - Tracks the processes running on the machine and the state of the system
+        - A new */proc* file system is created every time your Linux machine reboots
+        - Highly dynamic. The size of the proc directory is 0 and the last time of modification is the last bootup time.
+        - */proc* file system doesn't exist on any particular media.
+        - The contents of the */proc* file system can be read by anyone who has the requisite permissions.
+        - Certain parts of the */proc* file system can be read only by the owner of the process and of course root. (and some not even by root!!)
+        - The contents of the */proc* are used by many utilities which grab the data from the particular */proc* directory and display it.
+        - eg : top, ps, lspci, dmesg etc
+    - */proc/sys* 更改此目录的文件内容，可以实时更改内核变量
+        - allows you to make configuration changes to a running kernel
+        - Changing a value within a */proc/sys* file is done by the 'echo' command
+        - Any configuration changes made thus will disappear when the system is restarted
+        - */proc/sys/dev* : provides parameters for particular devices on the system
+            - cdrom/info : many important CD-ROM parameters
+        - */proc/sys/fs*
+        - */proc/sys/kernel*
+            - acct — Controls the suspension of process accounting based on the percentage of free space available on the filesystem containing the log
+            - ctrl-alt-del — Controls whether [Ctrl]-[Alt]-[Delete] will gracefully restart the computer using init (value 0) or force an immediate reboot without syncing the dirty buffers to disk (value 1).
+            - domainname — Allows you to configure the system's domain name, such as domain.com.
+            - hostname — Allows you to configure the system's host name, such as host.domain.com.
+            - threads-max — Sets the maximum number of threads to be used by the kernel, with a default value of 4095.
+            - The random directory data related to generating random numbers for the kernel.
+            - panic — Defines the number of seconds the kernel will postpone rebooting the system when a kernel panic is experienced. By default, the value is set to 0, which disables automatic rebooting after a panic.
+        - */proc/sys/net*
+            - eg : /proc/sys/net/ipv4/ip_forward
+                - It has default value of "0" which can be seen using 'cat'.
+                - This can be changed in real time by just changing the value stored in this file from "0" to "1", thus allowing IP forwarding
+        - */proc/sys/vm* : facilitates the configuration of the Linux kernel's virtual memory (VM) subsystem
+    - 下面详细介绍目录中的各种文件：
+        - buddyinfo : Contains the number of free areas of each order for the kernel buddy system
+        - cmdline : Kernel command line
+        - cpuinfo : Information about the processor(s).(Human readable)
+        - devices : List of device drivers configured into the currently running kernel (block and character).
+        - dma : Shows which DMA channels are being used at the moment.
+        - execdomains : Execdomains, related to security
+        - fb : Frame Buffer devices.
+        - filesystems : Filesystems configured/supported into/by the kernel.
+        - interrupts : Number of interrupts per IRQ on the x86 architecture.
+        - iomem : This file shows the current map of the system's memory for its various devices
+        - ioports : provides a list of currently registered port regions used for input or output communication with a device
+        - kcore
+            - This file represents the physical memory of the system and is stored in the core file format.
+            - Unlike most /proc files, kcore does display a size. This value is given in bytes and is equal to the size of physical memory (RAM) used plus 4KB.
+            - Its contents are designed to be examined by a debugger, such as gdb, the GNU Debugger.
+            - Only the root user has the rights to view this file.
+        - kmsg : Used to hold messages generated by the kernel. These messages are then picked up by other programs, such as klogd
+        - loadavg
+            - Provides a look at load average
+            - The first three columns measure CPU utilization of the last 1, 5, and 10 minute periods.
+            - The fourth column shows the number of currently running processes and the total number of processes.
+            - The last column displays the last process ID used.
+        - locks : Displays the files currently locked by the kernel
+        - mdstat : contains the current information for multiple-disk, RAID configurations
+        - meminfo
+            - One of the more commonly used /proc files
+            - It reports back plenty of valuable information about the current utilization of RAM on the system
+        - misc : This file lists miscellaneous drivers registered on the miscellaneous major device, which is number 10
+        - modules : Displays a list of all modules that have been loaded by the system
+        - mounts : This file provides a quick list of all mounts in use by the system
+        - mtrr : This file refers to the current Memory Type Range Registers (MTRRs) in use with the system
+        - partitions : Very detailed information on the various partitions currently available to the system
+        - pci : Full listing of every PCI device on your system
+        - slabinfo : Information about memory usage on the slab level
+        - stat : Keeps track of a variety of different statistics about the system since it was last restarted
+        - swap : Measures swap space and its utilization
+        - uptime : Contains information about how long the system has on since its last restart
+        - version
+            - Tells the versions of the Linux kernel and gcc, as well as the version of
+            - Red Hat Linux installed on the system.
+    - */proc/<number>* 这些数字是进程Id，一个文件夹代表一个进程
+        - The contents of all the directories are the same as these directories contain the various parameters and the status of the corresponding process.
+        - You have full access only to the processes that you have started.
+        - 下面详细介绍目录中的各种文件：
+            - *cmdline* : it contains the whole command line used to invoke the process. The contents of this file are the command line arguments with all the parameters (without formatting/spaces).
+            - *cwd* : symbolic link to the current working directory
+            - *environ* : contains all the process-specific environment variables
+            - *exe* : symbolic link of the executable
+            - *maps* : parts of the process' address space mapped to a file.
+            - *fd* : this directory contains the list file descriptors as opened by the particular process.
+            - *root* : symbolic link pointing to the directory which is the root file system for the particular process
+            - *status* : information about the process
+    - */proc/self* : link to the currently running process
+    - */proc/bus* : contains information specific to the various buses available on the system
+        - eg : for ISA, PCI, and USB buses, current data on each is available in /proc/bus/<bus type directory>
+        - Individual bus directories, signified with numbers, contains binary files that refer to the various devices available on that bus
+        - devices file : USB root hub on the motherboard:
+    - */proc/driver* : specific drivers in use by kernel
+        - rtc : output from the driver for the Real Time Clock
+    - */proc/fs* : specific filesystem, file handle, inode, dentry and quota information
+    - */proc/ide* : information about IDE devices
+        - Each IDE channel is represented as a separate directory, such as /proc/ide/ide0 and /proc/ide/ide1
+        - drivers file : version number of the various drivers
+        - Device directories : data like cache, capacity, driver, geometry, media, model, settings
+    - */proc/irq* : used to set IRQ to CPU affinity
+        - smp_affinity : which CPUs handle that specific IRQ
+    - */proc/net* : networking parameters and statistics
+        - arp — kernel's ARP table. Useful for connecting hardware address to an IP address on a system.
+        - dev — Lists the network devices along with transmit and receive statistics.
+        - route — Displays the kernel's routing table.
+    - */proc/scsi* : like */proc/ide* it gives info about scsi devices
+
+    == 安卓介绍 ==
+=== Java回顾 ===
+=== XML回顾 ===
+    == 电源管理 ==
+=== Linux ===
+=== Android ===
+=== Wava Lock ===
+=== System Sleep (又名Suspend) ===
+=== Battery Service ===
+
+    == 读源代码 -- Booting ==
+=== 代码类型 ===
+    - C语言代码
+        - Linux主体是用GNU的C语言编写
+        - 从c++中吸收了“inline”和“const”
+        - 支持“属性描述符”(attribute)
+        - 增加了新的基本数据类型“long long int”用于支持64位cpu
+    - 汇编代码
+        - 分布在两个位置
+            - 完全的汇编代码，`.s`后缀
+            - 嵌入在C语言代码中的汇编代码
+        - 与一般的386汇编语言采用intel定义不同,它采用的是 AT&T定义的格式。主要差别如下:
+            - Intel中多使用大写字母,而这里大多使用小写字母
+            - 寄存器名前面要加“%”作为前缀,
+            - 指令的源操作数与目标操作数的顺序与intel的正好相反。AT&T格式中,源在前,目标在后
+            - 访问内存的指令的操作数大小(即宽度)由操作码名 称的最后一个字母决定,用作操作码后缀的字母有b( 8位),w(16位),l(32位),e.g movb
+            - 直接操作数要加“$”作为前缀,intel中不用
+            - 基本格式 -- asm(“汇编语句” :输出寄存器 :输入寄存器 :会被修改的寄存器);
+            - 输出和输入寄存器统一按顺序编号,起始是%0
+
+=== 基础知识 ===
+    - Linux的启动是指从系统加电到控制台显示登录提示为止的运行阶段:
+        - 主要相关的代码是在arch/i386/boot中:
+            - bootsect.S,这是linux引导扇区的源代码
+            - setup.S这是辅助程序的一部分
+            - video.S这是辅助程序的另外一部分,用于引导过程中的屏幕显示
+        - 另外,子目录compressed中还有两个源代码文件 head.S,misc.c。用于内核映象的解压缩。也属于辅助程序一部分。
+        - 经过编译,汇编和连接后就形成三个部分:引导扇区的映象bootsetc, 辅助程序setup 和 内核映象本身。
+        - 大小不超过508KB的内核引导映象称为小映象zImage; 否则称为大内核bzImage
+
+=== 系统引导 ===
+    - 加电开机后,intel cpu在实模式下工作,只能使用低端 的640kb(即0XA0000以下)的内存空间(why?)
+    - 由ROM BIOS或者lilo将启动盘的第一扇区(引导扇区 )的内容装入起始地址为0x7c00的内存空间,然后跳 转到0x7c00开始执行引导扇区的代码
+    - 该引导扇区内的代码就是bootset.S汇编后生成的二进 制代码
+    - 该段代码(bootset.S)将自身转移到0x90000处,然后跳 转到那里继续执行,并通过bios提供的“int 0x13”调用 从磁盘上读入setup和内核的映象,然后跳转到setup 的代码中,为执行内核映象做准备
+    - 对部分代码的解释如下所示: 
+        - {{local:../image/Linux内核/1.png || style="width:1000px"}}
+            - 这段代码将启动扇区代码由0x7C00移至0x90000处。 Linux将地址为0x90000的代码段称为INITSEG。然后 跳转到go标志,准备一块堆栈,栈底位于 $INITSEG:0x4000-12
+        - {{local:../image/Linux内核/2.png || style="width:1000px"}}
+            - 该段代码利用BIOS中提供的读磁盘调用“int 0x13”从 磁盘将setup.S装入到9000:0200(linux中称之为 SETUPPSEG段),即紧跟在bootsect.S之后,共四 个扇区
+            - 如果载入失败,则不断尝试循环。除非某次尝试成功 ,否则只有等待系统重启
+
+=== 通过LILO来进行引导 ===
+    - LILO(linux loader)也存储在启动扇区中,用以让用户选择上电后使用何种操作系统
+    - LILO在系统安装阶段建立关于核心代码占用硬盘数据 块的位置的对照表。启动时LILO将利用这张表引导 BIOS装入指定的操作系统
+    - LILO将用户在启动时输入的命令和参数存储在 empty_zero_page(0x5000)的后半页,供 arch/i386/kernel/setup.c文件的setup_arch()函数使用
+    - LILO完成任务后,跳转至setup.S程序,转入实模式下 的系统初始化
+
+=== 实模式下的系统初始化 ===
+    - setup.S连同内核映象由bootsect.S装入。setup.S从 BIOS获取计算机系统的参数,放到内存参数区,仍在 实模式下运行
+    - Cpu在setup的执行过程中转入32位保护模式的段式寻 址方式
+    - 辅助程序setup为内核映象的执行做好准备,然后跳转 到0x100000开始内核本身的执行,此后就是内核的初 始化过程
+
+=== 实模式下的系统初始化-setup.S ===
+    - 版本检查和参数设置
+        - 检查签名“55AA5A5A”,此签名位于setup.S代 码段的末尾,判断安装程序是否完全安装进来
+        - 判断核心(kernel)是否为BIG_KERNEL
+        - 设置参数
+    - 为进入保护模式做准备,主要包括
+        - 关中断
+        - 检查自身(setup.S)是否在SETUPSEG处
+        - 置idt(中断描述符表)为空,设置gdt(全局描述符表)
+        - 真正进入保护模式
+
+=== 保护模式下的系统初始化 ===
+    - 保护模式下的核心初始化模块从0x10000开始执行, 负责检查数据区,idt表,页表和寄存器的初始化,同 时进行一些必要的状态检查,最后转入start_kernel() 模块。如果核心系统是压缩存放的,则先执行解压缩 。保护模式下的初始化主要包括:
+        - 初始化寄存器和数据区
+            - Arch/i386/boot/compressed目录下的head.S是段保护 模式的汇编程序,先设置堆栈,然后调用同目录 下的 misc.c文件的decompress_kernel()函数解压缩
+                - 设置堆栈与寄存器
+                - 检查A20线是否有效
+                - 数据区BSS全部清零
+                - 转入核心代码解压缩过程
+        - 核心代码解压缩
+            - 调用mics.c中的decompress_kernel开始解压缩。解压 缩的步骤为:
+                - 设置output_buffer
+                - Makecrc:建立一张CRC(校验)表(lib/inflate.c)
+                - 调用gunzip()解压缩,同时比较CRC表,如果不一 致说明解压出错。
+                - 检查kernel的大小
+                - 解除压缩以后的内核映象放在0x10000处,调转到 此处执行。
+        - 页表初始化
+            - 进行解压缩后,核心系统的入口就是arch/i386/kernel 目录下的head.S。系统先初始化寄存器和数据区,然 后执行以下步骤:
+                - 将ds,es,fs,gs寄存器初始化为_KERNEL_DS的 值
+                - 进行两级页表的部分初始化。其中第一级 swapper_pg_dir是页目录,页目录的第一个表项所 指的第二级页表称为pg0
+                - 清空BSS区(未初始化数据区)
+                - 跳转到setup_idt处对idt表进行初始化
+                - 复制bootup参数到empty_zero_page
+                - 检查cpu类型
+            - 下面详细解释一下如何进行两级页表的初始化:
+                - 先把swapper_pg_dir清零
+                - Pg0登记在页目录的第0项和第768项,即把线性地 址0和3G都指向pg0
+                - 初始化二级页表pg0和pg1
+                - CPU控制寄存器的初始化:使CR3指向 swapper_page_dir,将CR0的PG位置位(CPU的 paging功能启动位)。CPU的页管理功能便生效
+            - 两级页表初始化的图示如下: {{local:../image/Linux内核/3.png || style="width:1000px"}}
+        - 初始化idt,gdt和ldt
+            - 1、初始化gdt
+                - Gdt表项数=2个内核态段+两个用户态段+4个空闲表 项+4个APM段+2×NRTASK个用于LDT和TSS描述 的段。
+                - Gdt的初始化的代码如下页图示: {{local:../image/Linux内核/4.png || style="width:1000px"}}
+            - 2、设定idt寄存器为idt_descr变量的当前值,指向idt表 (共256项),但目前不允许中断(尚未设置中断门)
+            - 3、在新的页管理方式下,重新设置堆栈,段选择寄存 器,描述符寄存器。
+        - 启动核心
+            - 前面对CPU进行了初始化,并启动了保护模式
+            - 现在的任务是初始化内核的核心数据结构,这些数据结构主要涉及:
+                - 中断管理
+                - 进程管理
+                - 内存管理
+                - 设备管理
+            - 各种数据结构纷繁复杂,需要对各部分进行分析
+            - 进入保护模式后,系统从start_kernel处开始执行, Start_kernel()函数变成0号进程,不再返回
+            - Start_kernel显示版本信息,调用setup_arch() (arch/i386/kernel/setup.c):初始化核心的数据结构
+            - 最后,调用kernel_thread()创建init进程,进行系统配置
+            - 该部分的代码在init/main.c中
+            - 核心数据结构的初始化
+                - 调用paging_init()初始化页表
+                - 调用mem_init()初始化页描述符
+                - 调用trap_init()和init_IRQ()完成IDT最后的初始化工作
+                - 调用k_mem_cache_init()和kmem_cache_sizes_init()初始化slab分配器
+                - 调用time_init()初始化系统日期和时间
+                - 调用kernel_thread为进程1创建内核线程
+            - 父进程创建init子进程之后,返回执行cpu_idle
+
+=== Init进程和系统配置 ===
+    - Init进程(1号进程)首先创建一些后台进程来维护系 统,然后进行系统配置,执行shell编写的初始化程序 。然后转入用户态运行
+    - Init进程的执行流程如下：{{local:../image/Linux内核/5.png || style="width:1000px"}}
+        - 首先调用函数do_basic_setup()做系统初始化的工作( 这之前系统只启动了cpu,内存和一些进程管理方面的 工作)
+        - 调用free_initmem()函数,将初始化过程中使用的范围 在_init_begin和_init_end之间的页面释放给空闲页面 链表
+        - 打开一个控制台设备
+        - 如果存在指定命令就执行,否则,按顺序执行:
+            - 如果存在“/sbin/init”文件,则跳转去执行“/sbin/init”
+            - 如果存在“/etc/init”文件,则跳转去执行“/etc/init”
+            - 如果存在“/bin/init”文件,则跳转去执行“/bin/init”
+            - 如果存在“/bin/sh”文件,则跳转去执行“/bin/sh”
+
+=== 思考题 ===
+    - 在i386中,内核可执行代码在内存中的首地址是否可随意选择?为什么?
+    - 主引导扇区位于硬盘什么位置?如果一个硬盘的主引导扇区有故障,此硬盘是否还可以使用?
+    - 在没有LILO的情况下,系统是怎么样引导的
+    - 进入保护模式为什么要打开A20地址线?
+    - Linux内核在实模式下的初始化完成哪些功能?
+    - 进程0和init进程的主要任务是什么?
+
+    == 读源代码 -- 文件系统 ==
+        - {{ local:../image/Linux内核/29.png || style="width: 1000px" }}
+        - 后面整个就不知道思路了，感觉全是碎片，求教！！
+
+    == Project 1 -- 编译Linux内核 ==
+=== 下载Linux内核 ===
+https://www.kernel.org
+
+=== 编译Linux内核 ===
+    - 直接运行下面的命令
+    - 过程中有什么报错，就把对应的包安装上
+{{{class="brush: shell"
+cd ~/Downloads/linux-4.5
+make
+make modules_install
+make install
+
+cd /boot
+mkinitramfs  -o /boot/initrd.img-4.5.0 4.5.0
+}}}
+
+    == Project 2A -- 模块编程 ==
+=== 调试方法 ===
+    - 安装模块：`insmod 文件名 [模块参数名=参数值] ...`
+    - 列出模块：`lsmod`
+    - 删除模块：`rmmod 模块名`
+    - 查看模块：`modinfo *.ko`
+    - 看内核缓冲区：`dmesg`
+
+=== 编程方法 ===
+    - 肯定要有这三个库：
+        - `#include <linux/init.h>`
+        - `#include <linux/module.h>`
+        - `#include <linux/kernel.h>`
+    - 想要操作 */proc* 需要 `#include <linux/proc_fs.h>`
+        - 在4.5.0中，还需要 `#include <linux/seq_file.h>`
+    - 模块入口：
+{{{class="brush: c"
+static int __init hello_init(void) {
+    printk("<6>Greeting from a linux kernel module.\n");
+    printk("<6>whom=%s,howmany=%d\n",whom,howmany);
+    proc_create("hello_proc", 0, NULL, &hello_proc_fops);
+    return 0;
+}
+module_init(hello_init);
+}}}
+    - 模块出口：
+{{{class="brush: c"
+static void __exit hello_exit(void) {
+    remove_proc_entry("hello_proc", NULL);
+    printk("<6>Bye.\n");
+}
+module_exit(hello_exit);
+}}}
+    - 模块参数：
+        - 添加变量：module_param(name, type, perm)
+{{{class="brush: c"
+static char* whom="world";
+static int howmany=1;
+module_param(howmany, int, S_IRUGO);
+module_param(whom, charp, S_IRUGO);
+}}}
+        - type的取值：
+            - byte(unsigned char)
+            - short
+            - ushort
+            - int
+            - uint
+            - long
+            - ulong
+            - charp(char* 不超1024字节的字符串)
+            - bool(int 取值y Y 1 or n N 0)
+            - invbool(int 同bool 但意义相反)
+        - perm的取值：若不为零，则模块装载后，会在 /sys/module/模块名/parameters/ 目录中产生对应于每个模块参数的文件
+{{{class="brush: c"
+#define S_IRUSR 00400 // 文件所有者可读
+#define S_IWUSR 00200 // 文件所有者可写
+#define S_IXUSR 00100 // 文件所有者可执行
+#define S_IRGRP 00040 // 与文件所有者同组的用户可读
+#define S_IWGRP 00020
+#define S_IXGRP 00010
+#define S_IROTH 00004 // 与文件所有者不同组的用户可读
+#define S_IWOTH 00002
+#define S_IXOTH 00001
+// 在 C 语言中,将以上权限用|操作符连接以得到你想设置的权限。:)
+}}}
+        - 添加数组：module_param_array(name, type, num, perm)
+        - num: 是整型指针(int *)，模块装载成功后，数组元素个数会被存于 *num。
+    - 打印语句：`printk("<0~7>...");`
+        - 开头这个数字，表示打印内容的优先级别
+{{{class="brush: c"
+#define KERN_EMERG      "<0>"   /* system is unusable */
+#define KERN_ALERT      "<1>"   /* action must be taken immediately */
+#define KERN_CRIT       "<2>"   /* critical conditions */
+#define KERN_ERR        "<3>"   /* error conditions */
+#define KERN_WARNING    "<4>"   /* warning conditions */
+#define KERN_NOTICE     "<5>"   /* normal but significant condition */
+#define KERN_INFO       "<6>"   /* informational */
+#define KERN_DEBUG      "<7>"   /* debug-level messages */
+}}}
+    - 模块操作 */proc* 文件：
+{{{class="brush: c"
+static int hello_proc_show(struct seq_file *m, void *v) {
+    seq_printf(m, "Hello proc!\n");
+    return 0;
+}
+static int hello_proc_open(struct inode *inode, struct file *file) {
+    return single_open(file, hello_proc_show, NULL);
+}
+static const struct file_operations hello_proc_fops = {
+    .owner = THIS_MODULE,
+    .open = hello_proc_open,
+    .read = seq_read,
+    .llseek = seq_lseek,
+    .release = single_release,
+};
+}}}
+
+=== 样例代码 ===
+{{{class="brush: c"
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
+
+//struct proc_dir_entry *entry;
+static char* whom="world";
+static int howmany=1;
+
+static int hello_proc_show(struct seq_file *m, void *v) {
+    seq_printf(m, "Hello proc!\n");
+    return 0;
+}
+
+static int hello_proc_open(struct inode *inode, struct file *file) {
+    return single_open(file, hello_proc_show, NULL);
+}
+
+static const struct file_operations hello_proc_fops = {
+    .owner = THIS_MODULE,
+    .open = hello_proc_open,
+    .read = seq_read,
+    .llseek = seq_lseek,
+    .release = single_release,
+};
+
+static int __init hello_init(void) {
+    printk("<6>Greeting from a linux kernel module.\n");
+    printk("<6>whom=%s,howmany=%d\n",whom,howmany);
+    proc_create("hello_proc", 0, NULL, &hello_proc_fops);
+    return 0;
+}
+
+static void __exit hello_exit(void) {
+    remove_proc_entry("hello_proc", NULL);
+    printk("<6>Bye.\n");
+}
+
+module_init(hello_init);
+
+module_exit(hello_exit);
+
+MODULE_LICENSE("GPL");
+
+module_param(howmany, int, S_IRUGO);
+module_param(whom, charp, S_IRUGO);
+}}}
+
+    == Project 2B -- 进程管理 ==
+=== 编程方法 ===
+    - 统计模块调用次数
+        - 全在这篇 [[http://freemanhsu.github.io/Add-Schedule-Counter-in-Kernel/|博客]] 里，只要解决一下版本问题就好
+        - 重新编译内核：
+{{{class="brush: c"
+cd ~/Downloads/linux-4.5
+make clean                  // 加上这句
+make mrproper               // 加上这句
+make
+make modules_install
+make install
+
+cd /boot
+mkinitramfs  -o /boot/initrd.img-4.5.0 4.5.0
+}}}
+
+=== Commands Frequently Used ===
+{{local:../image/Linux内核/11.png || style="width:1000px"}}
+{{local:../image/Linux内核/12.png || style="width:1000px"}}
+
+    == Project 3 -- 内存管理 ==
+=== 调试流程 ===
+    # 安装自己写的mtest模块
+    # 执行下列命令，分别使用dmesg察看结果
+        # `echo listvma > mtest`
+            - 列出当前进程的所有虚拟内存
+        # `echo findpage <addr> > mtest`
+            - 找到某虚拟地址对应的物理地址
+        # `echo writeval <addr> <value> > mtest`
+            - 向某虚拟地址写对应的值
+
+    == Project 4 -- 文件系统 ==
+=== 调试流程 ===
+    # 安装自己改好的romfs模块
+    # `apt-get install genromfs`
+    # 创建一个文件夹，里面放上各种文件（当然得有NULL文件），把执行权限都删去
+    # 把这个文件夹生成romfs：`genromfs -f <xx.img>`
+    # 生成一个空文件夹
+    # 然后挂载：`mount -o loop <xx.img> <empty_dir>`
+    # 执行测试命令
+        - `ls -l <empty_dir>`，结果应当没有NULL
+        - `ls -l <empty_dir>/NULL`，应当可以看到NULL，并且发现其有x权限
+        - `cat <empty_dir>/NULL`，应当看不到NULL的内容，只能看到*******
+        - `cat <origin_dir>/NULL`，应当看得到NULL的内容
+
+= 附录 =
+    - 吴晨涛 老师
+        - [[mailto:wuct@cs.sjtu.edu.cn | 邮箱]]
+        - 办公室 SEIEE 3-513
+        - 职位 Associate Professor Dept. of CSE, SJTU
+        - 学历 Dual Ph.D.
+            - 2012, Electrical and Computer Engineering, Virginia Commonwealth University (VCU), Richmond, VA, USA
+            - 2010, Computer Architecture, Huazhong University of Science and Technology (HUST), Wuhan, China
+        - 研究领域 Data Storage Systems
+            - Storage management for Big Data
+            - Cloud storage, Green storage
+            - Reliable storage systems (e.g., disk arrays)
+            - Semantic file systems (e.g., object-based storage sys.)
+            - Cache Algorithms in storage systems
+        - [[http://epcc.sjtu.edu.cn | 实验室]]
+            - 领导 Prof. Minyi Guo (Dean of CSE Dept.)
+            - 研究领域 Parallel and Distributed Computing
+                - Parallel and Distributed Systems/Networks
+                - High Performance Computing
+                - Cloud Computing
+                - Big Data
+    - 在这里 下载课件、上传Project
+        - [[ftp://public.sjtu.edu.cn | ftp]]
+        - User: wuct
+        - Password: wuct123456
+    - 谭超 助教
+        - [[mailto:345243921@qq.com | 邮箱]]
+        - 手机 15821274485
+    - 书籍
+        - 没有教材
+        - 参考书
+            - Understanding the Linux Kernel 3^rd^ Edition
+            - Linux Kernel Drivers 3^rd^ Edition
+            - Linux Kernel Development 3^rd^ Edition
+    - 前置课程
+        - 计算机组成、操作系统
+        - C/C++编程
+    - 教学目标
+        - 理解Linux内核中的C语言编程（即模块编程）
+        - 理解操作系统内核内容（包括进程、线程、同步、虚拟内存管理、文件管理）
+        - 学习Linux计算机的内核都实际做了些什么，从芯片一直到应用
+    - 阅读源码
+        - Source Insight 3.5
+            - Download source code from http://www.kernel.org
+        - Web site:
+            - http://lxr.oss.org.cn/
+            - http://lxr.free-electrons.com
+    - 一本参考书
+        - [[local:../book/Linux内核注释.pdf | Linux内核注释]]

@@ -1,0 +1,33 @@
+= 环境配置 =
+    - 我需要用python的pyquery来处理网页，而pyquery的语法完全模仿jquery。因此学习pyquery，其实就是学习jquery。
+    - 这次的需求只是爬虫，只需要获取内容而已，因此只学习这方面。
+    - 在mac上，用`pip install pyquery`安装即可。
+    - import：`from pyquery import PyQuery as pq`
+= 基本内容 =
+    == 初始化网页 ==
+    - 因为pyquery不像jquery基于某网页运行，因此需要多一步对网页的初始化，告诉它操作哪段html。方式如下：
+    - `doc = pq(<str>)`
+    - `doc = pq('http://www.baidu.com')`
+    - `doc = pq(filename=<file_name>)`
+
+    == 选择器 ==
+    - `doc('<tag>')`
+    - `doc('<tag>.<id>')`
+    - `doc('<tag>#<class>')`
+    - `doc('<tag> <tag>')`
+    - `doc('[<attr>]')`
+    - `doc('[<attr>=<value>]')`
+    - `doc('[<attr>!=<value>]')`
+    - `doc('[<attr>$=<value>]')`
+    - `doc('<tag>').css`
+    - [[http://www.w3school.com.cn/jquery/jquery_ref_selectors.asp | 完整的选择器API]]
+
+    == HTML操作 ==
+    - 这部分，自然需要DOM的基础知识。
+    - `text()` - 设置或返回所选元素的文本内容
+    - `html()` - 设置或返回所选元素的内容（包括 HTML 标记）
+    - `val()` - 设置或返回表单字段的值
+    - `attr()` - 获取属性值
+    
+    == 遍历 ==
+    - [[http://www.w3school.com.cn/jquery/jquery_ref_traversing.asp | 完整的遍历API]]

@@ -1,0 +1,118 @@
+%toc
+
+= 存疑 =
+    - Chapter5, 44, EDB and IDB
+    - Chapter6-BasicQuery, 29~32, Operational Semantics
+
+= 知识目录 =
+    # Introduction
+    # Relational Model
+        # Terms
+        # Algebra (or called Operations)
+    # Design Theory of Relational Model
+        # FD, MVD and Normal Forms
+    # High-Level Database Models
+        # E/R Model
+        # UML
+        # ODL
+    # Logic Query Languages
+        # Datalog
+        # Comparation of Relational Algebra and Datalog Algebra
+    # Database Langrage -- SQL
+        # Sentences
+            # Basic Query
+            # Subquery, Aggregation
+            # Join, Modification
+        # Transaction
+    # Constraints and Triggers
+        # Keys and Foreign Keys
+        # Constraints on attributes and tuples
+        # Modification of constraints
+        # Assertions
+        # Triggers
+    # Views and Indexes
+        # Views (virtual and materialized)
+        # Updatable views
+        # Indexes (creation, use) (B-tree, no standard)
+    # 
+
+= 知识体系 =
+    == Normal Form ==
+    - UNF: 全放一张表里，选个key
+    - 1NF $\leftarrow$ Repeating Attributes Removed: 让key成为真的key，能够唯一确定一个tuple
+    - 2NF $\leftarrow$ Partial Key Dependencies Removed: 消除key-nonkey's FD
+    - 3NF $\leftarrow$ Non-Key Dependencies Removed: 消除nonkey-nonkey's FD
+    - BCNF $\leftarrow$ Dependencies between Keys Removed: 消除key-key's FD
+    - 4NF $\leftarrow$ Dependencies between Key Sets Removed: 消除MVD
+    - 5NF, PJNF 暂未理解，参考：[[ https://en.wikipedia.org/wiki/Fifth_normal_form | wikipedia ]]
+    - RNFN; SKNF; 6NF 还未看，参考：[[ http://blog.csdn.net/air_ship/article/details/19508031 | 《数据库范式 1NF，2NF，3NF，BCNF，4NF，RFNF，SKNF，5NF，6NF》 ]]
+    
+    == Relational Algebra ==
+    - Operands: relations
+    - Base Operators:
+        - Union: $U$
+        - Selection: $\sigma_C$
+        - Projection: $\pi_L$
+        - Products and Joins: $\times, \Join, \Join_C$
+        - Renaming: $\rho_{<table-name, all-need-attributes>}$
+    - Type:
+        - Set
+        - Bag
+    - Extended (Nonclassical) Operators:
+        - Duplicate-elimination(去重): $\delta$
+        - Extended projection(可加由函数生成的新列), $\pi_L$
+        - Sorting(以某些列为关键字排序): $\tau_L$
+        - Grouping-and-Aggregation: $\gamma$
+            - Aggregation: Apply a function to all tuples in one column, such as: SUM, AVG, COUNT, MIN, MAX
+            - Grouping-and-Aggregation: Group with some columns and aggregation some other columns.
+        - Outerjoin: $\Join^o$
+            - Join with NULL in empty cells, so that won't lose any information.
+    
+    == Datalog ==
+    - This form of logic allows us to write queries in the relational model.
+    - Rule: head $\leftarrow$ subgoals, they are atoms, and an atom consists of an predicate applied to some number of arguments.
+    - IDB and EDB
+    - Intensional Database and Extensional Database
+    - Relational algebra and datalog
+
+    == SQL Language ==
+=== Basic Knowledge ===
+    - {{ local:../image/数据库/2.png || style="width: 1000px" }}
+    - SQL is case insensitive
+        - Only inside quoted strings does case matter
+    - {{ local:../image/数据库/1.png || style="width: 1000px" }}
+    - {{ local:../image/数据库/3.png || style="width: 1000px" }}
+    - {{ local:../image/数据库/4.png || style="width: 1000px" }}
+    - {{ local:../image/数据库/5.png || style="width: 1000px" }}
+    - {{ local:../image/数据库/6.png || style="width: 1000px" }}
+
+=== Transaction ===
+    - Enviroment: One DBMS, Many Users
+    - Transaction: A transaction is a sequence of one or more SQL operations treated as a unit.
+        - Result: Commit or Rollback
+        - ACID Transaction:
+            - Atomic : Whole transaction or none is done.
+            - Consistent : Database constraints preserved.
+            - Isolated : It appears to the user as if only one process executes at a time.
+            - Durable : Effects of a process survive a crash.
+        - Isolation Level:
+            - `SET TRANSACTION ISOLATION LEVEL X = <following>`
+                # SERIALIZABLE
+                # REPEATABLE READ: with *phantoms*
+                # READ COMMITTED: with *nonrepeatable reads*, *phantoms*
+                # READ UNCOMMITTED: with *dirty reads*, *nonrepeatable reads*, *phantoms*
+            - This is personal choice.
+            - Read only transactions
+                - `Set transaction read only;` (before set level)
+                - Help system optimize performance
+                - Independent of isolation level
+
+=== Summary ===
+    - {{ local:../image/数据库/7.png || style="width: 1000px" }}
+    - {{ local:../image/数据库/8.png || style="width: 1000px" }}
+    - {{ local:../image/数据库/9.png || style="width: 1000px" }}
+    
+= 附录 =
+    - [[ http://www.sqa.org.uk/e-learning/SiteHomeCD/page_27.htm | SQA（苏格兰学历管理委员会）的教程 ]] 挺棒的
+    - [[ http://www.compositesw.com/data-virtualization/enterprise-information-integration/ | Enterprise Information Integration ]]
+    - [[ http://www.w3school.com.cn/sql/ | w3school SQL 教程 ]]
