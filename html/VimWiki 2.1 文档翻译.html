@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VimWiki 2.1 文档阅读笔记</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="Contents" class="toc"><h1 id="Contents">Contents</a></h1></div>
+<ul>
+<li>
+<a href="VimWiki 2.1 文档翻译.html#介绍">介绍</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#安装">安装</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#准备工作">准备工作</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#基本命令">基本命令</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#快捷键">快捷键</a>
+
+<ul>
+<li>
+<a href="VimWiki 2.1 文档翻译.html#快捷键-全局快捷键">全局快捷键</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#快捷键-局部快捷键">局部快捷键</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#快捷键-文本对象">文本对象</a>
+
+</ul>
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法">Wiki语法</a>
+
+<ul>
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-字体">字体</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-链接">链接</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-嵌入链接">嵌入链接</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-缩略图链接">缩略图链接</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-标题">标题</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-段落">段落</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-列表">列表</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-表格">表格</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-原格式文本">原格式文本</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-数学公式">数学公式</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-引用">引用</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-注释">注释</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#Wiki语法-分割线">分割线</a>
+
+</ul>
+<li>
+<a href="VimWiki 2.1 文档翻译.html#折叠">折叠</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#占位符">占位符</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#TODO 任务">TODO 任务</a>
+
+<li>
+<a href="VimWiki 2.1 文档翻译.html#日记">日记</a>
+
+</ul>
+
+
+<div id="介绍"><h1 id="介绍" class="header"><a href="#介绍">介绍</a></h1></div>
+<ul>
+<li>
+引用官方介绍吧：VimWiki 是基于 Vim 的个人 wiki —— 有自己语法及高亮的很多超链接纯文本文件。
+
+</ul>
+
+<div id="安装"><h1 id="安装" class="header"><a href="#安装">安装</a></h1></div>
+<ol>
+<li>
+去 <a href="http://www.vim.org/scripts/script.php?script_id=2226">vim.org:vimwiki</a> 下载 VimWiki 2.1 版本
+
+<li>
+解压，得到 vimwiki-2-1.vba
+
+<li>
+用 vim 打开它，输入命令 <code>:so %</code> 即可完成安装
+
+</ol>
+
+<div id="准备工作"><h1 id="准备工作" class="header"><a href="#准备工作">准备工作</a></h1></div>
+<ul>
+<li>
+需要好好设置一番 .vimrc ，个人设置了如下条目：
+<pre>
+set nocompatible
+filetype plugin on
+syntax on
+let g:vimwiki_use_mouse = 1
+let g:vimwiki_camel_case = 0
+let g:vimwiki_html_header_numbering = 2
+let g:vimwiki_file_exts = 'c, cpp, wav, txt, h, hpp, zip, sh, awk, ps, pdf'
+let g:vimwiki_list = [{'path': '~/vimwiki/text/',
+            \'path_html': '~/vimwiki/html/',
+            \'template_path' : '~/vimwiki/template/',
+            \'template_default': 'default.tpl', }]
+nmap &lt;F5&gt;  :Vimwiki2HTML&lt;CR&gt;
+nmap &lt;F6&gt;  :VimwikiAll2HTML&lt;CR&gt;
+nmap &lt;F9&gt;  :VimwikiToggleListItem&lt;CR&gt;
+nmap &lt;F10&gt; :VimwikiTable&lt;CR&gt;
+nmap &lt;F11&gt; :VimwikiDiaryIndex&lt;CR&gt;
+</pre>
+
+<li>
+还有几个相关的东西需要下载：
+
+<ul>
+<li>
+Calendar
+
+<ul>
+<li>
+Vim插件——日历
+
+<li>
+可以配合VimWiki中的日志使用
+
+<li>
+去 <a href="http://www.vim.org/scripts/script.php?script_id=52">vim.org:calendar</a> 下载，安装vba即可，方法同VimWiki的安装
+
+<li>
+在Vim中用 <code>:Calendar</code> 打开，左右键按月移动日期，上下键按年移动日期
+
+</ul>
+<li>
+MathJax
+
+<ul>
+<li>
+JS库——数学公式
+
+<li>
+用于在VimWiki中输入数学公式
+
+<li>
+从github安装即可，命令：<code>git clone git://github.com/mathjax/MathJax.git ~/vimwiki/mathjax/</code>
+
+<li>
+这篇教程很适合入门：<a href="http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/">Mathjax与LaTex公式简介</a>
+
+<ul>
+<li>
+上文已失效，替代之：<a href="https://colobu.com/2014/08/17/MathJax-quick-reference/">MathJax 快速参考</a>
+
+</ul>
+<li>
+如何使用，见后文 <span id="准备工作-数学公式"></span><strong id="数学公式">数学公式</strong> 部分
+
+</ul>
+<li>
+SyntaxHighlighter
+
+<ul>
+<li>
+JS库——语法高亮
+
+<li>
+用于在VimWiki中加入代码高亮
+
+<li>
+去 <a href="http://alexgorbatchev.com/SyntaxHighlighter/download/">官网下载地址</a> 下载
+
+<li>
+另需要在模版中设置好，可以仿照其tests设置，暂略
+
+<li>
+如何使用，见后文 <span id="准备工作-原格式文本"></span><strong id="原格式文本">原格式文本</strong> 部分
+
+</ul>
+</ul>
+</ul>
+
+<div id="基本命令"><h1 id="基本命令" class="header"><a href="#基本命令">基本命令</a></h1></div>
+<ul>
+<li>
+首先，你需要记住两个入口命令：
+
+<ul>
+<li>
+进入VimWiki：<code>\ww</code>
+
+<li>
+进入Diary Index：<code>\wi</code>
+
+</ul>
+<li>
+然后，就是几个我自己定义的快捷键
+
+<ul>
+<li>
+<code>&lt;F5&gt;</code>：生成当前wiki当前文件的html
+
+<li>
+<code>&lt;F6&gt;</code>：生成当前wiki所有文件的html
+
+<li>
+<code>&lt;F9&gt;</code>：设置为<span class="todo">TODO</span>任务、转换<span class="todo">TODO</span>任务状态（原本是&lt;C-Space&gt;，跟我Mac的SpotLight冲突，故更改）
+
+<li>
+<code>&lt;F10&gt;</code>：生成初始表格（原<code>:VimwikiTable</code>）
+
+</ul>
+</ul>
+
+<div id="快捷键"><h1 id="快捷键" class="header"><a href="#快捷键">快捷键</a></h1></div>
+<div id="快捷键-全局快捷键"><h2 id="全局快捷键" class="header"><a href="#快捷键-全局快捷键">全局快捷键</a></h2></div>
+<div id="快捷键-局部快捷键"><h2 id="局部快捷键" class="header"><a href="#快捷键-局部快捷键">局部快捷键</a></h2></div>
+
+<table>
+<tr>
+<th>
+快捷键
+</th>
+<th>
+解释
+</th>
+</tr>
+<tr>
+<td>
+<code>\wd</code>
+</td>
+<td>
+删除当前wiki页面
+</td>
+</tr>
+<tr>
+<td>
+<code>\wr</code>
+</td>
+<td>
+重命名当前wiki页面
+</td>
+</tr>
+<tr>
+<td>
+<code>=</code>
+</td>
+<td>
+添加一重标题级别
+</td>
+</tr>
+<tr>
+<td>
+<code>-</code>
+</td>
+<td>
+减少一重标题级别
+</td>
+</tr>
+<tr>
+<td>
+<code>+</code>
+</td>
+<td>
+添加链接（根据光标所在or选中内容，自动决定链接类别）
+</td>
+</tr>
+<tr>
+<td>
+<code>glm</code>
+</td>
+<td>
+添加一层当前行缩进
+</td>
+</tr>
+<tr>
+<td>
+<code>gll</code>
+</td>
+<td>
+减少一层当前行缩进
+</td>
+</tr>
+<tr>
+<td>
+<code>gl*</code> or <code>gl8</code>
+</td>
+<td>
+设置当前行为<code>*</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>gl#</code> or <code>gl3</code>
+</td>
+<td>
+设置当前行为<code>#</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>gl-</code>
+</td>
+<td>
+设置当前行为<code>-</code>
+</td>
+</tr>
+<tr>
+<td>
+<code>gqq</code> or <code>gww</code>
+</td>
+<td>
+将当前表格格式调好
+</td>
+</tr>
+<tr>
+<td>
+<code>&lt;A-Left&gt;</code>
+</td>
+<td>
+表格中向左移动
+</td>
+</tr>
+<tr>
+<td>
+<code>&lt;A-Right&gt;</code>
+</td>
+<td>
+表格中向右移动
+</td>
+</tr>
+<tr>
+<td>
+<code>&lt;C-Up&gt;</code>
+</td>
+<td>
+打开前一天的日记
+</td>
+</tr>
+<tr>
+<td>
+<code>&lt;C-Down&gt;</code>
+</td>
+<td>
+打开下一天的日记
+</td>
+</tr>
+<tr>
+<td>
+<code>&lt;2-LeftMouse&gt;</code>
+</td>
+<td>
+g:vimwiki_use_mouse=1 才能用，打开链接
+</td>
+</tr>
+<tr>
+<td>
+<code>&lt;RightMouse&gt;&lt;LeftMouse&gt;</code>
+</td>
+<td>
+g:vimwiki_use_mouse=1 才能用，后退
+</td>
+</tr>
+</table>
+
+<div id="快捷键-文本对象"><h2 id="文本对象" class="header"><a href="#快捷键-文本对象">文本对象</a></h2></div>
+
+<table>
+<tr>
+<th>
+对应按键
+</th>
+<th>
+解释
+</th>
+</tr>
+<tr>
+<td>
+<code>ah</code>
+</td>
+<td>
+小节（两个标题之间，含末尾空行）
+</td>
+</tr>
+<tr>
+<td>
+<code>ih</code>
+</td>
+<td>
+小节（两个标题之间，不含末尾空行）
+</td>
+</tr>
+<tr>
+<td>
+<code>a\</code>
+</td>
+<td>
+单元格（内容＋边框）
+</td>
+</tr>
+<tr>
+<td>
+<code>i\</code>
+</td>
+<td>
+单元格（仅内容）
+</td>
+</tr>
+<tr>
+<td>
+<code>ac</code>
+</td>
+<td>
+列（内容＋边框）
+</td>
+</tr>
+<tr>
+<td>
+<code>ic</code>
+</td>
+<td>
+列（仅内容）
+</td>
+</tr>
+</table>
+
+
+<div id="Wiki语法"><h1 id="Wiki语法" class="header"><a href="#Wiki语法">Wiki语法</a></h1></div>
+<div id="Wiki语法-字体"><h2 id="字体" class="header"><a href="#Wiki语法-字体">字体</a></h2></div>
+<ul>
+<li>
+<span id="Wiki语法-字体-粗体"></span><strong id="粗体">粗体</strong>
+
+<li>
+<em>斜体</em>
+
+<li>
+<del>删除线</del>
+
+<li>
+<code>行内代码</code>
+
+<li>
+上<sup><small>标</small></sup>
+
+<li>
+下<sub><small>标</small></sub>
+
+</ul>
+
+<div id="Wiki语法-链接"><h2 id="链接" class="header"><a href="#Wiki语法-链接">链接</a></h2></div>
+<ul>
+<li>
+可以直接写链接
+
+<li>
+可以写在 <code>[[ ]]</code> 里面，有两种形式：
+
+<ul>
+<li>
+<code>[[ url ]]</code>
+
+<li>
+<code>[[ url | name ]]</code>
+
+</ul>
+</ul>
+
+<table>
+<tr>
+<th>
+名字
+</th>
+<th>
+举例
+</th>
+<th>
+注解
+</th>
+</tr>
+<tr>
+<td>
+http, https
+</td>
+<td>
+<code>http://dota2.uuu9.com/</code>
+</td>
+<td>
+网址
+</td>
+</tr>
+<tr>
+<td>
+mailto
+</td>
+<td>
+<code>mailto:icedream@sjtu.edu.cn</code>
+</td>
+<td>
+邮箱
+</td>
+</tr>
+<tr>
+<td>
+ftp
+</td>
+<td>
+<code>ftp://vim.org/</code>
+</td>
+<td>
+ftp
+</td>
+</tr>
+<tr>
+<td>
+local
+</td>
+<td>
+<code>local:../template/default.tpl</code>
+</td>
+<td>
+本地文件，相对路径
+</td>
+</tr>
+<tr>
+<td>
+file
+</td>
+<td>
+<code>file:///Users/icedream/</code>
+</td>
+<td>
+本地文件，绝对路径
+</td>
+</tr>
+<tr>
+<td>
+wiki#
+</td>
+<td>
+转换到别的wiki，暂无
+</td>
+<td>
+VimWiki内部打开，在不同的VimWiki之间切换
+</td>
+</tr>
+<tr>
+<td>
+diary
+</td>
+<td>
+<code>diary:2012-03-05</code>
+</td>
+<td>
+VimWiki内部打开，链接到VimWiki的日记
+</td>
+</tr>
+</table>
+
+<div id="Wiki语法-嵌入链接"><h2 id="嵌入链接" class="header"><a href="#Wiki语法-嵌入链接">嵌入链接</a></h2></div>
+<ul>
+<li>
+主要为了能够嵌入图片
+
+<ul>
+<li>
+可以嵌入本地图片、网络图片
+
+<li>
+可以加style参数、class参数
+
+</ul>
+<li>
+写在 <code>{{ }}</code> 里面，有？种形式：
+
+<ul>
+<li>
+<code>{{ url }}</code>
+
+<li>
+<code>{{ url | name }}</code>
+
+<li>
+<code>{{ url | name | style="..." }}</code>
+
+<li>
+<code>{{ url || class="..." }}</code>
+
+</ul>
+</ul>
+<div id="Wiki语法-缩略图链接"><h2 id="缩略图链接" class="header"><a href="#Wiki语法-缩略图链接">缩略图链接</a></h2></div>
+<ul>
+<li>
+图片形式的链接
+
+<li>
+形如：<code>[[ url | {{ image_url }} ]]</code>
+
+</ul>
+
+<div id="Wiki语法-标题"><h2 id="标题" class="header"><a href="#Wiki语法-标题">标题</a></h2></div>
+<ul>
+<li>
+用 - = 来控制几级标题
+
+<li>
+用开头的空格来表示居中标题
+
+</ul>
+
+<div id="Wiki语法-段落"><h2 id="段落" class="header"><a href="#Wiki语法-段落">段落</a></h2></div>
+<ul>
+<li>
+直接开头写就好了，中间换行也还是一段
+
+<li>
+中间空一行，才算另起一段
+
+</ul>
+
+<div id="Wiki语法-列表"><h2 id="列表" class="header"><a href="#Wiki语法-列表">列表</a></h2></div>
+<ul>
+<li>
+用 * - 都可以，甚至不同层之间混用也行
+
+<li>
+换成 # 则表示有序号的列表
+
+<li>
+列表元素可以是多行的
+
+<li>
+还有一种定义列表，形如
+
+<ul>
+<li>
+Term :: Definition
+
+<li>
+Term::
+
+<li>
+:: Definition
+
+<li>
+:: Definition
+
+</ul>
+<li>
+用 &lt;gl&gt; + &lt;something&gt; 快捷操作：
+
+<ul>
+<li>
+&lt;-&gt;, &lt;#&gt;, &lt;*&gt;：改为 - # *
+
+<li>
+&lt;m&gt;：缩进一层
+
+<li>
+&lt;l&gt;：缩退一层
+
+</ul>
+</ul>
+
+<div id="Wiki语法-表格"><h2 id="表格" class="header"><a href="#Wiki语法-表格">表格</a></h2></div>
+<ul>
+<li>
+直接用 | 分隔即可
+
+<li>
+用 \/、&lt;、&gt; 可以合并单元格
+
+<li>
+用 &lt;Tab&gt; 和 &lt;S-Tab&gt; 可以快速编辑
+
+</ul>
+
+<div id="Wiki语法-原格式文本"><h2 id="原格式文本" class="header"><a href="#Wiki语法-原格式文本">原格式文本</a></h2></div>
+<ul>
+<li>
+用 <code>{{{ text }}}</code> 可以输出原格式文本
+
+<li>
+用 <code>{{{class="brush: python" code }}}</code> 可以输出带高亮的代码
+
+</ul>
+
+<div id="Wiki语法-数学公式"><h2 id="数学公式" class="header"><a href="#Wiki语法-数学公式">数学公式</a></h2></div>
+<ul>
+<li>
+用 <code>\( formula \)</code> 可以输出行内公式
+
+<li>
+用 <code>{{\( formula }}\)</code> 可以输出行间公式
+
+<li>
+用 <code>{{\(%enviroment% formula }}\)</code> 可以输出带LaTeX环境的行间公式
+
+</ul>
+
+<p>
+注：上面三个 <code>\(</code> 实际上在VimWiki中直接写美元符号即可，VimWiki自动转义成 <code>\)</code> 了。
+</p>
+
+<div id="Wiki语法-引用"><h2 id="引用" class="header"><a href="#Wiki语法-引用">引用</a></h2></div>
+<ul>
+<li>
+用每行的开头至少四个空格，来代表引用
+
+</ul>
+
+<div id="Wiki语法-注释"><h2 id="注释" class="header"><a href="#Wiki语法-注释">注释</a></h2></div>
+<ul>
+<li>
+用 <code>%%</code> 来输入行内注释
+
+</ul>
+
+<div id="Wiki语法-分割线"><h2 id="分割线" class="header"><a href="#Wiki语法-分割线">分割线</a></h2></div>
+<ul>
+<li>
+用 <code>----</code> 或更多 <code>-</code> 来表示分割线
+
+</ul>
+
+<div id="折叠"><h1 id="折叠" class="header"><a href="#折叠">折叠</a></h1></div>
+<ul>
+<li>
+用 zM、zr 收起、折叠
+
+<li>
+用 zc、zo 也行
+
+<li>
+总之是大写就是全都收起、折叠，小写就只是操作当前光标所在地方
+
+</ul>
+
+<div id="占位符"><h1 id="占位符" class="header"><a href="#占位符">占位符</a></h1></div>
+<ul>
+<li>
+<code>%toc</code> 表示生成目录，可以写上目录名称，也可以放空
+
+<li>
+<code>%title</code> 表示生成标题，没有则以文件名为标题
+
+<li>
+<code>%nohtml</code> 表示本wiki永不生成html文件
+
+<li>
+<code>%template</code> 指定本wiki所用html模版，后跟模版名称
+
+</ul>
+
+<div id="TODO 任务"><h1 id="TODO 任务" class="header"><a href="#TODO 任务"><span class="todo">TODO</span> 任务</a></h1></div>
+<ul>
+<li>
+用 &lt;F9&gt;（原&lt;C-Space&gt;）添加<span class="todo">TODO</span>的任务
+
+<li>
+用 &lt;F9&gt;（原&lt;C-Space&gt;）更改任务状态（完成/未完成）
+
+</ul>
+
+<div id="日记"><h1 id="日记" class="header"><a href="#日记">日记</a></h1></div>
+<ul>
+<li>
+用 <code>\w\w</code> 建立当天的日记
+
+<li>
+用 <code>\w\i</code> 建立日记的链接列表，仅在日记的index文件内可用
+
+<li>
+用 <code>:Calendar</code> 打开Vim的日历，可用它结合日记使用：
+
+<ul>
+<li>
+在日期上按<code>&lt;CR&gt;</code>则在那天创建日历
+
+</ul>
+</ul>
+
+</div>
+
+<hr class="comment">
+<section class="comment">
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'lotaboutvimwiki'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+   
+</section>
+
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

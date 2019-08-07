@@ -18,6 +18,8 @@
     - [[VimWiki语法试验]]
     - [[测试vimwiki标签语法]]
     - [[https://blog.csdn.net/lalor/article/details/7288553|vim缩写iab介绍]]
+- Git
+    - [[http://xstarcd.github.io/wiki/shell/git_chinese.html|中文显示问题]]
 
 ----
 

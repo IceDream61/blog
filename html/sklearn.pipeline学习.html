@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>sklearn.pipeline学习</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="sklearn.pipeline学习"><h1 id="sklearn.pipeline学习" class="header"><a href="#sklearn.pipeline学习">sklearn.pipeline学习</a></h1></div>
+<ul>
+<li>
+<a href="草稿.html">草稿</a>
+
+<li>
+进度：376/950
+
+</ul>
+
+<div id="sklearn.pipeline学习-Pipeline类口述"><h2 id="Pipeline类口述" class="header"><a href="#sklearn.pipeline学习-Pipeline类口述">Pipeline类口述</a></h2></div>
+<ul>
+<li>
+通过steps构造，可选设定memory和verbose。构造逻辑：
+
+<ul>
+<li>
+记录steps、memory、verbose参数
+
+<li>
+执行<code>self._validate_steps()</code>验证逻辑：
+
+<ul>
+<li>
+<code>self._validate_names(names)</code>验证names
+
+<li>
+保证transformers和estimator是合法的，否则报<code>TypeError</code>
+
+</ul>
+</ul>
+<li>
+关于参数的查看和设置：
+
+<ul>
+<li>
+令<code>p = Pipeline(...)</code>
+
+<li>
+notebook直接查看<code>p</code>即可看到全部内容：steps, memory, verbose
+
+<li>
+<code>p.get_params()</code>会得到详细冗余内容dict：steps, memory, verbose; 'name'系列属性; 'name__parameter'系列属性
+
+<li>
+<code>p.set_params()</code>可以通过对应名字修改对应参数，自然也可以由此替换某个step
+
+<li>
+<code>p.named_steps</code>: dict形式的name -&gt; step，而非<code>p.steps</code>的tuple形式(name, step)
+
+</ul>
+<li>
+对于pipeline信息的查看：
+
+<ul>
+<li>
+<code>p.iter()</code>: Generate (idx, (name, trans)) tuples from self.steps
+
+<li>
+<code>p.__len__()</code>: return len(self.steps)
+
+<li>
+<code>p.__getitem__()</code>: 支持slice、下标、名字三种访问step的逻辑
+
+</ul>
+<li>
+几个只读属性
+
+<ul>
+<li>
+<code>p._estimator_type</code>: 即<code>estimator._estimator_type</code>
+
+<li>
+<code>p._final_estimator</code>: 即<code>estimator</code>
+
+<li>
+<code>p.named_steps</code>: 上面说过，略
+
+</ul>
+<li>
+log函数
+
+<ul>
+<li>
+<code>p._log_message()</code>: 若verbose为真，打印某step执行的消息，至于verbose说明中表示的具体耗时开关，此函数调用的确都与计时器结合
+
+<ul>
+<li>
+<span class="todo">TODO</span>: 从cache读steps的时候，message的赋值并未与计时器结合，待完善此细节
+
+</ul>
+</ul>
+<li>
+_fit函数
+
+<ol>
+<li>
+重新验证steps、memory
+
+<li>
+读memory cache
+
+<li>
+把所有的**fit_params都set进去，如有不符合<code>stepname__parameter</code>的格式则报错
+
+<li>
+遍历所有transformer：
+
+<ol>
+<li>
+对于pass的直接打log
+
+<li>
+对于有cache的，直接读取
+
+<li>
+把fit的内容加入，保存到cache中
+
+<li>
+把上面fit的结果更新到self.steps中
+
+<li>
+返回Xt，如果有estimator则同时返回estimate结果
+
+</ol>
+</ol>
+<li>
+fit函数
+
+<ol>
+<li>
+调用_fit函数（<span class="todo">TODO</span>：这里面对于各个transform在memory.cache中有没有与下面estimator同样的fit操作？）
+
+<li>
+调用estimator.fit，同时打印log（<span class="todo">TODO</span>：这个fit有什么意义）
+
+<li>
+返回self
+
+</ol>
+<li>
+fit_transform函数
+
+<ol>
+<li>
+fit
+
+<li>
+if estimator then transform
+
+</ol>
+<li>
+不好猜含义的相关函数
+
+<ol>
+<li>
+<code>check_memory</code>: 检查memory相关目录等是否有效
+
+<li>
+<code>memory.caceh</code>: <span class="todo">TODO</span> 未深究
+
+<li>
+<code>_print_elapsed_time</code>: 对打印的log配上时间信息
+
+<li>
+<code>@if_delegate_has_method</code>: 
+
+</ol>
+</ul>
+
+<div id="附录"><h1 id="附录" class="header"><a href="#附录">附录</a></h1></div>
+
+<div id="附录-相关python语法学习"><h2 id="相关python语法学习" class="header"><a href="#附录-相关python语法学习">相关python语法学习</a></h2></div>
+<ul>
+<li>
+切片，<code>slice</code>
+
+<ul>
+<li>
+学习<code>sklearn.pipeline.Pipeline.__getitem__</code>函数实现时遇到的
+
+<li>
+details: <a href="https://blog.csdn.net/liuyuan185442111/article/details/47039651">详解Python的切片(Slice)</a>
+
+</ul>
+<li>
+装饰器
+
+<ul>
+<li>
+学习<code>sklearn.pipeline.Pipeline</code>中只读属性定义函数时遇到<code>@property</code>
+
+<li>
+学习<code>sklearn.pipeline.Pipeline._fit</code>时打耗时log时需要计时器，遇到<code>@contextlib.contextmanager</code>
+
+<li>
+details:
+
+<ul>
+<li>
+<a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017451662295584">装饰器</a>
+
+<li>
+<a href="https://www.liaoxuefeng.com/wiki/897692888725344/923030547069856">使用@property</a>
+
+</ul>
+<li>
+related:
+
+<ul>
+<li>
+<a href="https://blog.csdn.net/wangyangzhizhou/article/details/51698638">Java注解机制及其原理</a>
+
+<li>
+<a href="https://www.zhihu.com/question/24401191/answer/37601385?utm_source=wechat_session&amp;utm_medium=social&amp;utm_oi=53708763168768">java注解是怎么实现的？</a>
+
+</ul>
+</ul>
+<li>
+上下文管理(<code>with</code>, <code>try</code>)
+
+<ul>
+<li>
+<code>with func: continue</code>，其中<code>func</code>是一个内含yield且带<code>@contextlib.contextmanager</code>的函数
+
+<ul>
+<li>
+学习<code>sklearn.pipeline.Pipeline._fit</code>时打耗时log时需要计时器，遇到<code>@contextlib.contextmanager</code>
+
+</ul>
+<li>
+details:
+
+<ul>
+<li>
+<a href="http://www.bjhee.com/python-context.html">谈一谈Python的上下文管理器</a>
+
+<li>
+<a href="https://blog.csdn.net/u012609509/article/details/72911564">Python 中 with用法及原理</a>
+
+</ul>
+</ul>
+</ul>
+
+<div id="附录-收藏博客"><h2 id="收藏博客" class="header"><a href="#附录-收藏博客">收藏博客</a></h2></div>
+<ul>
+<li>
+<a href="http://www.bjhee.com/">思诚之道——Billy.J.Hee的技术博客</a>
+
+</ul>
+
+</div>
+
+<hr class="comment">
+<section class="comment">
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'lotaboutvimwiki'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+   
+</section>
+
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
