@@ -1,11 +1,16 @@
 = 计算机科学与技术 笔记 =
 
 - TODO
-    - Python
+    - [[Python]]
     - Shell
     - Linux Tools
     - Nginx
     - Pip
+    - [[YCM]]
+    - [[VPN]]
+        - [[https://www.jianshu.com/p/6f650badc462|定期更新homebrew]]
+        - [[https://www.uedbox.com/post/57246/|brew使用国内镜像源]]
+    - V2EX
 - sklearn
     - [[sklearn.pipeline学习]]
 - Vim
@@ -13,6 +18,12 @@
     - [[VimWiki语法试验]]
     - [[测试vimwiki标签语法]]
     - [[https://blog.csdn.net/lalor/article/details/7288553|vim缩写iab介绍]]
+    - TODO 快捷键配置
+        - https://www.jianshu.com/p/2c9a85277d49
+        - http://learnvimscriptthehardway.onefloweroneworld.com/chapters/06.html
+        - http://cn.voidcc.com/question/p-ojlbdljx-xz.html
+    - TODO ctrlp模糊搜索相关
+        - https://wxnacy.com/2017/09/23/vim-plugin-ctrlp/
 - Git
     - [[http://xstarcd.github.io/wiki/shell/git_chinese.html|中文显示问题]]
 
@@ -21,3 +32,9 @@
 = 附录 =
 - [[上层整理的尝试]]
 - [[年久失修]]
+
+== 书籍收藏 ==
+- [[https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1491962291/ref=sr_1_1?ie=UTF8&qid=1508550680&sr=8-1&keywords=Hands-On+Machine+Learning+with+Scikit-Learn+and+TensorFlow|Hands-On Machine Learning with Scikit-Learn and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems 1st Edition]]
+== 博客收藏 ==
+- [[http://www.bjhee.com/|思诚之道——Billy.J.Hee的技术博客]]
+- [[https://vimjc.com/about.html|专注于Vim配置、插件、Vim命令和Vim教程]]

@@ -1,0 +1,72 @@
+= Installation =
+- 跟随官方文档安装即可，遇到的唯一问题如下解决：
+- https://github.com/ycm-core/YouCompleteMe/issues/1241
+- 配置的时候这篇非常关键：https://zhuanlan.zhihu.com/p/33046090
+- 官方文档也有最新中文翻译：https://github.com/wsdjeg/plugins-tutorial/blob/master/YouCompleteMe.md
+
+= Usage =
+- GoTo Commands
+    - Basic
+        - `<C-I>`, `<C-O>`分别是指针往前、往后跳转
+        - `:h jumplist` for details
+        - `:h quickfix` for more than one destination
+        - more: [[https://github.com/ycm-core/YouCompleteMe#the-ycmquickfixopened-autocommand|the YcmQuickFixOpened autocommand]]
+    - GoToInclude, 跳转到include
+        - 仅支持c, cpp, objc, objcpp, cuda
+    - GoToDeclaration, 跳转到声明
+        - 仅支持c, cpp, objc, objcpp, cuda, cs, go, java, javascript, python, rust, typescript
+    - GoToDefinition, 跳转到定义
+        - 仅支持c, cpp, objc, objcpp, cuda, cs, go, java, javascript, python, rust, typescript
+    - GoTo, 先尝试跳转到定义，如果没有定义再跳转到声明
+        - 仅支持c, cpp, objc, objcpp, cuda, cs, go, java, javascript, python, rust, typescript
+    - GoToImprecise, GoTo命令的快速版，不recompile，直接使用上次compile的结果
+        - 仅支持c, cpp, objc, objcpp, cuda
+    - GoToReferences, 查找所有引用并加入quickfix list
+        - 仅支持java, javascript, python, typescript, rust
+    - GoToImplementation, 跳转到实现，若没有则转到声明，若有多个则提供list来选择
+        - 仅支持cs
+    - GoToType, 跳转到这个类型的定义，若为object则跳转到class定义
+        - 仅支持go, java, javascript, typescript
+- Semantic Information Commands
+    - GetType, 显示变量类型
+        - 仅支持c, cpp, objc, objcpp, cuda, java, javascript, go, python, typescript, rust
+    - GetTypeImprecise, GetType命令的快速版
+        - 仅支持c, cpp, objc, objcpp, cuda
+    - GetParent, 显示光标位置的semantic parent
+        - 仅支持c, cpp, objc, objcpp, cuda
+    - GetDoc, 显示文档
+        - 仅支持c, cpp, objc, objcpp, cuda, cs, java, javascript, python, typescript, rust
+    - GetDocImprecise, GetDoc命令的快速版
+        - 仅支持c, cpp, objc, objcpp, cuda
+- Refactoring Commands
+    - FixIt
+        - 仅支持c, cpp, objc, objcpp, cuda, cs, go, java, javascript, typescript
+    - RefactorRename <new name>
+        - 仅支持java, javascript, typescript, rust
+    - Format
+        - 仅支持java, javascript, go, typescript, rust
+    - OrganizeImports
+        - 仅支持java, javascript, typescript
+- Miscellaneous Commands
+    - ExecuteCommand <args>
+        - only java?
+    - RestartServer
+        - 仅支持cs, go, java, javascript, rust, typescript
+    - ClearCompilationFlagCache
+        - 仅支持c, cpp, objc, objcpp, cuda, rust
+    - ReloadSolution
+        - 仅支持cs
+
+= One Language =
+== Python ==
+- Semantic auto-completion
+- Go to definition (`GoTo`)
+- Reference finding (`GoToReferences`)
+- View documentation comments for identifiers (`GetDoc`)
+- Type information for identifiers (`GetType`)
+== My Python Settings ==
+- `nmap <leader>d :YcmCompleter GoTo<CR>`
+- `nmap <leader>r :YcmCompleter GoToReferences<CR>`
+- `nmap <leader>c :YcmCompleter GetDoc<CR>`
+- `nmap <leader>t :YcmCompleter GetType<CR>`
+- `nmap <leader><leader> :pclose\|cclose<CR>`

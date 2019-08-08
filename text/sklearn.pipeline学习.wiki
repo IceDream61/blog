@@ -76,6 +76,3 @@
     - details:
         - [[http://www.bjhee.com/python-context.html|谈一谈Python的上下文管理器]]
         - [[https://blog.csdn.net/u012609509/article/details/72911564|Python 中 with用法及原理]]
-
-== 收藏博客 ==
-- [[http://www.bjhee.com/|思诚之道——Billy.J.Hee的技术博客]]
