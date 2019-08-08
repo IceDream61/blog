@@ -2,3 +2,4 @@
 - [[https://www.zybuluo.com/gongzhen/note/472805|Shadowsocks PAC模式和全局模式的区别]]
 - [[https://zxc0328.github.io/2017/03/26/proxy-for-terminal/|终端工具翻墙不完全指南]]
 - [[https://blog.denghaihui.com/2017/10/10/shadowsocks-polipo/|shadowsocks和polipo配置全局代理]]
+- 我的polipo开机自启动方式为：`brew services start polipo`, 相关文章：https://xuebin.me/posts/c2d2b2bf.html

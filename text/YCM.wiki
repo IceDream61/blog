@@ -64,9 +64,13 @@
 - Reference finding (`GoToReferences`)
 - View documentation comments for identifiers (`GetDoc`)
 - Type information for identifiers (`GetType`)
-== My Python Settings ==
+=== My Python Settings ===
 - `nmap <leader>d :YcmCompleter GoTo<CR>`
 - `nmap <leader>r :YcmCompleter GoToReferences<CR>`
 - `nmap <leader>c :YcmCompleter GetDoc<CR>`
 - `nmap <leader>t :YcmCompleter GetType<CR>`
 - `nmap <leader><leader> :pclose\|cclose<CR>`
+== Lua ==
+- 暂不支持，相关插件如下
+    - https://github.com/xolox/vim-lua-ftplugin
+        - https://gitee.com/iamdsy/vim-lua-ftplugin

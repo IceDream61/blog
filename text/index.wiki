@@ -1,35 +1,13 @@
 = 计算机科学与技术 笔记 =
 
-- TODO
-    - [[Python]]
-    - Shell
-    - Linux Tools
-    - Nginx
-    - Pip
-    - [[YCM]]
-    - [[VPN]]
-        - [[https://www.jianshu.com/p/6f650badc462|定期更新homebrew]]
-        - [[https://www.uedbox.com/post/57246/|brew使用国内镜像源]]
-    - V2EX
-- sklearn
-    - [[sklearn.pipeline学习]]
-- Vim
-    - [[VimWiki 2.1 文档翻译]]
-    - [[VimWiki语法试验]]
-    - [[测试vimwiki标签语法]]
-    - [[https://blog.csdn.net/lalor/article/details/7288553|vim缩写iab介绍]]
-    - TODO 快捷键配置
-        - https://www.jianshu.com/p/2c9a85277d49
-        - http://learnvimscriptthehardway.onefloweroneworld.com/chapters/06.html
-        - http://cn.voidcc.com/question/p-ojlbdljx-xz.html
-    - TODO ctrlp模糊搜索相关
-        - https://wxnacy.com/2017/09/23/vim-plugin-ctrlp/
-- Git
-    - [[http://xstarcd.github.io/wiki/shell/git_chinese.html|中文显示问题]]
+== [[基础工具]] ==
+- 在计算机的世界中，日常用到的工具数不胜数。而且不客气地说，我们还处于计算机行业的石器时代，工具还处于广泛尝试且标准不一的时期。
+- 因此，每个阶段的coder都需要一份[[工具指南]]，结合当下需求，来指导自己如何选择、扩展乃至开发一个适合自己的工具。
+- 我很希望做出这样一份指南，但我知道这是一个浩大的工程，或许将来有条件了可以去做，但现阶段绝非我一个人可以完成的。我所能做的第一步，就是把自己对工具的见识和理解都先记录、总结、分享出来，如果有人关注的话也结合一些意见，从而慢慢整理出一份我所涉及领域的工具指南，还有一套工具探索的思路。
+- 由于我的个人网站尚未搭建起留言系统，但我又非常不愿错过热心coder的反馈，故留下我的[[mailto:icedream61@163.com|邮箱]]，欢迎一切善意的交流~
 
 
 ----
-
 
 = 维护备忘 =
 - `publish_blog`add不全时，依旧commit的问题
