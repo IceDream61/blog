@@ -32,7 +32,6 @@
 
 
 = 维护备忘 =
-- `publish_blog`不提交`.gitignore`的问题
 - `publish_blog`add不全时，依旧commit的问题
 
 ----
