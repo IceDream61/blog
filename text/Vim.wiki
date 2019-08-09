@@ -1,0 +1,24 @@
+= Vim =
+
+== Vim基础 ==
+- [[VimWiki 2.1 文档翻译]]
+- [[https://blog.csdn.net/lalor/article/details/7288553|vim缩写iab介绍]]
+- [ ] 快捷键配置
+    - [[https://www.jianshu.com/p/2c9a85277d49|vim在.vimrc里配置快捷键]]
+    - [[http://learnvimscriptthehardway.onefloweroneworld.com/chapters/06.html|Leaders]]
+    - [[http://cn.voidcc.com/question/p-ojlbdljx-xz.html|如何在vim中映射多个<leader>键？]]
+
+== Vim插件 ==
+- [ ] [[https://github.com/junegunn/vim-plug|vim-plug]], 听说是一个比Vundle更好用的vim包管理器？
+- [[https://github.com/ycm-core/YouCompleteMe|YCM]], 自动补全的，但安装复杂，故记[[YCM配置记录]]
+- [[https://vimjc.com/vim-ctag.html|Ctags]], 不知为什么Vundle安装失败，所以用`brew install ctags`安装的
+- [[https://github.com/majutsushi/tagbar|Tagbar]], 直接Vundle即可，看代码结构的
+- [[https://github.com/kien/ctrlp.vim|CtrlP]], 模糊搜索打开文件的
+    - [ ] CtrlP不支持中文，需要中文支持可以去用[[https://github.com/Yggdroot/LeaderF|LeaderF]]，配一篇[[https://zhuanlan.zhihu.com/p/53680291|LeaderF 新功能介绍]]
+    - [ ] [[https://wxnacy.com/2017/09/23/vim-plugin-ctrlp/|CtrlP扩展的相关插件]]
+- [[https://blog.csdn.net/G_BrightBoy/article/details/14229139|VIM语法高亮、VIM代码补全、VIM结构化视图功能的配置实现（1）]]
+- [[https://www.jianshu.com/p/97d93fc72bcb|不用Mac自带Vim ，重新安装并配置自己的MacVim工具]]
+- [[https://www.zlovezl.cn/articles/vim-plugins-cannot-live-without/|那些离了就活不了的 VIM 插件]]
+- [ ] [[https://github.com/sillybun/vim-repl|vim-repl]], 没装上！
+    - [[https://www.v2ex.com/t/422696|求助！用 Vundle 安装 vim 插件卡住了]] （这个得开代理才能访问）
+- [ ] [[https://github.com/tracyone/neomake-multiprocess|neomake-multiprocess]], 基于vim8异步特性的异步插件？还没怎么看
