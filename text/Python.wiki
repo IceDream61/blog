@@ -1,3 +1,25 @@
-TODO
-- 各目录中的`__init__.py`究竟有什么用，哪里该放哪里不该
+= 待学习语法点 =
+- [ ] 各目录中的`__init__.py`究竟有什么用，哪里该放哪里不该
 
+
+= 语法点笔记 =
+- 切片，`slice`
+    - 学习`sklearn.pipeline.Pipeline.__getitem__`函数实现时遇到的
+    - details: [[https://blog.csdn.net/liuyuan185442111/article/details/47039651|详解Python的切片(Slice)]]
+- 装饰器
+    - 学习`sklearn.pipeline.Pipeline`中只读属性定义函数时遇到`@property`
+    - 学习`sklearn.pipeline.Pipeline._fit`时打耗时log时需要计时器，遇到`@contextlib.contextmanager`
+    - details:
+        - [[https://www.liaoxuefeng.com/wiki/1016959663602400/1017451662295584|装饰器]]
+        - [[https://www.liaoxuefeng.com/wiki/897692888725344/923030547069856|使用@property]]
+    - related:
+        - [[https://blog.csdn.net/wangyangzhizhou/article/details/51698638|Java注解机制及其原理]]
+        - [[https://www.zhihu.com/question/24401191/answer/37601385?utm_source=wechat_session&utm_medium=social&utm_oi=53708763168768|java注解是怎么实现的？]]
+- 上下文管理(`with`, `try`)
+    - `with func: continue`，其中`func`是一个内含yield且带`@contextlib.contextmanager`的函数
+        - 学习`sklearn.pipeline.Pipeline._fit`时打耗时log时需要计时器，遇到`@contextlib.contextmanager`
+    - details:
+        - [[http://www.bjhee.com/python-context.html|谈一谈Python的上下文管理器]]
+        - [[https://blog.csdn.net/u012609509/article/details/72911564|Python 中 with用法及原理]]
+- `__all__`: 模块导入时限制，即`import *`时只导入`__all__`中内容
+- `f"{xxx}"`: f-string，比format更方便的格式化字符串方式，还可以[[https://mlln.cn/2018/05/19/python3%20f-string%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95/|多行]]

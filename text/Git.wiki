@@ -1,0 +1,6 @@
+
+- Git全局配置在`~/.gitconfig`中，我本机的配置有：
+    - 代理polipo => shadowsocks
+    - 全局github账号
+    - 将`git diff`扩展为`git d` -- 使用vimdiff
+    - [[http://xstarcd.github.io/wiki/shell/git_chinese.html|Git中文显示问题解决]]

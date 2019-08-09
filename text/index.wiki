@@ -7,6 +7,18 @@
 - 由于我的个人网站尚未搭建起留言系统，但我又非常不愿错过热心coder的反馈，故留下我的[[mailto:icedream61@163.com|邮箱]]，欢迎一切善意的交流~
 
 
+== [[社区个人]] ==
+- 平时遇到问题，第一反应都是Google来解决。说是Google，实际上背后是各大社区所带来的讨论、文章、书籍、站点。
+- 大部分散乱的内容只需要记录一个链接即可，而很多优质内容整合的站点则有记录下来的必要，想了解特定领域的时候去看看，非常受益。
+- 还有很多这个行业相关的讨论，感兴趣的话也可以常去看看。
+
+
+== [[书籍课程]] ==
+- 计算机领域的书籍很多，课程更是鱼龙混杂，因此很有整理的必要。
+- 尤其是很多优质的出版社、大神，还有很多优秀的单品书籍，都是宝贵的学习资料，不容错过。
+- 还有很多这个行业相关的思考，我这种业内人员还是很关心的。
+
+
 = 维护备忘 =
 - `publish_blog`add不全时，依旧commit的问题
 
@@ -14,9 +26,3 @@
 = 附录 =
 - [[上层整理的尝试]]
 - [[年久失修]]
-
-== 书籍收藏 ==
-- [[https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1491962291/ref=sr_1_1?ie=UTF8&qid=1508550680&sr=8-1&keywords=Hands-On+Machine+Learning+with+Scikit-Learn+and+TensorFlow|Hands-On Machine Learning with Scikit-Learn and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems 1st Edition]]
-== 博客收藏 ==
-- [[http://www.bjhee.com/|思诚之道——Billy.J.Hee的技术博客]]
-- [[https://vimjc.com/about.html|专注于Vim配置、插件、Vim命令和Vim教程]]

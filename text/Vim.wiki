@@ -1,7 +1,7 @@
 = Vim =
 
 == Vim基础 ==
-- [[VimWiki 2.1 文档翻译]]
+- [[VimWiki 2.1 文档选译]]
 - [[https://blog.csdn.net/lalor/article/details/7288553|vim缩写iab介绍]]
 - [ ] 快捷键配置
     - [[https://www.jianshu.com/p/2c9a85277d49|vim在.vimrc里配置快捷键]]

@@ -1,18 +1,16 @@
+
+- [[Vim]]
+- [[VPN]]
+- [[Git]]
+- [[Python]]
+
+- sklearn
+    - [[sklearn.pipeline学习]]
+- iTerm2
+    - [[https://iterm2.com/python-api/|提供python api了！]]
+
 - TODO
-    - [[Python]]
     - Shell
     - Linux Tools
     - Nginx
     - Pip
-    - [[VPN]]
-        - [[https://www.jianshu.com/p/6f650badc462|定期更新homebrew]]
-        - [[https://www.uedbox.com/post/57246/|brew使用国内镜像源]]
-    - V2EX
-- sklearn
-    - [[sklearn.pipeline学习]]
-- [[Vim]]
-- iTerm2
-    - [[https://iterm2.com/python-api/|提供python api了！]]
-- Git
-    - [[http://xstarcd.github.io/wiki/shell/git_chinese.html|中文显示问题]]
-
