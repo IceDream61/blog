@@ -12,12 +12,89 @@
 
 <div class="content">
 
-<p>
-<span class="todo">TODO</span>
-</p>
+<div id="待学习语法点"><h1 id="待学习语法点" class="header"><a href="#待学习语法点">待学习语法点</a></h1></div>
+<ul>
+<li class="done0">
+各目录中的<code>__init__.py</code>究竟有什么用，哪里该放哪里不该
+
+</ul>
+
+
+<div id="语法点笔记"><h1 id="语法点笔记" class="header"><a href="#语法点笔记">语法点笔记</a></h1></div>
 <ul>
 <li>
-各目录中的<code>__init__.py</code>究竟有什么用，哪里该放哪里不该
+切片，<code>slice</code>
+
+<ul>
+<li>
+学习<code>sklearn.pipeline.Pipeline.__getitem__</code>函数实现时遇到的
+
+<li>
+details: <a href="https://blog.csdn.net/liuyuan185442111/article/details/47039651">详解Python的切片(Slice)</a>
+
+</ul>
+<li>
+装饰器
+
+<ul>
+<li>
+学习<code>sklearn.pipeline.Pipeline</code>中只读属性定义函数时遇到<code>@property</code>
+
+<li>
+学习<code>sklearn.pipeline.Pipeline._fit</code>时打耗时log时需要计时器，遇到<code>@contextlib.contextmanager</code>
+
+<li>
+details:
+
+<ul>
+<li>
+<a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017451662295584">装饰器</a>
+
+<li>
+<a href="https://www.liaoxuefeng.com/wiki/897692888725344/923030547069856">使用@property</a>
+
+</ul>
+<li>
+related:
+
+<ul>
+<li>
+<a href="https://blog.csdn.net/wangyangzhizhou/article/details/51698638">Java注解机制及其原理</a>
+
+<li>
+<a href="https://www.zhihu.com/question/24401191/answer/37601385?utm_source=wechat_session&amp;utm_medium=social&amp;utm_oi=53708763168768">java注解是怎么实现的？</a>
+
+</ul>
+</ul>
+<li>
+上下文管理(<code>with</code>, <code>try</code>)
+
+<ul>
+<li>
+<code>with func: continue</code>，其中<code>func</code>是一个内含yield且带<code>@contextlib.contextmanager</code>的函数
+
+<ul>
+<li>
+学习<code>sklearn.pipeline.Pipeline._fit</code>时打耗时log时需要计时器，遇到<code>@contextlib.contextmanager</code>
+
+</ul>
+<li>
+details:
+
+<ul>
+<li>
+<a href="http://www.bjhee.com/python-context.html">谈一谈Python的上下文管理器</a>
+
+<li>
+<a href="https://blog.csdn.net/u012609509/article/details/72911564">Python 中 with用法及原理</a>
+
+</ul>
+</ul>
+<li>
+<code>__all__</code>: 模块导入时限制，即<code>import *</code>时只导入<code>__all__</code>中内容
+
+<li>
+<code>f"{xxx}"</code>: f-string，比format更方便的格式化字符串方式，还可以<a href="https://mlln.cn/2018/05/19/python3%20f-string%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95/">多行</a>
 
 </ul>
 
