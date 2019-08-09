@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>花书笔记</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="花书笔记"><h1 id="花书笔记" class="header"><a href="#花书笔记">花书笔记</a></h1></div>
+
+<div id="花书笔记-第2章 线性代数"><h2 id="第2章 线性代数" class="header"><a href="#花书笔记-第2章 线性代数">第2章 线性代数</a></h2></div>
+
+<div id="花书笔记-第2章 线性代数-标量、向量、矩阵、张量"><h3 id="标量、向量、矩阵、张量" class="header"><a href="#花书笔记-第2章 线性代数-标量、向量、矩阵、张量">标量、向量、矩阵、张量</a></h3></div>
+<ul>
+<li>
+标量，单独一个数：\( s \in \mathbb R \)
+
+<li>
+向量，有序一列数：\( \vec x \in \mathbb R^n \)
+
+<ul>
+<li>
+\( \vec x = \begin{bmatrix} x_1 \\ x_2 \\ … \\ x_n \end{bmatrix} \)
+
+<li>
+令集合 \(S={1,3,6}\) ，则 \(x_S\) 表示 \(x_1, x_3和x_6\)
+
+</ul>
+<li>
+矩阵，二维数组：\( A \in \mathbb R^{m \times n} \)
+
+<ul>
+<li>
+其内元素：\( A_{1,1}, A_{i,:}, A_{:,j} \)
+
+<li>
+还有矩阵表达式：\( f(A)_{i,j} \)
+
+</ul>
+<li>
+张量，超过二维的数组：\( A_{i,j,k} \)
+
+<li>
+转置，矩阵以主对角线为轴的镜像：\( (A^T)_{i,j} = A_{j,i} \)
+
+<ul>
+<li>
+向量转置：\( \vec x = \begin{bmatrix} x1, x2, x3 \end{bmatrix}^T \)
+
+<li>
+标量转置：\( a = a^T \)
+
+</ul>
+<li>
+基本运算
+
+<ul>
+<li>
+\( C = A + B \) 即 \( C_{i,j} = A_{i,j} + B_{i,j} \)
+
+<li>
+\( D = a \cdot B + c \) 即 \( D_{i,j} = a \cdot B_{i,j} + c \)
+
+<li>
+\( C = A + \vec b \) 即 \( C_{i,j} = A_{i,j} + b_j \) ，称广播：隐式地复制向量至很多行
+
+</ul>
+</ul>
+
+<div id="花书笔记-第2章 线性代数-矩阵和向量相乘"><h3 id="矩阵和向量相乘" class="header"><a href="#花书笔记-第2章 线性代数-矩阵和向量相乘">矩阵和向量相乘</a></h3></div>
+<ul>
+<li>
+矩阵乘法：\( C = AB \) , \( C_{i,j} = \sum_k A_{i,k}B_{k,j} \)
+
+<li>
+元素对应乘积/Hadamard乘积：\( C = A \odot B \) , \( C_{i,j} = A_{i,j}B_{i,j} \)
+
+<li>
+故向量有：\( x \cdot y = x^Ty \)
+
+<li>
+矩阵乘法性质：
+
+<ul>
+<li>
+\( A(B+C) = AB + AC \)
+
+<li>
+\( A(BC) = (AB)C \)
+
+<li>
+\( (AB)^T = B^TA^T \) , 从而可以推出：\( x^Ty = y^Tx \)
+
+</ul>
+<li>
+线性方程组可如此表示：
+
+<ul>
+<li>
+\( \begin{cases} A_{1,1}x_1 + A_{1,2}x_2 + … + A_{1,n}x_n = b_1 \\ A_{2,1}x_1 + A_{2,2}x_2 + … + A_{2,n}x_n = b_2 \\ … \\ A_{m,1}x_1 + A_{m,2}x_2 + … + A_{m,n}x_n = b_m \end{cases} \Rightarrow \begin{cases} A_{1,:}\vec x = b_1 \\ A_{2,:}\vec x = b_2 \\ … \\ A_{m,:}\vec x = b_m \end{cases} \Rightarrow A\vec x = \vec b \)
+
+</ul>
+</ul>
+
+<div id="花书笔记-第2章 线性代数-单位矩阵和逆矩阵"><h3 id="单位矩阵和逆矩阵" class="header"><a href="#花书笔记-第2章 线性代数-单位矩阵和逆矩阵">单位矩阵和逆矩阵</a></h3></div>
+<ul>
+<li>
+\( I_3 = \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} \)
+
+<li>
+性质：
+
+<ul>
+<li>
+\( A \cdot I_n = A \)
+
+<li>
+\( A^{-1}A = I_n \)
+
+</ul>
+<li>
+可用于求解方程：
+
+<ul>
+<li>
+\( A \vec x = \vec b \)
+
+<li>
+\( \Rightarrow A^{-1}A\vec x = A^{-1}\vec b \)
+
+<li>
+\( \Rightarrow I_n \vec x = A^{-1}\vec b \)
+
+<li>
+\( \Rightarrow \vec x = A^{-1}\vec b \)
+
+</ul>
+</ul>
+
+</div>
+   
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
