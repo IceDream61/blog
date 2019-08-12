@@ -3,6 +3,9 @@
 - [[VPN]]
 - [[Git]]
 - [[Python]]
+    - iPython
+        - `pip install ipython`
+        - [[https://blog.csdn.net/gavin_john/article/details/53086766|IPython介绍]]
 
 - sklearn
     - [[sklearn.pipeline学习]]
