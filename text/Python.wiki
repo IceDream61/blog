@@ -23,3 +23,4 @@
         - [[https://blog.csdn.net/u012609509/article/details/72911564|Python 中 with用法及原理]]
 - `__all__`: 模块导入时限制，即`import *`时只导入`__all__`中内容
 - `f"{xxx}"`: f-string，比format更方便的格式化字符串方式，还可以[[https://mlln.cn/2018/05/19/python3%20f-string%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95/|多行]]
+- [[https://cuiqingcai.com/6080.html|logging]]

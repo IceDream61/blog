@@ -12,6 +12,8 @@
 - iTerm2
     - [[https://iterm2.com/python-api/|提供python api了！]]
 
+- [[打包工具]]
+
 - TODO
     - Shell
     - Linux Tools
