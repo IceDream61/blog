@@ -1,0 +1,9 @@
+
+- [[这个行业究竟需要多忙]]
+- 流量统计系统：Google Analytics
+    - https://analytics.google.com/analytics/web/provision/?authuser=0#/provision
+    - http://caibaojian.com/seoblog/6_81_zh.html
+    - https://marketingplatform.google.com/about/
+- 博客的漂亮框架！
+    - https://github.com/theme-next/hexo-theme-next
+    - https://hexo.io/zh-cn/index.html

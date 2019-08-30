@@ -38,17 +38,11 @@
 - 看这个行业的发展速度，五年、十年之后的基础工具、社区个人或许都面目全非，但这些核心内容却必然发展为更加深厚的地基，支撑整个行业的立足
 - 到那时，这一节的内容才真正是唯一留下来的有意义的存在
 
+
 ----
 
-== 维护备忘 ==
-- [[这个行业究竟需要多忙]]
-- 流量统计系统：Google Analytics
-    - https://analytics.google.com/analytics/web/provision/?authuser=0#/provision
-    - http://caibaojian.com/seoblog/6_81_zh.html
-    - https://marketingplatform.google.com/about/
-
-
 == 附录 ==
+- [[维护备忘]]
 - [[上层整理的尝试]]
 - [[年久失修]]
 - [[花书笔记]]

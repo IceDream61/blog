@@ -6,6 +6,7 @@
     - iPython
         - `pip install ipython`
         - [[https://blog.csdn.net/gavin_john/article/details/53086766|IPython介绍]]
+    - 逸之强烈推荐：MLOperator match优化 -- [[https://github.com/santinic/pampy|Pampy: Pattern Matching for Python]]
 
 - sklearn
     - [[sklearn.pipeline学习]]
