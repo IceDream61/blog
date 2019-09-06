@@ -20,3 +20,4 @@
     - Linux Tools
     - Nginx
     - Pip
+    - 数据备份的话，你是不是用 scp。如果是，我个人经验，scp 对于大文件的传输后续速度比较慢，可以采用 rsync -avz --progress  来运行，它的速度会更稳定。

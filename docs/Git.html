@@ -36,6 +36,44 @@ Git某文件加入<code>.gitignore</code>之后无法<code>git rm</code>的问�
 
 </ul>
 
+<div id="git difftool"><h1 id="git difftool" class="header"><a href="#git difftool">git difftool</a></h1></div>
+<ul>
+<li>
+<a href="https://blog.csdn.net/hittata/article/details/79309483">git difftool完整教程</a>
+<pre bash>
+git config --global diff.tool vimdiff
+git config --global difftool.prompt false
+git config --global alias.d difftool
+git config --global difftool.trustExitCode true
+</pre>
+
+<ul>
+<li>
+usage
+
+<ul>
+<li>
+<code>git diff</code>: normal diff
+
+<li>
+<code>git d</code> or <code>git difftool</code>: vimdiff
+
+<li>
+<code>:qa</code>: quit this file pair
+
+<li>
+<code>:cq</code>: quit all file pairs
+
+<li>
+<code>git d HEAD</code>: working vs newest
+
+<li>
+<code>git d –stage</code>: working vs staged
+
+</ul>
+</ul>
+</ul>
+
 </div>
    
     <script src="./js/jquery-1.7.1.min.js"></script>

@@ -7,3 +7,5 @@
 - 博客的漂亮框架！
     - https://github.com/theme-next/hexo-theme-next
     - https://hexo.io/zh-cn/index.html
+- [[跨越时间地点的生命游戏！]]
+    - [[https://imsun.net/posts/gitment-introduction/|Gitment：使用 GitHub Issues 搭建评论系统]]
