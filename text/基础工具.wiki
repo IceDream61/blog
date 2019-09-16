@@ -21,6 +21,7 @@
     - Nginx
     - Pip
     - 数据备份的话，你是不是用 scp。如果是，我个人经验，scp 对于大文件的传输后续速度比较慢，可以采用 rsync -avz --progress  来运行，它的速度会更稳定。
-    - `find x.y` and `find . -name "x.y"`
+    - Linux Orders
+        - `find x.y` and `find . -name "x.y"`
     - `bash -x xx.sh`, 打印每一条执行的命令
     - linux group中，wheel是拥有sudo权限的组、staff是所有用户都在的组
