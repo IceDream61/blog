@@ -6,6 +6,32 @@
     - [[http://xstarcd.github.io/wiki/shell/git_chinese.html|Git中文显示问题解决]]
 - Git某文件加入`.gitignore`之后无法`git rm`的问题: https://stackoverflow.com/questions/33628862/git-error-pathspec-xxx-did-not-match-any-files-known-to-git/33629090
 
+= git submodule =
+- 添加submodule
+    - `git submodule add <submodule_url>`, submodule信息保存在项目根目录的`.gitmodules`文件中
+- 查看相关diff
+    - `git diff --cached <submodule_name>`
+    - `git diff --cached --submodule` for details
+        - `git config --global diff.submodule log`, 将带submodule details作为diff的默认行为
+- clone
+    - `git clone <submodule_url>`, 含submodule目录但无内容
+    - `git submodule init`, 初始化本地配置文件
+    - `git submodule update`, 拿到submodule内容
+- clone way 2
+    - `git clone --recursive <submodule_url>`
+- update submodule
+    - 进入submodule所在目录
+    - `git fetch`, 获取origin/master到本地
+    - `git merge origin/master`, 将origin/master合并到本地的master中
+- update submodule 2
+    - `git submodule update --remote <submodule_name>`
+    - `git submodule update --remote`, update all submodules
+- submodule but not master branch
+    - `git config -f .gitmodules submodule.<submodule_name>.branch <branch_name>`
+    - `git config submodule.<submodule_name>.branch <branch_name>`, only for yourself locally
+- `git config status.submodulesummary 1`, for what??
+- more on [[https://git-scm.com/book/zh/v2/Git-工具-子模块|Git-工具-子模块]]
+
 = git difftool =
 - [[https://blog.csdn.net/hittata/article/details/79309483|git difftool完整教程]]
 {{{bash

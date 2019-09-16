@@ -36,6 +36,98 @@ Git某文件加入<code>.gitignore</code>之后无法<code>git rm</code>的问�
 
 </ul>
 
+<div id="git submodule"><h1 id="git submodule" class="header"><a href="#git submodule">git submodule</a></h1></div>
+<ul>
+<li>
+添加submodule
+
+<ul>
+<li>
+<code>git submodule add &lt;submodule_url&gt;</code>, submodule信息保存在项目根目录的<code>.gitmodules</code>文件中
+
+</ul>
+<li>
+查看相关diff
+
+<ul>
+<li>
+<code>git diff --cached &lt;submodule_name&gt;</code>
+
+<li>
+<code>git diff --cached --submodule</code> for details
+
+<ul>
+<li>
+<code>git config --global diff.submodule log</code>, 将带submodule details作为diff的默认行为
+
+</ul>
+</ul>
+<li>
+clone
+
+<ul>
+<li>
+<code>git clone &lt;submodule_url&gt;</code>, 含submodule目录但无内容
+
+<li>
+<code>git submodule init</code>, 初始化本地配置文件
+
+<li>
+<code>git submodule update</code>, 拿到submodule内容
+
+</ul>
+<li>
+clone way 2
+
+<ul>
+<li>
+<code>git clone --recursive &lt;submodule_url&gt;</code>
+
+</ul>
+<li>
+update submodule
+
+<ul>
+<li>
+进入submodule所在目录
+
+<li>
+<code>git fetch</code>, 获取origin/master到本地
+
+<li>
+<code>git merge origin/master</code>, 将origin/master合并到本地的master中
+
+</ul>
+<li>
+update submodule 2
+
+<ul>
+<li>
+<code>git submodule update --remote &lt;submodule_name&gt;</code>
+
+<li>
+<code>git submodule update --remote</code>, update all submodules
+
+</ul>
+<li>
+submodule but not master branch
+
+<ul>
+<li>
+<code>git config -f .gitmodules submodule.&lt;submodule_name&gt;.branch &lt;branch_name&gt;</code>
+
+<li>
+<code>git config submodule.&lt;submodule_name&gt;.branch &lt;branch_name&gt;</code>, only for yourself locally
+
+</ul>
+<li>
+<code>git config status.submodulesummary 1</code>, for what??
+
+<li>
+more on <a href="https://git-scm.com/book/zh/v2/Git-工具-子模块">Git-工具-子模块</a>
+
+</ul>
+
 <div id="git difftool"><h1 id="git difftool" class="header"><a href="#git difftool">git difftool</a></h1></div>
 <ul>
 <li>
