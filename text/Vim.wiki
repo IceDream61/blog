@@ -23,3 +23,4 @@
     - [[https://www.v2ex.com/t/422696|求助！用 Vundle 安装 vim 插件卡住了]] （这个得开代理才能访问）
 - [ ] [[https://github.com/tracyone/neomake-multiprocess|neomake-multiprocess]], 基于vim8异步特性的异步插件？还没怎么看
 - https://github.com/itchyny/calendar.vim
+- [[https://note.qidong.name/2019/01/yapf-and-isort/|配置yapf和isort的Vim与Pytest插件]]
