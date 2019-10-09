@@ -1,4 +1,7 @@
 
+- JetBrains
+    - https://github.com/pingfangx/jetbrains-in-chinese
+    - https://www.52mac.com/soft/10208-1-1.html
 - [[Vim]]
 - [[VPN]]
 - [[Git]]
@@ -16,11 +19,14 @@
 - [[打包工具]]
 
 - TODO
+    - screen, 远程服务器开screen，每次-r运行自己的（子串匹配），不怕断网
     - Shell
     - Linux Tools
     - Nginx
     - Pip
     - 数据备份的话，你是不是用 scp。如果是，我个人经验，scp 对于大文件的传输后续速度比较慢，可以采用 rsync -avz --progress  来运行，它的速度会更稳定。
+        - `rsync -avz -delete -P`, https://segmentfault.com/a/1190000015669114
+        - `tar cfzv processed.tar.gz processed`, https://www.cnblogs.com/zejin2008/p/6007963.html
     - Linux Orders
         - `find x.y` and `find . -name "x.y"`
         - `bash -x xx.sh`, 打印每一条执行的命令

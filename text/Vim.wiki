@@ -7,6 +7,11 @@
     - [[https://www.jianshu.com/p/2c9a85277d49|vim在.vimrc里配置快捷键]]
     - [[http://learnvimscriptthehardway.onefloweroneworld.com/chapters/06.html|Leaders]]
     - [[http://cn.voidcc.com/question/p-ojlbdljx-xz.html|如何在vim中映射多个<leader>键？]]
+- 切换大小写
+    - `~`, switch
+    - `gu`, to small
+    - `gU`, to big
+    - https://blog.csdn.net/hunter___/article/details/83035031
 
 == Vim插件 ==
 - [ ] [[https://github.com/junegunn/vim-plug|vim-plug]], 听说是一个比Vundle更好用的vim包管理器？
