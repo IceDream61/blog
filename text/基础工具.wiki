@@ -1,4 +1,6 @@
 
+- EDA
+    - python、dataframe时间处理相关：https://blog.csdn.net/shomy_liu/article/details/44141483
 - JetBrains
     - https://github.com/pingfangx/jetbrains-in-chinese
     - https://www.52mac.com/soft/10208-1-1.html
