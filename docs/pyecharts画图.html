@@ -38,7 +38,69 @@
 
 </ul>
 
-<div id="笔记"><h1 id="笔记" class="header"><a href="#笔记">笔记</a></h1></div>
+<div id="pyecharts画图-代码"><h2 id="代码" class="header"><a href="#pyecharts画图-代码">代码</a></h2></div>
+<div id="pyecharts画图-代码-各门店销量真实值、预测值、误差值总览"><h3 id="各门店销量真实值、预测值、误差值总览" class="header"><a href="#pyecharts画图-代码-各门店销量真实值、预测值、误差值总览">各门店销量真实值、预测值、误差值总览</a></h3></div>
+<pre python>
+from pyecharts.faker import Faker
+from pyecharts import options as opts
+from pyecharts.charts import Bar
+
+def bar_base(df) -&gt; Bar:
+    c = Bar()
+    for store in df['Store'].unique():
+        _df = df[df['Store']==store]
+        ds = _df['ds'].astype(str).tolist()
+        ys = _df['y'].astype(float).tolist()
+        yhats = _df['yhat'].astype(float).tolist()
+        yerrors = _df['error'].astype(float).tolist()
+        c.add_xaxis(ds)
+        c.add_yaxis(store, ys)
+        c.add_yaxis(store+' Predict', yhats)
+        c.add_yaxis(store+' Error', yerrors)
+    c.set_global_opts(title_opts=opts.TitleOpts(title=''),\
+                         datazoom_opts=opts.DataZoomOpts(range_start=0, range_end=100))
+    c.set_series_opts(label_opts = opts.LabelOpts(is_show=False))
+    return c
+
+bar_base(analyse_df).render_notebook()
+</pre>
+
+<div id="pyecharts画图-代码-误差大于0.8的记录数量对比，以weekday维度聚合"><h3 id="误差大于0.8的记录数量对比，以weekday维度聚合" class="header"><a href="#pyecharts画图-代码-误差大于0.8的记录数量对比，以weekday维度聚合">误差大于0.8的记录数量对比，以weekday维度聚合</a></h3></div>
+<pre python>
+from pyecharts.faker import Faker
+from pyecharts import options as opts
+from pyecharts.charts import Pie
+
+def df_report(df, groupby_col, name, f):
+    report_df = pd.DataFrame(columns=[groupby_col, name])
+    i = 0
+    for groupby_value in df[groupby_col].unique():
+        _df = df[df[groupby_col]==groupby_value]
+        error_count = f(_df)
+        report_df.loc[i] = [groupby_value, error_count]
+        i += 1
+    return report_df.sort_values(by=name, ascending=False)
+
+def pie_report(df, groupby_col, name, f) -&gt; Pie:
+    report_df = df_report(df, groupby_col, name, f)
+    c = (
+        Pie()
+        .add("",
+             [list(z) for z in zip(report_df[groupby_col], report_df[name])],
+            radius=["30%", "75%"],
+            center=["75%", "50%"],
+            rosetype="area",
+            )
+        .set_global_opts(title_opts=opts.TitleOpts(title=name),
+                         legend_opts=opts.LegendOpts(type_="scroll", pos_left="0%", pos_top="15%", orient="vertical"),)
+        .set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c}"))
+    )
+    return c.render_notebook()
+
+pie_report(df, 'weekday', 'Count', lambda x: len(x[x['error_p']&gt;0.8]))
+</pre>
+
+<div id="pyecharts画图-笔记"><h2 id="笔记" class="header"><a href="#pyecharts画图-笔记">笔记</a></h2></div>
 <ol>
 <li>
 不关心v0.5.x，只关心v1系列（从v1.0.0开始），v1仅支持python3.6+，且与v0.5.x不兼容。
@@ -46,10 +108,6 @@
 <li>
 支持notebook环境、主流web框架，有30+种常见图表、简洁的api。
 
-</ol>
-
-<div id="笔记-快速入门"><h2 id="快速入门" class="header"><a href="#笔记-快速入门">快速入门</a></h2></div>
-<ol>
 <li>
 jupyter notebook可以直接渲染--<a href="../text/pyecharts_examples.ipynb">基本图表notebook例子</a>，jupyter lab需要配置
 
