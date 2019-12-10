@@ -11,7 +11,7 @@
 2. 支持notebook环境、主流web框架，有30+种常见图表、简洁的api。
 
 == 快速入门 ==
-1. jupyter notebook可以直接渲染--[[local:analyse.ipynb|基本图表notebook例子]]，jupyter lab需要配置
+1. jupyter notebook可以直接渲染--[[local:pyecharts_examples.ipynb|基本图表notebook例子]]，jupyter lab需要配置
 2. 最常用的柱状图、折线图：[[https://pyecharts.org/#/zh-cn/rectangular_charts|直角坐标系图表]]
 3. 参数的XXXOpts/XXXItems和dict形式是完全等价的，即下列形式：
     - `c = Bar(init_opts=opts.InitOpts(width="620px", height="420px"))`
