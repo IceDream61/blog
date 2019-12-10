@@ -7,7 +7,7 @@
 - 本机裸启动jupyter notebook
 
 == 代码 ==
-=== 各门店销量真实值、预测值、误差值总览 ===
+=== 柱状图：各门店销量真实值、预测值、误差值总览 ===
 {{{python
 from pyecharts.faker import Faker
 from pyecharts import options as opts
@@ -33,7 +33,7 @@ def bar_base(df) -> Bar:
 bar_base(analyse_df).render_notebook()
 }}}
 
-=== 误差大于0.8的记录数量对比，以weekday维度聚合 ===
+=== 饼图：误差大于0.8的记录数量对比，以weekday维度聚合 ===
 {{{python
 from pyecharts.faker import Faker
 from pyecharts import options as opts
