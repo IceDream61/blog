@@ -1,0 +1,38 @@
+= pyecharts画图 =
+
+== 资源 ==
+- [[https://pyecharts.org/#/|pyecharts官网（含github、中英文档）]]
+
+== 环境 ==
+- 本机裸启动jupyter notebook
+
+= 笔记 =
+1. 不关心v0.5.x，只关心v1系列（从v1.0.0开始），v1仅支持python3.6+，且与v0.5.x不兼容。
+2. 支持notebook环境、主流web框架，有30+种常见图表、简洁的api。
+
+== 快速入门 ==
+1. jupyter notebook可以直接渲染--[[local:analyse.ipynb|基本图表notebook例子]]，jupyter lab需要配置
+2. 最常用的柱状图、折线图：[[https://pyecharts.org/#/zh-cn/rectangular_charts|直角坐标系图表]]
+3. 参数的XXXOpts/XXXItems和dict形式是完全等价的，即下列形式：
+    - `c = Bar(init_opts=opts.InitOpts(width="620px", height="420px"))`
+    - `c = Bar(dict(width="620px", height="420px"))`
+    - `c = Bar({"width": "620px", "height": "420px"})`
+4. 数据本质上只是将Python转换为JSON，故第三方格式如numpy.intXX需自行转换为Python原生数据格式：
+    - 方法1:
+        - `[int(x) for x in your_numpy_array_or_something_else]`
+        - `[float(x) for x in your_numpy_array_or_something_else]`
+        - `[str(x) for x in your_numpy_array_or_something_else]`
+    - 方法2:
+        - `Series.tolist()`
+5. 10+种[[https://pyecharts.org/#/zh-cn/themes|内置主题]]，亦可自行定制主题
+6. 渲染成图片有`selenium`、`phantomjs`、`pyppeteer`三种方式
+7. 支持传入原生JS函数
+8. pyecharts 使用的所有静态资源文件存放于 [[https://github.com/pyecharts/pyecharts-assets|pyecharts-assets]] 项目中，默认挂载在 https://assets.pyecharts.org/assets/
+9. 支持整合在Web框架中，包括：
+    - Flask
+    - Sanic
+    - Django
+    - Tornado
+10. pyecharts 内置了一些常用的城市地理坐标数据，这些数据保存在 pyecharts/datasets/city_coordinates.json 文件中。格式可描述为以下形式：
+
+

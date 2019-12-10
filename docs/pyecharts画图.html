@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>pyecharts画图</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-148355587-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-148355587-1');
+</script>
+
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="pyecharts画图"><h1 id="pyecharts画图" class="header"><a href="#pyecharts画图">pyecharts画图</a></h1></div>
+
+<div id="pyecharts画图-资源"><h2 id="资源" class="header"><a href="#pyecharts画图-资源">资源</a></h2></div>
+<ul>
+<li>
+<a href="https://pyecharts.org/#/">pyecharts官网（含github、中英文档）</a>
+
+</ul>
+
+<div id="pyecharts画图-环境"><h2 id="环境" class="header"><a href="#pyecharts画图-环境">环境</a></h2></div>
+<ul>
+<li>
+本机裸启动jupyter notebook
+
+</ul>
+
+<div id="笔记"><h1 id="笔记" class="header"><a href="#笔记">笔记</a></h1></div>
+<ol>
+<li>
+不关心v0.5.x，只关心v1系列（从v1.0.0开始），v1仅支持python3.6+，且与v0.5.x不兼容。
+
+<li>
+支持notebook环境、主流web框架，有30+种常见图表、简洁的api。
+
+</ol>
+
+<div id="笔记-快速入门"><h2 id="快速入门" class="header"><a href="#笔记-快速入门">快速入门</a></h2></div>
+<ol>
+<li>
+jupyter notebook可以直接渲染--<a href="../text/analyse.ipynb">基本图表notebook例子</a>，jupyter lab需要配置
+
+<li>
+最常用的柱状图、折线图：<a href="https://pyecharts.org/#/zh-cn/rectangular_charts">直角坐标系图表</a>
+
+<li>
+参数的XXXOpts/XXXItems和dict形式是完全等价的，即下列形式：
+
+<ul>
+<li>
+<code>c = Bar(init_opts=opts.InitOpts(width="620px", height="420px"))</code>
+
+<li>
+<code>c = Bar(dict(width="620px", height="420px"))</code>
+
+<li>
+<code>c = Bar({"width": "620px", "height": "420px"})</code>
+
+</ul>
+<li>
+数据本质上只是将Python转换为JSON，故第三方格式如numpy.intXX需自行转换为Python原生数据格式：
+
+<ul>
+<li>
+方法1:
+
+<ul>
+<li>
+<code>[int(x) for x in your_numpy_array_or_something_else]</code>
+
+<li>
+<code>[float(x) for x in your_numpy_array_or_something_else]</code>
+
+<li>
+<code>[str(x) for x in your_numpy_array_or_something_else]</code>
+
+</ul>
+<li>
+方法2:
+
+<ul>
+<li>
+<code>Series.tolist()</code>
+
+</ul>
+</ul>
+<li>
+10+种<a href="https://pyecharts.org/#/zh-cn/themes">内置主题</a>，亦可自行定制主题
+
+<li>
+渲染成图片有<code>selenium</code>、<code>phantomjs</code>、<code>pyppeteer</code>三种方式
+
+<li>
+支持传入原生JS函数
+
+<li>
+pyecharts 使用的所有静态资源文件存放于 <a href="https://github.com/pyecharts/pyecharts-assets">pyecharts-assets</a> 项目中，默认挂载在 <a href="https://assets.pyecharts.org/assets/">https://assets.pyecharts.org/assets/</a>
+
+<li>
+支持整合在Web框架中，包括：
+
+<ul>
+<li>
+Flask
+
+<li>
+Sanic
+
+<li>
+Django
+
+<li>
+Tornado
+
+</ul>
+<li>
+pyecharts 内置了一些常用的城市地理坐标数据，这些数据保存在 pyecharts/datasets/city_coordinates.json 文件中。格式可描述为以下形式：
+
+</ol>
+
+</div>
+   
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>

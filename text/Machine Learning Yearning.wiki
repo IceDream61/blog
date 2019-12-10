@@ -1,3 +1,0 @@
-
-- PDF：[[local:../blog/documents/书架/Machine Learning Yearning.pdf|Machine Learning Yearning]]
-- 翻译: [[https://blog.csdn.net/maerdym/article/details/82861417|吴恩达新书-Machine Learning Yearning 中文版全 (1-52章)]]

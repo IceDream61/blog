@@ -1,9 +1,0 @@
-
-= 课程 =
-- [[西瓜书]]，还是看书爽啊！
-    - [[https://study.163.com/course/introduction/1004570029.htm|吴恩达机器学习]]，也很棒的视频课程
-- [[Machine Learning Yearning]]，很棒的机器学习经验指南
-
-
-= 书籍 =
-- [[https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1491962291/ref=sr_1_1?ie=UTF8&qid=1508550680&sr=8-1&keywords=Hands-On+Machine+Learning+with+Scikit-Learn+and+TensorFlow|Hands-On Machine Learning with Scikit-Learn and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems 1st Edition]], 对开源的思考，讨论了开源对行业的影响、开源的现状、开源的展望等等，质量据说很高，应该值得一看
