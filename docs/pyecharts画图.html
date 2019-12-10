@@ -97,7 +97,27 @@ def pie_report(df, groupby_col, name, f) -&gt; Pie:
     )
     return c.render_notebook()
 
+def pie_reports(df, groupby_col, name, fs) -&gt; Pie:
+    c = Pie()
+    i = 0.5
+    n = len(fs)
+    for f in fs:
+        report_df = df_report(df, groupby_col, name, f)
+        c.add("",
+                 [list(z) for z in zip(report_df[groupby_col], report_df[name])],
+                radius=["30%", "75%"],
+                center=[f"{i/n*100}%", "50%"],
+                rosetype="area",
+                )
+        i += 1
+    c.set_global_opts(title_opts=opts.TitleOpts(title=name))
+#     c.set_global_opts(title_opts=opts.TitleOpts(title=name),
+#                       legend_opts=opts.LegendOpts(type_="scroll", pos_left="0%", pos_top="15%", orient="vertical"),)
+#     c.set_series_opts(label_opts=opts.LabelOpts(formatter="{b}: {c}"))
+    return c.render_notebook()
+
 pie_report(df, 'weekday', 'Count', lambda x: len(x[x['error_p']&gt;0.8]))
+pie_reports(df, 'weekday', 'Count', [lambda x: len(x[x['error_p']&gt;0.8]), lambda x: len(x[x['error']&gt;800])])
 </pre>
 
 <div id="pyecharts画图-笔记"><h2 id="笔记" class="header"><a href="#pyecharts画图-笔记">笔记</a></h2></div>
