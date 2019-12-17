@@ -5,6 +5,7 @@
 - [[https://vimjc.com/about.html|专注于Vim配置、插件、Vim命令和Vim教程]], 一位专注Vim教程整理的女站长，部分文章质量很高
 - [[http://www.bjhee.com/|思诚之道——Billy.J.Hee的技术博客]], 其中 *谈一谈Python的上下文管理器* 质量不错，故而收藏其博客
 - [[https://achievement-hunter.github.io/|Achievement Hunter GOTY]], 基于GitHub Pages做的小游戏网站，还挺有意思的~
+- [[https://imququ.com/|Jerry Qu 专注 WEB 端开发]], WEB开发的一个博主
 
 
 = 社区 =

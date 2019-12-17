@@ -1,0 +1,20 @@
+= 彻底解决翻墙、换源问题 =
+
+== 翻墙 ==
+
+    机场这东西，一分钱一分货，自己需要什么服务，就去买什么价位的机场，除非黑商，没有什么太贵不值得一说，只看你需要什么。只介绍机场价钱和特点，不会去推荐你们买哪家哪家，总之就是自己看，爱买哪个买哪个。
+    
+上面话语说到我心里了，出自这篇货比N家的无私分享: [[https://github.com/DuyaoSS/SSR/issues/1|浅谈部分机场（SS/SSR提供商）的使用感受--完整版（联通）更新中]]
+
+- rixCloud配套配置
+    - 直接开全局浏览器即可正常访问墙外网站
+        - 如果要自动选择是否使用，chrome中选用SwitchyOmega插件即可
+    - 终端中比较麻烦，暂未解决好：
+        - [[https://docs.brew.sh/Manpage#using-homebrew-behind-a-proxy|using-homebrew-behind-a-proxy]]
+        - 好像并不是本机polipo设置没关的锅，毕竟wget没问题，而且yq也是brew update不行
+
+
+== 换源 ==
+本地只要vpn开全局即可，换源主要是为了解决服务器上面的运维问题。
+- [[https://www.jianshu.com/p/4aa7b63f9026|将Centos的yum源更换为国内的阿里云源]]
+

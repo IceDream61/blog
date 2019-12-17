@@ -1,0 +1,31 @@
+= Linux及相关CS基础 =
+运维所谓的麻烦说到底，除了历史包袱就是Linux及相关CS基础。历史包袱只能想办法解决+等开源社区的进步，但后者是需要自己学习积累的。
+
+== 基础知识 ==
+基础没的说，必须搞定。这里只列必要的书籍：
+- 《Unix环境高级编程 第3版》——人民邮电出版社
+- 《计算机网络 第5版》——清华大学出版社
+- 《TCP/IP详解》，共3卷——机械工业出版社
+
+== 资料收藏 ==
+这里只考虑centos、ubuntu、debian三种Linux系统，其余小众系统不主动涉及。
+
+=== 包管理器 ===
+- centos默认是yum，下一代是DNF，详见：[[https://www.interserver.net/tips/kb/install-dnf-in-rhel-centos-7/|在RHEL / CentOS 7中安装DNF]]
+
+=== docker基础坑 ===
+- [[https://segmentfault.com/a/1190000016083023|Docker获取镜像报错 docker: Error response from daemon]]
+    - [[https://man.linuxde.net/dig-2|dig命令]]
+    - [[https://www.cnblogs.com/liyuanhong/articles/7400651.html|bind9简介（一）]]
+
+=== 网络知识 ===
+- [[https://zh.wikipedia.org/wiki/%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F|域名系统 -- 维基百科，自由的百科全书]]
+
+=== 终端 ===
+- iterm2 + tmux (+ ssh)
+    - [[https://www.v2ex.com/t/589453|科普并推荐一下 iTerm 的 tmux 绑定功能]]
+    - [[https://www.jianshu.com/p/f2e585453196|iTerm2 与 Tmux 的整合]]
+
+=== 拷贝文件 ===
+1. `scp`
+2. [[https://man.linuxde.net/rsync|rsync用法]]
