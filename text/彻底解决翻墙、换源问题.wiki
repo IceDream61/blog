@@ -9,12 +9,17 @@
 - rixCloud配套配置
     - 直接开全局浏览器即可正常访问墙外网站
         - 如果要自动选择是否使用，chrome中选用SwitchyOmega插件即可
-    - 终端中比较麻烦，暂未解决好：
-        - [[https://docs.brew.sh/Manpage#using-homebrew-behind-a-proxy|using-homebrew-behind-a-proxy]]
-        - 好像并不是本机polipo设置没关的锅，毕竟wget没问题，而且yq也是brew update不行
+    - 终端中比较麻烦：
+        - `alias ss='export http_proxy=http://127.0.0.1:1087 https_proxy=http://127.0.0.1:1087'`
+        - `alias us='unset http_proxy && unset https_proxy'`
+        - 把上述code加到`~/.bashrc`中，然后即可在终端中用`ss`打开vpn、`us`关闭vpn
+    - github缓存
+        - github默认http_postBuffer只有1M，很容易导致下载速度过慢
+        - 可以改为500M：`git config --global http.postBuffer 524288000`
+        - `brew`的速度就会受到github影响，因为要从github上面clone东西
 
 
 == 换源 ==
-本地只要vpn开全局即可，换源主要是为了解决服务器上面的运维问题。
+本地只要开终端vpn即可，换源主要是为了解决服务器上面的运维问题。
 - [[https://www.jianshu.com/p/4aa7b63f9026|将Centos的yum源更换为国内的阿里云源]]
 
