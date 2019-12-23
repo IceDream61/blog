@@ -10,6 +10,9 @@
 == 资料收藏 ==
 这里只考虑centos、ubuntu、debian三种Linux系统，其余小众系统不主动涉及。
 
+=== 虚拟机 ===
+- 
+
 === 包管理器 ===
 - centos默认是yum，下一代是DNF，详见：[[https://www.interserver.net/tips/kb/install-dnf-in-rhel-centos-7/|在RHEL / CentOS 7中安装DNF]]
 
@@ -29,3 +32,6 @@
 === 拷贝文件 ===
 1. `scp`
 2. [[https://man.linuxde.net/rsync|rsync用法]]
+
+=== 欢迎语 ===
+- [[https://hacpai.com/article/1459153445847|两个Linux 小程序 fortune 和 cowsay]]

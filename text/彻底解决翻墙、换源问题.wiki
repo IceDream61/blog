@@ -6,7 +6,7 @@
     
 上面话语说到我心里了，出自这篇货比N家的无私分享: [[https://github.com/DuyaoSS/SSR/issues/1|浅谈部分机场（SS/SSR提供商）的使用感受--完整版（联通）更新中]]
 
-- rixCloud配套配置
+- rixCloud配套配置（上述排名第一的品牌）
     - 直接开全局浏览器即可正常访问墙外网站
         - 如果要自动选择是否使用，chrome中选用SwitchyOmega插件即可
     - 终端中比较麻烦：
