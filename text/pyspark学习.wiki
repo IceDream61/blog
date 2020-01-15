@@ -1,0 +1,39 @@
+= Download =
+== 打包下载spark ==
+1. 从[[https://spark.apache.org/downloads.html|官网]]下载spark：`wget http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz`
+2. 解压：`tar -xf spark-2.4.4-bin-hadoop2.7.tgz`
+3. 进入目录：`cd spark-2.4.4-bin-hadoop2.7`
+4. ipython交互式pyspark：`PYSPARK_DRIVER_PYTHON=ipython ./bin/pyspark`
+== 直接安装pyspark ==
+1. `pip install pyspark`
+2. 直接`pyspark`
+3. 不过反正我用的第一种，所以懒得看这样如何开ipython了
+
+= Basic =
+1. 调整log等级
+    1. `cp conf/log4j.properties.template conf/log4j.properties`
+    2. `vi conf/log4j.properties`
+        1. 找到`log4j.rootCategory=INFO, console`
+        1. 改成`log4j.rootCategory=WARN, console`
+2. SparkContext对象，shell中自动创建，叫做sc
+    1. 创建RDD：`lines = sc.textFile("README.md")`
+    2. 驱动器程序（例如shell）可以操作执行器（executor）做操作：`lines.count()`
+    3. 可以把操作函数传递给executor：`lines.filter(lambda line: "Python" in line)`
+3. 运行python脚本：`./bin/spark-submit my_script.py`
+{{{python
+print(123)
+
+from pyspark import SparkConf, SparkContext
+
+conf = SparkConf().setMaster("local").setAppName("My App")
+sc = SparkContext(conf = conf)
+
+lines = sc.textFile("README.md")
+print(lines.count())
+print(lines.first())
+
+pythonLines = lines.filter(lambda line: "Python" in line)
+print(pythonLines.first())
+
+sc.stop()
+}}}

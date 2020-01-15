@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>pyspark学习</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-148355587-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-148355587-1');
+</script>
+
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="Download"><h1 id="Download" class="header"><a href="#Download">Download</a></h1></div>
+<div id="Download-打包下载spark"><h2 id="打包下载spark" class="header"><a href="#Download-打包下载spark">打包下载spark</a></h2></div>
+<ol>
+<li>
+从<a href="https://spark.apache.org/downloads.html">官网</a>下载spark：<code>wget http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz</code>
+
+<li>
+解压：<code>tar -xf spark-2.4.4-bin-hadoop2.7.tgz</code>
+
+<li>
+进入目录：<code>cd spark-2.4.4-bin-hadoop2.7</code>
+
+<li>
+ipython交互式pyspark：<code>PYSPARK_DRIVER_PYTHON=ipython ./bin/pyspark</code>
+
+</ol>
+<div id="Download-直接安装pyspark"><h2 id="直接安装pyspark" class="header"><a href="#Download-直接安装pyspark">直接安装pyspark</a></h2></div>
+<ol>
+<li>
+<code>pip install pyspark</code>
+
+<li>
+直接<code>pyspark</code>
+
+<li>
+不过反正我用的第一种，所以懒得看这样如何开ipython了
+
+</ol>
+
+<div id="Basic"><h1 id="Basic" class="header"><a href="#Basic">Basic</a></h1></div>
+<ol>
+<li>
+调整log等级
+
+<ol>
+<li>
+<code>cp conf/log4j.properties.template conf/log4j.properties</code>
+
+<li>
+<code>vi conf/log4j.properties</code>
+
+<ol>
+<li>
+找到<code>log4j.rootCategory=INFO, console</code>
+
+<li>
+改成<code>log4j.rootCategory=WARN, console</code>
+
+</ol>
+</ol>
+<li>
+SparkContext对象，shell中自动创建，叫做sc
+
+<ol>
+<li>
+创建RDD：<code>lines = sc.textFile("README.md")</code>
+
+<li>
+驱动器程序（例如shell）可以操作执行器（executor）做操作：<code>lines.count()</code>
+
+<li>
+可以把操作函数传递给executor：<code>lines.filter(lambda line: "Python" in line)</code>
+
+</ol>
+<li>
+运行python脚本：<code>./bin/spark-submit my_script.py</code>
+<pre python>
+print(123)
+
+from pyspark import SparkConf, SparkContext
+
+conf = SparkConf().setMaster("local").setAppName("My App")
+sc = SparkContext(conf = conf)
+
+lines = sc.textFile("README.md")
+print(lines.count())
+print(lines.first())
+
+pythonLines = lines.filter(lambda line: "Python" in line)
+print(pythonLines.first())
+
+sc.stop()
+</pre>
+
+</ol>
+
+</div>
+   
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>
