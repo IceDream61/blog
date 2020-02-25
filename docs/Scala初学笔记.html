@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Scala初学笔记</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-148355587-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-148355587-1');
+</script>
+
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="Scala初学笔记"><h1 id="Scala初学笔记" class="header"><a href="#Scala初学笔记">Scala初学笔记</a></h1></div>
+<p>
+学习资料：《Scala学习手册》
+</p>
+
+<div id="Scala初学笔记-可扩展语言概述"><h2 id="可扩展语言概述" class="header"><a href="#Scala初学笔记-可扩展语言概述">可扩展语言概述</a></h2></div>
+<p>
+语言简介略，安装也很简单
+</p>
+<ol>
+<li>
+装好jvm
+
+<li>
+安装scala：<code>brew install scala</code>即可
+
+<li>
+helloworld很简单：<code>println("Hello, World")</code>
+
+</ol>
+<p>
+附上类似ipython的<a href="https://github.com/mattpap/IScala">iscala</a>
+</p>
+
+<div id="Scala初学笔记-处理数据：字面量、值、变量和类型"><h2 id="处理数据：字面量、值、变量和类型" class="header"><a href="#Scala初学笔记-处理数据：字面量、值、变量和类型">处理数据：字面量、值、变量和类型</a></h2></div>
+<table>
+<tr>
+<th>
+中文名
+</th>
+<th>
+英文名
+</th>
+<th>
+解释
+</th>
+<th>
+语法
+</th>
+<th>
+例句
+</th>
+</tr>
+<tr>
+<td>
+字面量
+</td>
+<td>
+literal
+</td>
+<td>
+也就是直接写出值的常量
+</td>
+<td>
+&nbsp;
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+值
+</td>
+<td>
+value
+</td>
+<td>
+是个有名字的值，但不可重新赋值
+</td>
+<td>
+<code>val &lt;变量名&gt;[: &lt;类型&gt;] = &lt;数据&gt;</code>
+</td>
+<td>
+<code>val x: Int = 20</code>
+</td>
+</tr>
+<tr>
+<td>
+变量
+</td>
+<td>
+variable
+</td>
+<td>
+是个有名字的值，可以重新赋值
+</td>
+<td>
+<code>var &lt;变量名&gt;[: &lt;类型&gt;] = &lt;数据&gt;</code>
+</td>
+<td>
+<code>var x: Int = 20</code>
+</td>
+</tr>
+<tr>
+<td>
+类型
+</td>
+<td>
+type
+</td>
+<td>
+是数据的种类（kind）
+</td>
+<td>
+&nbsp;
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+</table>
+<ol>
+<li>
+所有scala数据都对应一个特定的类型
+
+<li>
+所有scala类型都定义为包含方法的类，这些方法将用来处理这些数据
+
+<li>
+scala中使用jvm的自动垃圾回收，不能手动撤销值和变量
+
+<li>
+scala中命名标准非常宽松，除了括号、中括号、点号，其它的字符全都可以，但哪怕是这几个符号其实也可以，具体范围是<code>\u0020-007F和Unicode Sm[Symbol/Math]中除了([]).之外的所有字符</code>。极端例子如下：
+<pre scala>
+val π = 3.14159
+val $ = "USD currency symbol"
+val o_O = "Hmm"
+val `a.b` = 4
+</pre>
+
+<li>
+
+</ol>
+
+</div>
+   
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>

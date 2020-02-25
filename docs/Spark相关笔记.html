@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Spark相关笔记</title>
+    <link rel="Stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./google-code-prettify/prettify.css" >
+    <!-- add more style sheets and javascripts -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-148355587-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-148355587-1');
+</script>
+
+</head>
+<body>
+<!--<body onload="prettyPrint()">-->
+
+<div class="content">
+
+<div id="本地启动"><h1 id="本地启动" class="header"><a href="#本地启动">本地启动</a></h1></div>
+<p>
+版本：spark-2.4.4-bin-hadoop2.7
+</p>
+
+<p>
+需要用本地Spark调试时，可以用这个方法来启动Spark:
+</p>
+
+<p>
+官方文档:
+<a href="https://spark.apache.org/docs/latest/spark-standalone.html">https://spark.apache.org/docs/latest/spark-standalone.html</a>
+</p>
+
+<p>
+启动master:
+./sbin/start-master.sh
+</p>
+
+<p>
+启动slave:
+./sbin/start-slave.sh spark://luqidekelianxiaomac.local:7077 -c 2 -m 4G
+</p>
+
+<p>
+查看UI:
+<a href="http://localhost:8080/">http://localhost:8080/</a>
+</p>
+
+<p>
+Python env:
+conda install pyspark
+</p>
+
+<p>
+Code:
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.master('spark://luqidekelianxiaomac.local:7077').appName('luqi').getOrCreate()
+df = spark.read.parquet('../../familymart/sales.parquet')
+</p>
+
+</div>
+   
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $('pre').addClass('prettyprint linenums') 
+        prettyPrint()})
+    </script>
+    <script src="./google-code-prettify/prettify.js"></script>
+
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>

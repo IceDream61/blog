@@ -1,0 +1,24 @@
+= 本地启动 =
+版本：spark-2.4.4-bin-hadoop2.7
+
+需要用本地Spark调试时，可以用这个方法来启动Spark:
+
+官方文档:
+https://spark.apache.org/docs/latest/spark-standalone.html
+
+启动master:
+./sbin/start-master.sh
+
+启动slave:
+./sbin/start-slave.sh spark://luqidekelianxiaomac.local:7077 -c 2 -m 4G
+
+查看UI:
+http://localhost:8080/
+
+Python env:
+conda install pyspark
+
+Code:
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.master('spark://luqidekelianxiaomac.local:7077').appName('luqi').getOrCreate()
+df = spark.read.parquet('../../familymart/sales.parquet')
