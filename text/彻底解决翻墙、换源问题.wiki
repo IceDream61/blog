@@ -1,3 +1,4 @@
+%nohtml
 = 彻底解决翻墙、换源问题 =
 
 == 翻墙 ==
@@ -9,6 +10,7 @@
 - rixCloud配套配置（上述排名第一的品牌）
     - 直接开全局浏览器即可正常访问墙外网站
         - 如果要自动选择是否使用，chrome中选用SwitchyOmega插件即可
+            - 插件设置方式：proxy中代理服务器和代理端口设置一下
     - 终端中比较麻烦：
         - `alias ss='export http_proxy=http://127.0.0.1:1087 https_proxy=http://127.0.0.1:1087'`
         - `alias us='unset http_proxy && unset https_proxy'`

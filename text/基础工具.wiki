@@ -19,6 +19,7 @@
     - [[sklearn.pipeline学习]]
 - iTerm2
     - [[https://iterm2.com/python-api/|提供python api了！]]
+    - [[https://juejin.im/post/6844904086957981704|iTerm2 都不会用，还敢自称老司机？（上）]]
 
 - [[打包工具]]
 
