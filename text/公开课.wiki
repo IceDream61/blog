@@ -1,0 +1,10 @@
+= 公开课教育 =
+
+== B站公开课 ==
+- [[https://www.bilibili.com/video/BV1Vi4y1G7SZ|算法大讲堂 01 算法入门没门槛]]
+- [[https://www.bilibili.com/video/BV1za4y1E7T2|算法大讲堂 02 充分理解靠纸笔]]
+- [[https://www.bilibili.com/video/BV1AK411T7vy|算法大讲堂 03 十大排序齐 Battle！]]
+- [[https://www.bilibili.com/video/BV15z4y1f7zK|算法大讲堂 04 各语言排序杂谈]]
+- [[https://www.bilibili.com/video/BV1rp4y1Y7LS|算法大讲堂 05 数据结构各角度]]
+- [[https://www.bilibili.com/video/BV1TV411m7tf|算法大讲堂 06 看三项重要技术 —— 动态规划、贪心算法、平摊分析]]
+
