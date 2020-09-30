@@ -1,0 +1,23 @@
+= 关于我 =
+
+    欢迎一切善意的交流，也欢迎一切对我的了解。
+
+== 联系方式 ==
+
+- 微信（推荐）：kxg405707818
+- 邮箱：[[mailto:icedream61@163.com|icedream61@163.com]]、[[mailto:icedream61@gmail.com|icedream61@gmail.com]]
+
+== 了解更多 ==
+
+- 想了解我的同学，可以看看我的：
+    - [[local:../docs/卢奇个人简历 - 2019版.pdf|大学简历]]：2019年找工作的简历。
+    - 补上简历中未提及的最近工作经历：
+        - 观远数据，算法工程师，2019.4 ~ 2020.4
+        - 为沃尔玛、全家、联合利华等五百强头部公司做商业数据分析、预测。
+        - 负责AI小组的工程化，具体包括工具链开发、环境搭建、全面运维、新人培训。
+        - 主要工具及语言：Sklearn/XGBoost/LightGBM、Jupyter Notebook/Spark、Python。
+- [[技术博客]]：这是我个人的博客，以技术内容为主，兼有教育相关的思考。
+- [[https://www.cnblogs.com/icedream61/|博客园博客]]：曾经大学期间在博客园写的博客，年久失修。
+- [[https://www.zhihu.com/people/lu-qi-81-69|知乎主页]]：知乎楚浩。
+- [[https://space.bilibili.com/269924695|B站主页]]：哔哩哔哩icedream61。
+
