@@ -6,10 +6,26 @@
 2020.11.4 第二次考试（选择题）
 收费方式：500￥/小时，计时收费，课前充值
 }}}
-- [ ] 2020年10月21日，第一次上课
+- [.] 2020年10月21日，第一次上课
     - [ ] 目标：解决2020年10月22日的[[https://github.com/msyamkumar/cs220-f20-projects/tree/master/p7|project p7]]
     - [ ] 课程计划：带着做整个project，并普及相关知识等
+        - [X] 3:16pm => 6:16pm，3个小时，带着做大约7道题
+{{{python
+# 某核心函数
+def get_column(col_name):
 
+    b={}
+    for i in len(header):
+        b[header[i]]=i
+
+    column=[]
+    for row in player_data:
+        col_idx=b[col_name]
+        column.append(row[col_idx])
+
+    return column
+}}}
+        - [ ] 自己做余下的题目，2020年10月21日晚或转天早上，把不会的内容答疑搞定
 ----
 
 ==== 课程资料 ====
