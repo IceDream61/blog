@@ -7,4 +7,5 @@
 - [[https://www.bilibili.com/video/BV15z4y1f7zK|算法大讲堂 04 各语言排序杂谈]]
 - [[https://www.bilibili.com/video/BV1rp4y1Y7LS|算法大讲堂 05 数据结构各角度]]
 - [[https://www.bilibili.com/video/BV1TV411m7tf|算法大讲堂 06 看三项重要技术 —— 动态规划、贪心算法、平摊分析]]
+- [[https://www.bilibili.com/video/BV1Ka4y1L78v/|算法大讲堂 07 高级结构的诞生 ——B 树、二项堆、并查集]]
 

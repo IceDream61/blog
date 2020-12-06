@@ -31,8 +31,6 @@
     </div>
     <div>
         <ul class="nav navbar-nav">
-            <li><a href="%root_path%教育.html">教育</a></li>
-            <li><a href="%root_path%思考.html">思考</a></li>
             <li><a href="%root_path%关于我.html">关于我</a></li>
         </ul>
     </div>
