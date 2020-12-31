@@ -1,7 +1,7 @@
 ==== 进度记录 ====
 - [X] 2020年12月24日，定制教学计划
-- [ ] 2020年12月24日晚，第一节课
-    - [ ] 11:00pm => 1:00am
+- [X] 2020年12月24日晚，第一节课
+    - [X] 11:00pm => 1:00am
 
 ----
 
@@ -15,21 +15,21 @@
 
 ==== 教学计划 ====
 学习主线是C/C++，语言与相关知识各占一半。
-1. [ ] HelloWorld：安装CLion + 中文插件，运行C语言HelloWorld
-    a) [ ] 课堂：zoom分享屏幕，先以看我操作为主
-        - [ ] 讲解IDE，演示使用、自己搭建
-        - [ ] 讲解HelloWorld，先屏蔽底层原理、只讲运行逻辑
-        - [ ] 讲解c语言基础，演示为主、其余部分留作自学
-    b) [ ] 自学：学习c语言基础 by [[https://www.runoob.com/cprogramming/c-tutorial.html|《C 语言教程 | 菜鸟教程》]]
-        - [ ] C 基本语法
-        - [ ] C 数据类型
-        - [ ] C 变量
-        - [ ] C 常量
+1. [o] HelloWorld：安装CLion + 中文插件，运行C语言HelloWorld
+    a) [X] 课堂：zoom分享屏幕，先以看我操作为主
+        - [X] 讲解IDE，演示使用、自己搭建
+        - [X] 讲解HelloWorld，先屏蔽底层原理、只讲运行逻辑
+        - [X] 讲解c语言基础，演示为主、其余部分留作自学
+    b) [o] 讲解+自学：学习c语言基础 by [[https://www.runoob.com/cprogramming/c-tutorial.html|《C 语言教程 | 菜鸟教程》]]
+        - [X] C 基本语法
+        - [X] C 数据类型
+        - [X] C 变量
+        - [X] C 常量
         - [ ] C 存储类（选）
-        - [ ] C 运算符
+        - [X] C 运算符
         - [ ] C 判断
         - [ ] C 循环
-        - [ ] C 输入 & 输出（with “C 常量”中的“字符常量 - 转义序列”部分）
+        - [X] C 输入 & 输出（with “C 常量”中的“字符常量 - 转义序列”部分）
         - [ ] [[https://www.bilibili.com/video/BV1za4y1E7T2|《算法大讲堂 02 充分理解靠纸笔 | 哔哩哔哩》]]
     c) [ ] 作业
         - [ ] 运行HelloWorld：搭建好学习环境
@@ -72,9 +72,10 @@
 - Jetbrains相关资料：
     - [[https://www.jianshu.com/p/ac6c37d94b22|IntelliJ IDEA 常用快捷键总结]]
     - [[https://blog.jetbrains.com/zh-hans/2020/06/10/intellij-idea-language-pack/|三分钟让 IntelliJ IDEA 显示简体中文]]
+- [[https://stackoverflow.com/questions/822323/how-to-generate-a-random-int-in-c|how to generate a random int in c]]
 
 ----
 
 ==== 收费记录 ====
-- 2020年12月24日 上课前收费
+- 2020年12月24日 上课前收费1000￥
 
