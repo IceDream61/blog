@@ -4,6 +4,6 @@ null,
 null,
 null,
 {"id":4,"expanded":false,"name":"小村民居 1F","order":3,"parentId":5,"scrollX":688.5,"scrollY":485.25},
-{"id":5,"expanded":true,"name":"森林小镇","order":2,"parentId":0,"scrollX":816,"scrollY":698.25},
+{"id":5,"expanded":true,"name":"森林小镇","order":2,"parentId":0,"scrollX":676.5,"scrollY":674.25},
 {"id":6,"expanded":false,"name":"小村民居 2F","order":4,"parentId":5,"scrollX":832,"scrollY":640}
 ]

@@ -1,2 +1,14 @@
 ==== Hello World ====
-[[local:../docs/Game/index.html]]
+[[local:../docs/Game/index.html|在线游玩]]
+[[http://localhost/Project1/|本地apache服务器游玩]]
+- `sudo apachectl start`
+- `sudo apachectl stop`
+- put files in `/Library/WebServer/Documents`
+
+----
+
+==== documents ====
+[[https://blog.csdn.net/ebalZhang/article/details/50010741|搭建本地服务器]]
+[[https://my.oschina.net/u/3772926/blog/1649345|搭建 ssh 隧道实现 NAT 内网穿透]]
+- [[https://www.natfrp.com/|sakura frp]]
+[[https://www.zhihu.com/question/373223848/answer/1028518850|建一个小型博客，该怎么选择云服务器？]]
