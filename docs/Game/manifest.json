@@ -1,0 +1,19 @@
+{
+    "name": "1",
+    "version": "2.1",
+    "manifest_version": 2,
+    "description": "1",
+    "icons": { "1": "icon/icon.png" },
+    "background": {
+        "persistent": false,
+        "scripts": [],
+        "page": "index_extensions.html"
+    },
+    "permissions": [],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "browser_action": {
+        "default_title": "1",
+        "default_icon": "icon/icon.png",
+        "default_popup": "index_extensions.html"
+    }
+}
