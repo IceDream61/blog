@@ -1,6 +1,33 @@
+==== 进度打卡 ====
+完成后，上课审核进度完成情况，并解决所有问题。（如果有卡住进度的问题，可以随时约上课时间。）
+- [.] Part1 热身：恢复coding并坚持刷题7天，养成每天刷OJ的习惯。
+    1. [X] [[https://leetcode-cn.com/problems/two-sum/|0001. 两数之和]]
+    2. [ ] [[https://leetcode-cn.com/problems/binode-lcci/|面试题 17.12. BiNode]]
+        - 拓展：[[https://leetcode-cn.com/problems/get-kth-magic-number-lcci/|面试题 17.09. 第 k 个数]]
+        - 挑战：[[https://leetcode-cn.com/problems/meChtZ/|LCP 20. 快速公交]]
+    3. [ ] [[https://leetcode-cn.com/problems/valid-parentheses/|0020. 有效的括号]]
+        - 拓展：[[https://leetcode-cn.com/problems/max-black-square-lcci/|面试题 17.23. 最大黑方阵]]
+        - 挑战：[[https://binarysearch.com/problems/Number-Stream-to-Intervals|Number Stream to Intervals]]
+    4. [ ] [[https://leetcode-cn.com/problems/valid-parentheses/|0021. 合并两个有序链表]]
+        - 拓展：[[https://leetcode-cn.com/problems/add-two-numbers/|0002. 两数相加]]
+        - 挑战：[[https://leetcode-cn.com/problems/median-of-two-sorted-arrays/|0004. 寻找两个正序数组的中位数]]
+    5. [ ] [[https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/description/|0026. 删除排序数组中的重复项]]
+        - 拓展：[[https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/|0003. 无重复字符的最长子串]]
+        - 挑战：[[https://leetcode-cn.com/problems/merge-k-sorted-lists/|0023. 合并 K 个升序链表]]
+    6. [ ] [[https://leetcode-cn.com/problems/maximum-subarray/|0053. 最大子序和]]
+        - 拓展：[[https://leetcode-cn.com/problems/longest-palindromic-substring/|0005. 最长回文子串]]
+        - 挑战：[[https://leetcode-cn.com/problems/reverse-nodes-in-k-group/|0025. K 个一组翻转链表]]
+    7. [ ] [[https://leetcode-cn.com/problems/plus-one|0066. 加一]]
+        - 拓展：[[https://leetcode-cn.com/problems/container-with-most-water/description/|0011. 盛最多水的容器]]
+        - 挑战：[[https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/|0030. 串联所有单词的子串]]
+*每Part完成方可解锁下一Part，加油！*
+
+----
+
 ==== 进度记录 ====
 - [X] 2021年02月15日，线下长聊、确定学习基本方向。
 - [X] 2021年02月23日，建立学生资料、确定初步学习路线与具体方式。
+- [X] 2021年02月24日，第一日进度交流完毕。
 
 ----
 
@@ -13,14 +40,11 @@
 
 ----
 
-==== 刷算法题 ====
+===== 刷算法题 =====
 所有刷过的算法题，在这里打卡。
 - 所谓“刷过”的标准是：有评测通过截图，或者通过一部分测试点、且未通过的测试点与老师讨论认为其过于超纲。
 - 题目“刷过”之后，代码质量均应通过老师审核，根据学习进度调整要求。目前，要求很简单，基本能看就行。
 - 以上两步完成后，老师会把题目打卡并更新进度，并至少保证随时有适于当前进度的题目可刷。
-
-题目列表：
-1. [ ] [[https://leetcode-cn.com/problems/two-sum/|两数之和]]
 
 ----
 
@@ -31,4 +55,4 @@
 ----
 
 ==== 收费记录 ====
-暂无。
+- 2021年02月23日 收费500￥
